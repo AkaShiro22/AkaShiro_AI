@@ -713,7 +713,6 @@
                 temperature: appState.temperature 
             };
 
-            // Menggunakan CORS proxy jika diakses via web publik seperti Netlify agar tidak terblokir
             let fetchUrl = apiUrl;
             let options = {
                 method: 'POST',
@@ -729,7 +728,6 @@
             try {
                 response = await fetch(fetchUrl, options);
             } catch (networkErr) {
-                // Jika terkena blokir CORS browser, coba lewati dengan AllOrigins Proxy
                 const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
                 response = await fetch(proxyUrl, {
                     method: 'POST',
