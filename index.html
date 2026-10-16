@@ -713,20 +713,17 @@
                 temperature: appState.temperature 
             };
 
-            let fetchUrl = apiUrl;
-            let options = {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${appState.apiKey}` 
-                },
-                body: JSON.stringify(payload),
-                signal: signal
-            };
-
             let response;
             try {
-                response = await fetch(fetchUrl, options);
+                response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${appState.apiKey}` 
+                    },
+                    body: JSON.stringify(payload),
+                    signal: signal
+                });
             } catch (networkErr) {
                 const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
                 response = await fetch(proxyUrl, {
