@@ -698,7 +698,7 @@
 
         async function callAIAPI(messagesHistory, signal) {
             const cleanBaseUrl = appState.baseUrl.replace(/\/+$/, '');
-            const apiUrl = `${cleanBaseUrl}/chat/completions`;
+            let apiUrl = `${cleanBaseUrl}/chat/completions`;
             
             const formattedMessages = messagesHistory.map(m => ({
                 role: m.role === 'user' ? 'user' : 'assistant',
@@ -713,7 +713,9 @@
                 temperature: appState.temperature 
             };
 
-            const response = await fetch(apiUrl, {
+            // Menggunakan CORS proxy jika diakses via web publik seperti Netlify agar tidak terblokir
+            let fetchUrl = apiUrl;
+            let options = {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json', 
@@ -721,7 +723,25 @@
                 },
                 body: JSON.stringify(payload),
                 signal: signal
-            });
+            };
+
+            let response;
+            try {
+                response = await fetch(fetchUrl, options);
+            } catch (networkErr) {
+                // Jika terkena blokir CORS browser, coba lewati dengan AllOrigins Proxy
+                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+                response = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        targetUrl: apiUrl,
+                        apiKey: appState.apiKey,
+                        payload: payload
+                    }),
+                    signal: signal
+                }).catch(() => { throw networkErr; });
+            }
 
             if (!response.ok) {
                 const errText = await response.text().catch(() => '');
