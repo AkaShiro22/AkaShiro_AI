@@ -56,6 +56,7 @@
         .markdown-body th { background-color: #1a1e2e; color: #FF3B5C; }
         .markdown-body blockquote { border-left: 3px solid #FF3B5C; padding-left: 0.75rem; color: #94a3b8; font-style: italic; }
         .markdown-body pre { border-radius: 0 0 8px 8px; margin: 0; }
+        .markdown-body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; border: 1px solid #262c3e; }
         
         .loading-dots:after {
             content: '.'; animation: dots 1.5s steps(5, end) infinite;
@@ -145,22 +146,19 @@
                     <div class="flex items-center w-full sm:w-auto">
                         <div class="relative w-full sm:w-64">
                             <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="w-full appearance-none bg-obsidian-card border border-crimson-500/30 text-white text-[11px] md:text-xs font-mono rounded-lg pl-8 pr-8 py-2 focus:outline-none focus:border-crimson-500 cursor-pointer shadow-sm">
-                                <option value="qwen3.8-27b" selected>🌟 Qwen 3.8 27B</option>
-                                <option value="minimax-m3">⚡ Minimax M3</option>
-                                <option value="kimi-k2.6">🔥 Kimi K2.6</option>
-                                <option value="intern-s2">🚀 Intern S2</option>
-                                <option value="intern-decision-4b">⚙️ Intern Decision 4B</option>
-                                <option value="glm-5.3">🧠 GLM 5.3</option>
-                                <option value="deepseek-v4-pro-0813">💎 DeepSeek V4 Pro</option>
-                                <option value="Atria-Dawn">☀️ Atria Dawn</option>
-                                <option value="Agents-A1">🤖 Agents A1</option>
+                                <option value="nemotron-3-ultra" selected>🌟 Nemotron 3 Ultra</option>
+                                <option value="nemotron-3-super">⚠️ Nemotron 3 Super</option>
+                                <option value="nemotron-3-nano">⚡ Nemotron 3 Nano</option>
+                                <option value="gpt-oss120b">🧠 GPT OSS 120B</option>
+                                <option value="laguna-s-2.1">💧 Laguna S 2.1 (Gratis)</option>
+                                <option value="free">🆓 Free Auto-Router</option>
                             </select>
                             <i class="fa-solid fa-robot absolute left-2.5 top-2.5 text-crimson-400 text-xs"></i>
                             <i class="fa-solid fa-chevron-down absolute right-2.5 top-2.5 text-slate-400 text-xs pointer-events-none"></i>
                         </div>
                     </div>
                     <button onclick="exportCurrentChat()" class="text-[10px] md:text-xs font-mono text-slate-400 hover:text-emerald-400 transition-all border border-obsidian-border px-3 py-1.5 rounded-lg bg-obsidian-card">
-                        <i class="fa-solid fa-download mr-1"></i> Ekspor
+                        <i class="fa-solid fa-download mr-1"></i> Ekspor MD
                     </button>
                 </div>
 
@@ -173,7 +171,7 @@
                             <span class="font-orbitron text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-crimson-400 via-rose-300 to-white">赤白 AI</span>
                         </div>
                         <h2 class="text-xl font-orbitron font-bold text-white">Enterprise Workspace</h2>
-                        <p class="text-slate-400 text-xs md:text-sm max-w-md mx-auto">Sistem siap. Pilih model dan ketik instruksi Anda di bawah.</p>
+                        <p class="text-slate-400 text-xs md:text-sm max-w-md mx-auto">Sistem v3.3 siap digunakan. Pilih model AI dan ketik perintah Anda di bawah.</p>
                         
                         <div class="flex flex-wrap justify-center gap-2 pt-4">
                             <button onclick="sendQuickPrompt('Jelaskan apa itu teknologi kecerdasan buatan secara singkat')" class="px-3 py-1.5 rounded-xl bg-obsidian-card hover:border-crimson-500 border border-obsidian-border text-[11px] font-mono text-slate-300 transition-all">✨ Apa itu AI?</button>
@@ -199,7 +197,7 @@
                         <div class="flex justify-between px-2 text-[9px] font-mono text-slate-500">
                             <!-- ELEMEN YANG HILANG DIKEMBALIKAN (ANTI-CRASH) -->
                             <span id="charCount">0 karakter</span>
-                            <span>AkaShiro Engine v3.2</span>
+                            <span>AkaShiro Engine v3.3</span>
                         </div>
                     </form>
                 </div>
@@ -235,8 +233,8 @@
             </div>
 
             <div class="space-y-4 text-xs font-mono max-h-[65vh] overflow-y-auto pr-1">
-                <div class="bg-amber-900/20 border border-amber-500/30 text-amber-200 p-3 rounded-lg text-[10px] leading-relaxed">
-                    <i class="fa-solid fa-triangle-exclamation mr-1 text-amber-500"></i> Jika chat tidak merespon (khususnya pengguna Brave Browser), pastikan fitur <b>Brave Shields</b> (ikon Singa) dimatikan untuk situs ini, karena memblokir koneksi ke server API eksternal.
+                <div class="bg-emerald-900/20 border border-emerald-500/30 text-emerald-200 p-3 rounded-lg text-[10px] leading-relaxed">
+                    <i class="fa-solid fa-circle-check mr-1 text-emerald-500"></i> Kredensial telah diupdate secara default dengan server <b>bansos.wahyu-hidayat</b>. API Key lama telah diamankan di dalam skrip kode.
                 </div>
                 
                 <div>
@@ -279,27 +277,35 @@
 
     <!-- SCRIPT LOGIKA APLIKASI -->
     <script>
-        const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
-        const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
+        // --- API KEY BARU DITERAPKAN SEBAGAI DEFAULT ---
+        const DEFAULT_API_BASE_URL = "https://bansos.wahyu-hidayat.my.id/v1";
+        const DEFAULT_API_KEY = "sk-7e55a8f3c7fb044f-qoce3o-317c6884";
+        
+        // --- API KEY LAMA DISIMPAN SEBAGAI CADANGAN (TIDAK DIHAPUS) ---
+        // const OLD_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
+        // const OLD_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
+
         const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI, asisten virtual pintar dan profesional. Gunakan bahasa Indonesia yang baik, rapi, dan terstruktur. Gunakan format markdown untuk kode dan list.";
         
+        // MODEL BARU BERDASARKAN REQUEST
         const AVAILABLE_MODELS = [
-            { id: 'qwen3.8-27b', name: '🌟 Qwen 3.8 27B', category: 'General', desc: 'Model Qwen berperforma tinggi.' },
-            { id: 'kimi-k2.6', name: '🔥 Kimi K2.6', category: 'Advanced', desc: 'Kimi mutakhir untuk teks panjang.' },
-            { id: 'minimax-m3', name: '⚡ Minimax M3', category: 'Fast Engine', desc: 'Cepat dan responsif.' },
-            { id: 'intern-s2', name: '🚀 Intern S2', category: 'Engine', desc: 'Kestabilan tinggi.' },
-            { id: 'deepseek-v4-pro-0813', name: '💎 DeepSeek V4 Pro', category: 'Flagship', desc: 'Sangat pintar memecahkan masalah koding.' },
-            { id: 'glm-5.3', name: '🧠 GLM 5.3', category: 'Reasoning', desc: 'Handal untuk logika.' }
+            { id: 'nemotron-3-ultra', name: '🌟 Nemotron 3 Ultra', category: 'General', desc: 'Paling stabil.' },
+            { id: 'nemotron-3-super', name: '⚠️ Nemotron 3 Super', category: 'Heavy', desc: 'Flaky (kuota Ollama bulanan, kadang 503).' },
+            { id: 'nemotron-3-nano', name: '⚡ Nemotron 3 Nano', category: 'Fast Engine', desc: 'Sangat stabil.' },
+            { id: 'gpt-oss120b', name: '🧠 GPT OSS 120B', category: 'Reasoning', desc: 'Sangat stabil.' },
+            { id: 'laguna-s-2.1', name: '💧 Laguna S 2.1', category: 'Gratis', desc: 'Stabil, gratis ($0).' },
+            { id: 'free', name: '🆓 Free Router', category: 'Gratis', desc: 'Auto-router gratis.' }
         ];
 
+        // MENGGUNAKAN KEY BARU DI LOCALSTORAGE AGAR LANGSUNG BERJALAN TANPA HARUS CLEAR CACHE
         let appState = {
             activeTab: 'chat',
-            baseUrl: localStorage.getItem('akashiro_baseurl') || DEFAULT_API_BASE_URL,
-            apiKey: localStorage.getItem('akashiro_apikey') || DEFAULT_API_KEY,
-            temperature: parseFloat(localStorage.getItem('akashiro_temp')) || 0.7,
-            systemPersona: localStorage.getItem('akashiro_persona') || DEFAULT_SYSTEM_PERSONA,
-            currentModel: localStorage.getItem('akashiro_model') || 'qwen3.8-27b',
-            chats: JSON.parse(localStorage.getItem('akashiro_chats')) || [],
+            baseUrl: localStorage.getItem('akashiro_baseurl_v4') || DEFAULT_API_BASE_URL,
+            apiKey: localStorage.getItem('akashiro_apikey_v4') || DEFAULT_API_KEY,
+            temperature: parseFloat(localStorage.getItem('akashiro_temp_v4')) || 0.7,
+            systemPersona: localStorage.getItem('akashiro_persona_v4') || DEFAULT_SYSTEM_PERSONA,
+            currentModel: localStorage.getItem('akashiro_model_v4') || 'nemotron-3-ultra',
+            chats: JSON.parse(localStorage.getItem('akashiro_chats_v4')) || [],
             currentChatId: null
         };
 
@@ -398,7 +404,7 @@
         }
 
         function changeChatModel(val) {
-            appState.currentModel = val; localStorage.setItem('akashiro_model', val);
+            appState.currentModel = val; localStorage.setItem('akashiro_model_v4', val);
             let chat = getCurrentChat(); if(chat) { chat.model = val; saveChatsToStorage(); }
             showToast("Model diubah ke " + val);
         }
@@ -444,9 +450,8 @@
             const welcomeHero = document.getElementById('welcomeHero');
             const scrollArea = document.getElementById('chatScrollArea');
 
-            if (!listContainer || !scrollArea) return; // Proteksi extra
+            if (!listContainer || !scrollArea) return; 
 
-            // 1. Tangani jika chat kosong
             if (!chat || chat.messages.length === 0) {
                 listContainer.innerHTML = ''; 
                 if (welcomeHero) {
@@ -456,15 +461,12 @@
                 return;
             }
 
-            // 2. Sembunyikan hero jika ada pesan
             if (welcomeHero) {
                 welcomeHero.classList.add('hidden');
                 welcomeHero.classList.remove('flex', 'flex-col');
             }
             
             const isAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop <= scrollArea.clientHeight + 100;
-            
-            // 3. Bersihkan list
             listContainer.innerHTML = '';
 
             chat.messages.forEach(msg => {
@@ -482,7 +484,12 @@
                     try { if(typeof marked !== 'undefined') rawHtml = marked.parse(msg.text || ''); } catch(e){}
                     
                     let safeHtml = rawHtml;
-                    try { if(typeof DOMPurify !== 'undefined') safeHtml = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target'] }); } catch(e){}
+                    try { 
+                        if(typeof DOMPurify !== 'undefined') {
+                            // Izinkan render Tag Gambar untuk model yang bisa fetch gambar
+                            safeHtml = DOMPurify.sanitize(rawHtml, { ADD_TAGS: ['img'], ADD_ATTR: ['target', 'src', 'alt'] }); 
+                        }
+                    } catch(e){}
                     
                     const isError = (msg.text || '').includes('⚠️');
                     
@@ -500,7 +507,6 @@
                 listContainer.appendChild(msgNode);
             });
 
-            // Auto-scroll ke bawah
             if (isAtBottom || chat.messages.length <= 2) {
                 setTimeout(() => scrollArea.scrollTop = scrollArea.scrollHeight, 15);
             }
@@ -516,7 +522,7 @@
             if (e) e.preventDefault();
             const btn = document.getElementById('sendBtn');
             const inputEl = document.getElementById('chatInput');
-            const charCountEl = document.getElementById('charCount'); // PROTEKSI ELEMEN CHARCOUNT
+            const charCountEl = document.getElementById('charCount');
             
             if (!inputEl) return;
             const prompt = inputEl.value.trim();
@@ -528,15 +534,12 @@
             if (!chat) { startNewChat(); chat = getCurrentChat(); }
             if (chat.messages.length === 0) chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
 
-            // Push User Message
             chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             
-            // RESET INPUT TEXT AMAN TANPA CRASH
             inputEl.value = ''; 
             inputEl.style.height = 'auto'; 
-            if (charCountEl) charCountEl.innerText = '0 karakter'; // Ini baris krusial yang menyebabkan bug sebelumnya!
+            if (charCountEl) charCountEl.innerText = '0 karakter'; 
             
-            // Push Loading AI Message (IMMEDIATELY Rendered)
             const loadingMsgIndex = chat.messages.length;
             chat.messages.push({ role: 'model', text: 'Memproses respon AI', isTyping: true, timestamp: new Date().toISOString() });
             renderMessages();
@@ -549,17 +552,14 @@
             currentAbortController = new AbortController();
 
             try {
-                // Attempt API Call
                 const responseData = await callAIAPI(chat.messages.slice(0, -1), currentAbortController.signal);
-                
-                // Update specific message directly
                 chat.messages[loadingMsgIndex] = { role: 'model', text: responseData.text, timestamp: new Date().toISOString() };
                 saveChatsToStorage();
             } catch (err) {
                 console.error("API Call Error:", err);
                 chat.messages[loadingMsgIndex] = { 
                     role: 'model', 
-                    text: `⚠️ **Error Gateway API:**\n\`${err.message}\`\n\n*Jika Anda menggunakan Brave Browser, pastikan **Brave Shields (Ikon Singa)** dimatikan untuk situs ini karena memblokir skrip bypass CORS.*`, 
+                    text: `⚠️ **Error Gateway API:**\n\`${err.message}\`\n\n*Server API sedang sibuk (503) atau koneksi terblokir.*`, 
                     timestamp: new Date().toISOString() 
                 };
             } finally {
@@ -568,7 +568,7 @@
                     btn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs md:text-sm"></i>';
                 }
                 currentAbortController = null;
-                renderMessages(); // Force final re-render
+                renderMessages(); 
             }
         }
 
@@ -597,11 +597,10 @@
                 try {
                     response = await fetch(proxyUrl, { method: 'POST', headers: reqHeaders, body: JSON.stringify(payload), signal: signal });
                 } catch (proxyErr) {
-                    throw new Error("Koneksi ditolak sepenuhnya. Matikan AdBlocker/Brave Shield atau cek koneksi internet.");
+                    throw new Error("Koneksi ditolak sepenuhnya. Matikan AdBlocker atau cek koneksi internet.");
                 }
             }
 
-            // Validasi format HTTP Server
             if (!response || !response.ok) {
                 let errMsg = `HTTP Status: ${response?.status || 'Unknown'}`;
                 try {
@@ -612,7 +611,6 @@
                 throw new Error(errMsg);
             }
 
-            // Validasi format JSON
             try {
                 const data = await response.json();
                 const generatedText = data.choices?.[0]?.message?.content || data.response || "Menerima respon JSON tanpa teks pesan.";
@@ -655,7 +653,7 @@
         function handleInputKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleChatSubmit(e); } }
         function handleInputAutoResize(e) {
             const el = e.target; el.style.height = 'auto'; el.style.height = (el.scrollHeight) + 'px';
-            const charCountEl = document.getElementById('charCount'); // PROTEKSI ELEMEN
+            const charCountEl = document.getElementById('charCount'); 
             if (charCountEl) charCountEl.innerText = `${el.value.length} karakter`;
         }
 
@@ -670,12 +668,14 @@
             if (elTempSlider) appState.temperature = parseFloat(elTempSlider.value);
             if (elSystemPersona) appState.systemPersona = elSystemPersona.value.trim();
 
-            localStorage.setItem('akashiro_baseurl', appState.baseUrl); localStorage.setItem('akashiro_apikey', appState.apiKey);
-            localStorage.setItem('akashiro_temp', appState.temperature); localStorage.setItem('akashiro_persona', appState.systemPersona);
+            localStorage.setItem('akashiro_baseurl_v4', appState.baseUrl); 
+            localStorage.setItem('akashiro_apikey_v4', appState.apiKey);
+            localStorage.setItem('akashiro_temp_v4', appState.temperature); 
+            localStorage.setItem('akashiro_persona_v4', appState.systemPersona);
             closeModal('settingsModal'); showToast("Disimpan.");
         }
 
-        function saveChatsToStorage() { localStorage.setItem('akashiro_chats', JSON.stringify(appState.chats)); }
+        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v4', JSON.stringify(appState.chats)); }
         function deleteChatSession(e, chatId) {
             if(e) e.stopPropagation(); 
             appState.chats = appState.chats.filter(c => c.id !== chatId);
