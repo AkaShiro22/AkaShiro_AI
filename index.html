@@ -196,8 +196,10 @@
                                 <i class="fa-solid fa-paper-plane text-xs md:text-sm"></i>
                             </button>
                         </div>
-                        <div class="flex justify-end px-2 text-[9px] font-mono text-slate-500">
-                            AkaShiro Engine v3.1
+                        <div class="flex justify-between px-2 text-[9px] font-mono text-slate-500">
+                            <!-- ELEMEN YANG HILANG DIKEMBALIKAN (ANTI-CRASH) -->
+                            <span id="charCount">0 karakter</span>
+                            <span>AkaShiro Engine v3.2</span>
                         </div>
                     </form>
                 </div>
@@ -304,12 +306,19 @@
         let currentAbortController = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('customBaseUrl').value = appState.baseUrl;
-            document.getElementById('customApiKey').value = appState.apiKey;
-            document.getElementById('tempSlider').value = appState.temperature;
-            document.getElementById('tempVal').innerText = appState.temperature;
-            document.getElementById('systemPersonaInput').value = appState.systemPersona;
-            document.getElementById('chatModelSelect').value = appState.currentModel;
+            const elBaseUrl = document.getElementById('customBaseUrl');
+            const elApiKey = document.getElementById('customApiKey');
+            const elTempSlider = document.getElementById('tempSlider');
+            const elTempVal = document.getElementById('tempVal');
+            const elSystemPersona = document.getElementById('systemPersonaInput');
+            const elChatModel = document.getElementById('chatModelSelect');
+
+            if (elBaseUrl) elBaseUrl.value = appState.baseUrl;
+            if (elApiKey) elApiKey.value = appState.apiKey;
+            if (elTempSlider) elTempSlider.value = appState.temperature;
+            if (elTempVal) elTempVal.innerText = appState.temperature;
+            if (elSystemPersona) elSystemPersona.value = appState.systemPersona;
+            if (elChatModel) elChatModel.value = appState.currentModel;
 
             initApp();
             renderCatalogModels(AVAILABLE_MODELS);
@@ -319,7 +328,9 @@
             setupMarked();
             if (appState.chats.length > 0) { loadChatSession(appState.chats[0].id); } 
             else { startNewChat(); }
-            document.getElementById('mobileMenuBtn').addEventListener('click', () => toggleSidebar(true));
+            
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            if (mobileBtn) mobileBtn.addEventListener('click', () => toggleSidebar(true));
         }
 
         function switchTab(tabId) {
@@ -342,39 +353,48 @@
         function toggleSidebar(show) {
             const sidebar = document.getElementById('chatSidebar');
             const overlay = document.getElementById('sidebarOverlay');
+            if (!sidebar || !overlay) return;
+            
             if (show) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); } 
             else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
         }
 
         function setupMarked() {
-            const renderer = new marked.Renderer();
-            renderer.code = function(code, language) {
-                const validLang = !!(language && hljs.getLanguage(language));
-                const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
-                return `
-                <div class="relative my-4 rounded-xl border border-obsidian-border bg-obsidian-card overflow-hidden group shadow-lg">
-                    <div class="flex justify-between items-center px-4 py-2 bg-[#10131c] border-b border-obsidian-border">
-                        <span class="text-[10px] text-slate-400 font-mono uppercase">${language || 'text'}</span>
-                        <button class="text-[10px] text-slate-400 hover:text-emerald-400 transition-colors flex items-center space-x-1" onclick="copyCodeBlock(this)">
-                            <i class="fa-regular fa-clone"></i> <span>Copy Code</span>
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto p-4 text-[13px] font-mono scrollbar-hide">
-                        <pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre>
-                    </div>
-                </div>`;
-            };
-            marked.setOptions({ renderer: renderer, breaks: true });
+            try {
+                if (typeof marked === 'undefined') return;
+                const renderer = new marked.Renderer();
+                renderer.code = function(code, language) {
+                    const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
+                    const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
+                    return `
+                    <div class="relative my-4 rounded-xl border border-obsidian-border bg-obsidian-card overflow-hidden group shadow-lg">
+                        <div class="flex justify-between items-center px-4 py-2 bg-[#10131c] border-b border-obsidian-border">
+                            <span class="text-[10px] text-slate-400 font-mono uppercase">${language || 'text'}</span>
+                            <button class="text-[10px] text-slate-400 hover:text-emerald-400 transition-colors flex items-center space-x-1" onclick="copyCodeBlock(this)">
+                                <i class="fa-regular fa-clone"></i> <span>Copy Code</span>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto p-4 text-[13px] font-mono scrollbar-hide">
+                            <pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre>
+                        </div>
+                    </div>`;
+                };
+                marked.setOptions({ renderer: renderer, breaks: true });
+            } catch(e) {
+                console.warn("Markdown setup failed:", e);
+            }
         }
 
         window.copyCodeBlock = async function(btn) {
-            const codeEl = btn.closest('.group').querySelector('code');
-            if(codeEl) {
-                await navigator.clipboard.writeText(codeEl.innerText);
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Copied!</span>';
-                setTimeout(() => btn.innerHTML = originalHTML, 2000);
-            }
+            try {
+                const codeEl = btn.closest('.group').querySelector('code');
+                if(codeEl) {
+                    await navigator.clipboard.writeText(codeEl.innerText);
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Copied!</span>';
+                    setTimeout(() => btn.innerHTML = originalHTML, 2000);
+                }
+            } catch(e) {}
         }
 
         function changeChatModel(val) {
@@ -392,7 +412,8 @@
         function loadChatSession(chatId) {
             appState.currentChatId = chatId;
             const chat = getCurrentChat();
-            if(chat && chat.model) { document.getElementById('chatModelSelect').value = chat.model; appState.currentModel = chat.model; }
+            const modelSelect = document.getElementById('chatModelSelect');
+            if(chat && chat.model && modelSelect) { modelSelect.value = chat.model; appState.currentModel = chat.model; }
             renderChatHistory(); renderMessages();
             if (window.innerWidth < 1024) toggleSidebar(false);
         }
@@ -400,7 +421,10 @@
         function getCurrentChat() { return appState.chats.find(c => c.id === appState.currentChatId); }
 
         function renderChatHistory() {
-            const listEl = document.getElementById('chatHistoryList'); listEl.innerHTML = '';
+            const listEl = document.getElementById('chatHistoryList'); 
+            if (!listEl) return;
+            listEl.innerHTML = '';
+            
             appState.chats.forEach(chat => {
                 const activeClass = chat.id === appState.currentChatId ? 'bg-crimson-900/20 border-crimson-500/40 text-crimson-300' : 'bg-obsidian-card hover:bg-obsidian-lighter border-obsidian-border text-slate-300';
                 const item = document.createElement('div');
@@ -414,14 +438,13 @@
             });
         }
 
-        // ==========================================
-        // BUG FIX: ISOLASI DOM ANTI-CRASH
-        // ==========================================
         function renderMessages() {
             const chat = getCurrentChat();
             const listContainer = document.getElementById('chatMessagesList');
             const welcomeHero = document.getElementById('welcomeHero');
             const scrollArea = document.getElementById('chatScrollArea');
+
+            if (!listContainer || !scrollArea) return; // Proteksi extra
 
             // 1. Tangani jika chat kosong
             if (!chat || chat.messages.length === 0) {
@@ -433,7 +456,7 @@
                 return;
             }
 
-            // 2. Sembunyikan hero jika ada pesan, TANPA menghapusnya dari DOM
+            // 2. Sembunyikan hero jika ada pesan
             if (welcomeHero) {
                 welcomeHero.classList.add('hidden');
                 welcomeHero.classList.remove('flex', 'flex-col');
@@ -441,7 +464,7 @@
             
             const isAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop <= scrollArea.clientHeight + 100;
             
-            // 3. Bersihkan HANYA list container-nya saja
+            // 3. Bersihkan list
             listContainer.innerHTML = '';
 
             chat.messages.forEach(msg => {
@@ -455,14 +478,13 @@
                         <p class="whitespace-pre-wrap">${escapeHtml(msg.text)}</p>
                     </div>`;
                 } else {
-                    // Proteksi Error jika Markdown Library Gagal Load
                     let rawHtml = escapeHtml(msg.text || '');
                     try { if(typeof marked !== 'undefined') rawHtml = marked.parse(msg.text || ''); } catch(e){}
                     
                     let safeHtml = rawHtml;
                     try { if(typeof DOMPurify !== 'undefined') safeHtml = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target'] }); } catch(e){}
                     
-                    const isError = msg.text.includes('⚠️');
+                    const isError = (msg.text || '').includes('⚠️');
                     
                     bodyHtml = `
                     <div class="flex space-x-2 md:space-x-3 w-full max-w-[100%] sm:max-w-[90%]">
@@ -485,14 +507,18 @@
         }
 
         function sendQuickPrompt(promptText) {
-            document.getElementById('chatInput').value = promptText;
+            const inputEl = document.getElementById('chatInput');
+            if (inputEl) inputEl.value = promptText;
             handleChatSubmit(new Event('submit'));
         }
 
         async function handleChatSubmit(e) {
-            e.preventDefault();
+            if (e) e.preventDefault();
             const btn = document.getElementById('sendBtn');
             const inputEl = document.getElementById('chatInput');
+            const charCountEl = document.getElementById('charCount'); // PROTEKSI ELEMEN CHARCOUNT
+            
+            if (!inputEl) return;
             const prompt = inputEl.value.trim();
 
             if (!appState.baseUrl || !appState.apiKey) { showToast("Atur API Key di Pengaturan!"); openModal('settingsModal'); return; }
@@ -505,17 +531,21 @@
             // Push User Message
             chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             
+            // RESET INPUT TEXT AMAN TANPA CRASH
             inputEl.value = ''; 
             inputEl.style.height = 'auto'; 
-            document.getElementById('charCount').innerText = '0 karakter';
+            if (charCountEl) charCountEl.innerText = '0 karakter'; // Ini baris krusial yang menyebabkan bug sebelumnya!
             
             // Push Loading AI Message (IMMEDIATELY Rendered)
             const loadingMsgIndex = chat.messages.length;
             chat.messages.push({ role: 'model', text: 'Memproses respon AI', isTyping: true, timestamp: new Date().toISOString() });
             renderMessages();
             
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            }
+            
             currentAbortController = new AbortController();
 
             try {
@@ -533,8 +563,10 @@
                     timestamp: new Date().toISOString() 
                 };
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs md:text-sm"></i>';
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs md:text-sm"></i>';
+                }
                 currentAbortController = null;
                 renderMessages(); // Force final re-render
             }
@@ -623,14 +655,21 @@
         function handleInputKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleChatSubmit(e); } }
         function handleInputAutoResize(e) {
             const el = e.target; el.style.height = 'auto'; el.style.height = (el.scrollHeight) + 'px';
-            document.getElementById('charCount').innerText = `${el.value.length} karakter`;
+            const charCountEl = document.getElementById('charCount'); // PROTEKSI ELEMEN
+            if (charCountEl) charCountEl.innerText = `${el.value.length} karakter`;
         }
 
         function saveSettings() {
-            appState.baseUrl = document.getElementById('customBaseUrl').value.trim();
-            appState.apiKey = document.getElementById('customApiKey').value.trim();
-            appState.temperature = parseFloat(document.getElementById('tempSlider').value);
-            appState.systemPersona = document.getElementById('systemPersonaInput').value.trim();
+            const elBaseUrl = document.getElementById('customBaseUrl');
+            const elApiKey = document.getElementById('customApiKey');
+            const elTempSlider = document.getElementById('tempSlider');
+            const elSystemPersona = document.getElementById('systemPersonaInput');
+
+            if (elBaseUrl) appState.baseUrl = elBaseUrl.value.trim();
+            if (elApiKey) appState.apiKey = elApiKey.value.trim();
+            if (elTempSlider) appState.temperature = parseFloat(elTempSlider.value);
+            if (elSystemPersona) appState.systemPersona = elSystemPersona.value.trim();
+
             localStorage.setItem('akashiro_baseurl', appState.baseUrl); localStorage.setItem('akashiro_apikey', appState.apiKey);
             localStorage.setItem('akashiro_temp', appState.temperature); localStorage.setItem('akashiro_persona', appState.systemPersona);
             closeModal('settingsModal'); showToast("Disimpan.");
@@ -638,13 +677,14 @@
 
         function saveChatsToStorage() { localStorage.setItem('akashiro_chats', JSON.stringify(appState.chats)); }
         function deleteChatSession(e, chatId) {
-            e.stopPropagation(); appState.chats = appState.chats.filter(c => c.id !== chatId);
+            if(e) e.stopPropagation(); 
+            appState.chats = appState.chats.filter(c => c.id !== chatId);
             if (appState.currentChatId === chatId) appState.currentChatId = appState.chats[0]?.id || null;
             saveChatsToStorage(); renderChatHistory(); renderMessages();
         }
         function clearAllChats() { appState.chats = []; appState.currentChatId = null; saveChatsToStorage(); renderChatHistory(); renderMessages(); showToast("Dihapus."); }
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function openModal(id) { const el = document.getElementById(id); if (el) el.classList.remove('hidden'); }
+        function closeModal(id) { const el = document.getElementById(id); if (el) el.classList.add('hidden'); }
         
         function showToast(msg) {
             const toast = document.createElement('div');
