@@ -18,11 +18,11 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { DEFAULT: '#E11D48', hover: '#BE123C', glow: '#FF3B5C', dim: 'rgba(225, 29, 72, 0.15)' },
-                        dark: { bg: '#09090b', panel: '#18181b', border: '#27272a', input: '#141417' }
+                        brand: { DEFAULT: '#E11D48', hover: '#BE123C', glow: '#FF3B5C', dim: 'rgba(225, 29, 72, 0.1)' },
+                        dark: { bg: '#09090b', panel: '#18181b', border: '#27272a', input: '#141417', hover: '#1f1f22' }
                     },
                     fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
-                    boxShadow: { 'neon': '0 0 20px rgba(225, 29, 72, 0.4)', 'panel': '0 10px 40px -10px rgba(0,0,0,0.6)' },
+                    boxShadow: { 'neon': '0 0 25px rgba(225, 29, 72, 0.4)', 'panel': '0 8px 30px rgba(0,0,0,0.6)', 'float': '0 10px 40px rgba(0,0,0,0.8)' },
                     animation: { 'fade-in': 'fadeIn 0.3s ease-out forwards', 'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
                     keyframes: { 
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
@@ -33,18 +33,27 @@
         }
     </script>
 
-    <!-- Core Libraries (VERSIONS LOCKED FOR 100% STABILITY) -->
+    <!-- Core Libraries (Locked Versions for Ultimate Stability) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Markdown & Sanitizer -->
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    
+    <!-- Code Highlight -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- KaTeX for Advanced Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
     <style>
         body {
             background-color: #09090b; color: #f4f4f5;
-            background-image: radial-gradient(circle at 10% 10%, rgba(225, 29, 72, 0.05), transparent 40%), radial-gradient(circle at 90% 90%, rgba(225, 29, 72, 0.03), transparent 40%);
-            -webkit-tap-highlight-color: transparent;
+            background-image: radial-gradient(circle at 15% 15%, rgba(225, 29, 72, 0.04), transparent 40%), radial-gradient(circle at 85% 85%, rgba(225, 29, 72, 0.03), transparent 40%);
+            -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
         }
         
         /* Premium Scrollbar */
@@ -57,17 +66,20 @@
 
         /* Glassmorphism Classes */
         .glass-header { background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06); }
-        .glass-input { background: rgba(20, 20, 23, 0.9); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); }
+        .glass-input { background: rgba(20, 20, 23, 0.95); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); }
         
-        /* Markdown Pro Styling (Pixel Perfect) */
-        .markdown-body { font-size: 0.9rem; line-height: 1.7; color: #d4d4d8; word-break: break-word; }
+        /* Markdown Pro Styling (Pixel Perfect & Responsive) */
+        .markdown-body { font-size: 0.9rem; line-height: 1.7; color: #d4d4d8; word-wrap: break-word; overflow-wrap: break-word; }
         @media (min-width: 768px) { .markdown-body { font-size: 0.95rem; } }
         .markdown-body p { margin-bottom: 1.1rem; }
         .markdown-body p:last-child { margin-bottom: 0; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Inter', sans-serif; font-weight: 700; color: #fff; margin-top: 1.75rem; margin-bottom: 0.85rem; letter-spacing: -0.025em; }
-        .markdown-body h1 { font-size: 1.4rem; border-bottom: 1px solid #27272a; padding-bottom: 0.4rem; }
-        .markdown-body h2 { font-size: 1.2rem; }
-        .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 1.1rem; list-style-type: disc; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Inter', sans-serif; font-weight: 700; color: #fff; margin-top: 1.75rem; margin-bottom: 0.85rem; letter-spacing: -0.02em; }
+        .markdown-body h1 { font-size: 1.5rem; border-bottom: 1px solid #27272a; padding-bottom: 0.4rem; }
+        .markdown-body h2 { font-size: 1.25rem; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 1.1rem; }
+        .markdown-body ul { list-style-type: disc; }
+        .markdown-body ol { list-style-type: decimal; }
+        .markdown-body li { margin-bottom: 0.3rem; }
         .markdown-body a { color: #E11D48; text-decoration: none; border-bottom: 1px dashed rgba(225, 29, 72, 0.5); transition: all 0.2s ease; }
         .markdown-body a:hover { color: #FF3B5C; border-bottom-style: solid; border-bottom-color: #FF3B5C; }
         .markdown-body strong { color: #f4f4f5; font-weight: 600; }
@@ -75,20 +87,24 @@
         .markdown-body code:not(pre code) { background: rgba(255,255,255,0.08); padding: 0.2rem 0.4rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #ff8fa3; border: 1px solid rgba(255,255,255,0.05); }
         
         /* Table & Media Optimizations */
-        .markdown-body table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.25rem 0; border-radius: 10px; overflow-x: auto; display: block; border: 1px solid #27272a; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .markdown-body table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.25rem 0; border-radius: 10px; display: block; overflow-x: auto; border: 1px solid #27272a; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .markdown-body th, .markdown-body td { padding: 0.85rem 1.1rem; text-align: left; border-bottom: 1px solid #27272a; white-space: nowrap; }
         .markdown-body th { background: rgba(255,255,255,0.03); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; }
         .markdown-body tr:last-child td { border-bottom: none; }
-        .markdown-body img { max-width: 100%; border-radius: 12px; margin: 1.25rem 0; border: 1px solid #27272a; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .markdown-body img { max-width: 100%; border-radius: 12px; margin: 1.25rem 0; border: 1px solid #27272a; box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: transform 0.3s; }
+        .markdown-body img:hover { transform: scale(1.01); }
         .markdown-body iframe, .markdown-body video { width: 100%; max-width: 650px; height: 360px; border-radius: 12px; margin: 1.25rem 0; border: 1px solid #27272a; background: #000; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-        .markdown-body audio { width: 100%; max-width: 400px; margin: 1rem 0; border-radius: 30px; outline: none; }
         
         /* Smooth Typing Dots */
         .typing-dots { display: inline-flex; align-items: center; height: 20px; gap: 4px; }
-        .typing-dots span { width: 5px; height: 5px; background-color: #E11D48; border-radius: 50%; animation: pulseDots 1.4s infinite ease-in-out both; }
+        .typing-dots span { width: 6px; height: 6px; background-color: #E11D48; border-radius: 50%; animation: pulseDots 1.4s infinite ease-in-out both; }
         .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
         .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes pulseDots { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; box-shadow: 0 0 8px #E11D48; } }
+
+        /* Floating Scroll to Bottom Button */
+        #scrollBtn { opacity: 0; pointer-events: none; transition: all 0.3s ease; transform: translateY(20px); }
+        #scrollBtn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
     </style>
 </head>
 <body class="h-[100dvh] flex overflow-hidden text-zinc-100 selection:bg-brand selection:text-white font-sans antialiased">
@@ -106,7 +122,7 @@
                 </div>
                 <div class="flex flex-col">
                     <span class="font-orbitron font-bold text-sm tracking-wide text-white">AkaShiro<span class="text-brand">.AI</span></span>
-                    <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800/50 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700/50">Enterprise v8</span>
+                    <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800/50 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700/50">Pro v9.0</span>
                 </div>
             </div>
             <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-dark-border/40 text-zinc-400 hover:text-white hover:bg-rose-900/50 transition-all">
@@ -121,11 +137,17 @@
             </button>
         </div>
 
-        <!-- Chat History List -->
-        <div class="px-4 py-2 text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest shrink-0 flex items-center gap-2">
-            <i class="fa-solid fa-hard-drive"></i> Riwayat Workspace
+        <!-- Search & Chat History List -->
+        <div class="px-4 py-2 flex flex-col gap-3 shrink-0">
+            <div class="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                <i class="fa-solid fa-hard-drive"></i> Riwayat Workspace
+            </div>
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-500 text-[10px]"></i>
+                <input type="text" id="searchHistory" oninput="handleSearchHistory(this.value)" placeholder="Cari percakapan..." class="w-full bg-dark-bg border border-dark-border rounded-lg pl-8 pr-3 py-1.5 text-[11px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all placeholder-zinc-600">
+            </div>
         </div>
-        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 space-y-1.5 scroll-smooth no-scrollbar">
+        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 mt-1 space-y-1.5 scroll-smooth no-scrollbar">
             <!-- List item injected by JS -->
         </div>
 
@@ -182,7 +204,7 @@
         </header>
 
         <!-- CHAT SCROLL AREA -->
-        <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex flex-col scroll-smooth relative">
+        <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex flex-col scroll-smooth relative" onscroll="handleScroll()">
             
             <!-- Hero / Empty State -->
             <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-8 w-full animate-fade-in flex flex-col items-center justify-center text-center">
@@ -191,23 +213,23 @@
                     <i class="fa-solid fa-cube text-4xl text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-500 relative z-10"></i>
                 </div>
                 <h2 class="text-2xl md:text-3xl font-orbitron font-bold text-white mb-4 tracking-wide">Workspace Ready.</h2>
-                <p class="text-zinc-400 text-[13px] md:text-sm max-w-lg mx-auto leading-relaxed mb-10">Pilih mesin komputasi (AI) pada menu di atas. Engine ini mendukung pemrosesan visual penuh, embed YouTube/Media, dan Markdown berakurasi tinggi.</p>
+                <p class="text-zinc-400 text-[13px] md:text-sm max-w-lg mx-auto leading-relaxed mb-10">Mesin Komputasi <b>V9 Ultimate</b>. Mendukung rendering visual penuh, perhitungan matematika (LaTeX), embed media, dan penulisan kode presisi tinggi.</p>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-xl">
-                    <button onclick="sendQuickPrompt('Jelaskan cara kerja Machine Learning dengan analogi yang sangat mudah dipahami.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
-                        <i class="fa-solid fa-network-wired text-emerald-400 mb-3 block text-lg group-hover:scale-110 transition-transform origin-left"></i>
-                        <span class="text-zinc-200 text-[13px] font-semibold block mb-1">Analogi Machine Learning</span>
-                        <span class="text-zinc-500 text-[10px] font-mono">Tanya konsep kompleks.</span>
+                    <button onclick="sendQuickPrompt('Jelaskan Teori Relativitas dengan menyertakan rumus E=mc^2 menggunakan format LaTeX.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
+                        <i class="fa-solid fa-square-root-variable text-emerald-400 mb-3 block text-lg group-hover:scale-110 transition-transform origin-left"></i>
+                        <span class="text-zinc-200 text-[13px] font-semibold block mb-1">Rendering Matematika</span>
+                        <span class="text-zinc-500 text-[10px] font-mono">Uji tampilan LaTeX / Kalkulus.</span>
                     </button>
-                    <button onclick="sendQuickPrompt('Tuliskan script HTML dan Tailwind CSS untuk membuat Card Profile sederhana.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
+                    <button onclick="sendQuickPrompt('Buat script Python untuk membuat REST API sederhana menggunakan framework Flask.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
                         <i class="fa-solid fa-code text-cyan-400 mb-3 block text-lg group-hover:scale-110 transition-transform origin-left"></i>
-                        <span class="text-zinc-200 text-[13px] font-semibold block mb-1">Generate HTML/CSS Code</span>
-                        <span class="text-zinc-500 text-[10px] font-mono">Buat script pemrograman.</span>
+                        <span class="text-zinc-200 text-[13px] font-semibold block mb-1">Generate Code (Python)</span>
+                        <span class="text-zinc-500 text-[10px] font-mono">Kode dengan Syntax Highlight.</span>
                     </button>
-                    <button onclick="sendQuickPrompt('Tampilkan contoh gambar arsitektur modern masa depan dan berikan analisisnya.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left sm:col-span-2 group flex items-center justify-between">
+                    <button onclick="sendQuickPrompt('Tampilkan gambar ilustrasi pemandangan kota cyberpunk masa depan dan analisis warnanya.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left sm:col-span-2 group flex items-center justify-between">
                         <div>
                             <i class="fa-regular fa-image text-purple-400 mb-2 block text-lg"></i>
-                            <span class="text-zinc-200 text-[13px] font-semibold block">Render Visual / Gambar AI</span>
+                            <span class="text-zinc-200 text-[13px] font-semibold block">Render Visual & Gambar</span>
                         </div>
                         <i class="fa-solid fa-arrow-right text-zinc-600 group-hover:text-brand transition-colors mr-2"></i>
                     </button>
@@ -222,8 +244,13 @@
             <div class="h-32 shrink-0"></div> <!-- Floating Input Spacer -->
         </div>
 
+        <!-- Floating Scroll to Bottom Button -->
+        <button id="scrollBtn" onclick="forceScrollBottom()" class="absolute bottom-[110px] right-6 md:right-10 w-10 h-10 rounded-full bg-dark-panel border border-dark-border text-zinc-400 hover:text-white hover:border-brand shadow-float flex items-center justify-center z-20">
+            <i class="fa-solid fa-arrow-down text-sm"></i>
+        </button>
+
         <!-- INPUT AREA -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-20 pointer-events-none">
+        <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-30 pointer-events-none">
             <form id="chatForm" onsubmit="handleChatSubmit(event)" class="max-w-4xl mx-auto flex flex-col relative pointer-events-auto">
                 
                 <!-- Error Toast Notification -->
@@ -234,7 +261,7 @@
 
                 <!-- Input Box -->
                 <div class="glass-input rounded-[1.25rem] p-1.5 flex items-end shadow-panel transition-all duration-300 focus-within:border-brand/70 focus-within:shadow-neon relative group">
-                    <textarea id="chatInput" rows="1" placeholder="Ketik perintah atau tanyakan sesuatu... (Shift+Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 resize-none max-h-48 min-h-[48px] px-5 py-3.5 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
+                    <textarea id="chatInput" rows="1" placeholder="Ketik instruksi Anda... (Shift+Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 resize-none max-h-48 min-h-[48px] px-5 py-3.5 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                     
                     <div class="flex items-center gap-2 p-1.5 shrink-0">
                         <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 rounded-xl bg-zinc-800 hover:bg-rose-900/40 text-rose-400 border border-zinc-700 hover:border-rose-500/50 transition-all items-center justify-center shadow-sm" title="Hentikan Proses">
@@ -249,7 +276,7 @@
                 <!-- Footer Info -->
                 <div class="flex justify-between items-center px-4 mt-3 text-[10px] font-mono text-zinc-500 select-none">
                     <span id="charCount" class="bg-dark-panel border border-dark-border px-2 py-0.5 rounded-md text-zinc-400">0 chars</span>
-                    <span class="flex items-center gap-1.5 text-zinc-400"><i class="fa-solid fa-shield-check text-emerald-500/80"></i> AkaShiro Secure</span>
+                    <span class="flex items-center gap-1.5 text-zinc-400"><i class="fa-solid fa-shield-check text-emerald-500/80"></i> AkaShiro Secure V9</span>
                 </div>
             </form>
         </div>
@@ -268,7 +295,7 @@
                     </div>
                     <div>
                         <h3 class="font-orbitron font-bold text-base text-white">Parameter Sistem</h3>
-                        <p class="text-[10px] font-mono text-zinc-500 mt-0.5">Konfigurasi Jaringan & Perilaku AI</p>
+                        <p class="text-[10px] font-mono text-zinc-500 mt-0.5">Konfigurasi Jaringan & Sifat AI</p>
                     </div>
                 </div>
                 <button onclick="closeModal('settingsModal')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-dark-bg text-zinc-400 hover:text-white transition-colors border border-dark-border hover:border-zinc-500 hover:bg-zinc-800">
@@ -276,12 +303,7 @@
                 </button>
             </div>
 
-            <div class="p-6 space-y-6 text-xs font-mono max-h-[65vh] overflow-y-auto no-scrollbar">
-                
-                <div class="bg-emerald-950/20 border border-emerald-900/40 text-emerald-200 p-4 rounded-2xl flex gap-3 shadow-inner">
-                    <i class="fa-solid fa-circle-check text-emerald-500 mt-0.5 text-base"></i> 
-                    <div class="leading-relaxed">Sistem API Default telah ditanamkan. Jika AI gagal merespon, pastikan ekstensi keamanan <b>(AdBlocker/Brave Shields)</b> dinonaktifkan sementara.</div>
-                </div>
+            <div class="p-6 space-y-6 text-xs font-mono max-h-[70vh] overflow-y-auto no-scrollbar">
                 
                 <div class="space-y-2">
                     <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-link text-brand"></i> Endpoint URL</label>
@@ -302,9 +324,17 @@
                     <div class="flex justify-between text-[10px] text-zinc-500 font-sans"><span>Logis / Presisi</span><span>Kreatif / Bebas</span></div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-robot text-purple-400"></i> System Prompt (Instruksi Dasar)</label>
-                    <textarea id="systemPersonaInput" rows="3" class="w-full bg-dark-input border border-dark-border rounded-xl p-4 text-zinc-300 focus:outline-none focus:border-brand focus:shadow-neon transition-all resize-none leading-relaxed font-sans text-[13px]"></textarea>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-robot text-purple-400"></i> System Persona (Instruksi)</label>
+                        <select id="quickPersona" onchange="applyQuickPersona()" class="bg-dark-panel border border-dark-border text-zinc-300 text-[10px] rounded-lg px-2 py-1 outline-none cursor-pointer">
+                            <option value="custom">-- Pilih Template --</option>
+                            <option value="standard">Standard V9</option>
+                            <option value="programmer">Senior Programmer</option>
+                            <option value="writer">Creative Writer</option>
+                        </select>
+                    </div>
+                    <textarea id="systemPersonaInput" rows="4" class="w-full bg-dark-input border border-dark-border rounded-xl p-4 text-zinc-300 focus:outline-none focus:border-brand focus:shadow-neon transition-all resize-none leading-relaxed font-sans text-[13px]"></textarea>
                 </div>
             </div>
 
@@ -317,13 +347,17 @@
     </div>
 
     <!-- ==========================================
-         ENGINE SCRIPT (BUG FIXED & OPTIMIZED v8)
+         ENGINE SCRIPT (V9 ULTIMATE LOGIC)
          ========================================== -->
     <script>
         // --- 1. DEFAULT CONFIGURATION ---
         const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
         const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
-        const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI v8, asisten cerdas Enterprise. Gunakan bahasa Indonesia secara profesional. Render gambar dengan format Markdown ![alt](url). Jika menyertakan video/lagu berikan iframe YouTube (<iframe src='...'></iframe>) atau link audio/video langsung. Selalu gunakan format markdown dengan rapi untuk kode (```lang).";
+        const PERSONAS = {
+            standard: "Anda adalah AkaShiro AI v9, asisten cerdas kelas Enterprise. Gunakan bahasa Indonesia secara profesional. Selalu dukung format Markdown, render gambar ![alt](url), dan gunakan LaTeX ($...$ atau $$...$$) untuk rumus matematika.",
+            programmer: "Anda adalah AkaShiro AI, seorang Senior Software Engineer. Berikan penjelasan yang sangat teknis, fokus pada arsitektur kode, efisiensi, dan praktik terbaik. Selalu gunakan format markdown untuk kode.",
+            writer: "Anda adalah AkaShiro AI, seorang penulis kreatif dan copywriter jenius. Gunakan gaya bahasa yang persuasif, kaya akan kiasan, mengalir, dan sangat emosional atau menggugah sesuai konteks permintaan."
+        };
         
         const AVAILABLE_MODELS = [
             { id: 'qwen3.8-27b', name: '🌟 Qwen 3.8 27B', category: 'General' },
@@ -341,17 +375,18 @@
         ];
 
         let appState = {
-            baseUrl: localStorage.getItem('akashiro_baseurl_v8') || DEFAULT_API_BASE_URL,
-            apiKey: localStorage.getItem('akashiro_apikey_v8') || DEFAULT_API_KEY,
-            temperature: parseFloat(localStorage.getItem('akashiro_temp_v8')) || 0.7,
-            systemPersona: localStorage.getItem('akashiro_persona_v8') || DEFAULT_SYSTEM_PERSONA,
-            currentModel: localStorage.getItem('akashiro_model_v8') || 'qwen3.8-27b',
-            chats: JSON.parse(localStorage.getItem('akashiro_chats_v8')) || [],
+            baseUrl: localStorage.getItem('akashiro_baseurl_v9') || DEFAULT_API_BASE_URL,
+            apiKey: localStorage.getItem('akashiro_apikey_v9') || DEFAULT_API_KEY,
+            temperature: parseFloat(localStorage.getItem('akashiro_temp_v9')) || 0.7,
+            systemPersona: localStorage.getItem('akashiro_persona_v9') || PERSONAS.standard,
+            currentModel: localStorage.getItem('akashiro_model_v9') || 'qwen3.8-27b',
+            chats: JSON.parse(localStorage.getItem('akashiro_chats_v9')) || [],
             currentChatId: null
         };
 
         let currentAbortController = null;
         let isGenerating = false;
+        let isAutoScrolling = true;
 
         // --- 2. INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
@@ -373,14 +408,16 @@
             document.getElementById('tempVal').innerText = appState.temperature;
             document.getElementById('systemPersonaInput').value = appState.systemPersona;
         }
+        
+        function applyQuickPersona() {
+            const val = document.getElementById('quickPersona').value;
+            if(PERSONAS[val]) document.getElementById('systemPersonaInput').value = PERSONAS[val];
+        }
 
         function populateModelDropdown() {
             const select = document.getElementById('chatModelSelect');
             if(!select) return;
             select.innerHTML = '';
-            
-            // Mengelompokkan opsional berdasar kategori
-            let currentCategory = '';
             AVAILABLE_MODELS.forEach(m => {
                 const opt = document.createElement('option');
                 opt.value = m.id;
@@ -392,35 +429,29 @@
 
         function changeChatModel(val) {
             appState.currentModel = val; 
-            localStorage.setItem('akashiro_model_v8', val);
+            localStorage.setItem('akashiro_model_v9', val);
             let chat = getCurrentChat(); 
-            if(chat) { 
-                chat.model = val; 
-                saveChatsToStorage(); 
-            }
+            if(chat) { chat.model = val; saveChatsToStorage(); }
         }
 
         function toggleSidebar(show) {
             const sidebar = document.getElementById('appSidebar');
             const overlay = document.getElementById('sidebarOverlay');
             if (!sidebar || !overlay) return;
-            
             if (show) { 
-                sidebar.classList.remove('-translate-x-full'); 
-                overlay.classList.remove('hidden'); 
+                sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); 
             } else { 
-                sidebar.classList.add('-translate-x-full'); 
-                overlay.classList.add('hidden'); 
+                sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); 
             }
         }
 
-        // --- 3. MARKDOWN & MEDIA RENDERER (V8 PERFECTED) ---
+        // --- 3. MARKDOWN, MEDIA & MATH RENDERER ---
         function setupMarkedRenderer() {
             try {
                 if (typeof marked === 'undefined') return;
                 const renderer = new marked.Renderer();
                 
-                // Code block with Custom Copy Button
+                // Code block with language badge & copy
                 renderer.code = function(code, language) {
                     const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
                     const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
@@ -443,14 +474,14 @@
                     </div>`;
                 };
 
-                // Smart YouTube / Media Link Parser
+                // Smart YouTube Link Parser
                 renderer.link = function(href, title, text) {
-                    if(href.includes('[youtube.com/watch](https://youtube.com/watch)') || href.includes('youtu.be/')) {
+                    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')) {
                         let videoId = href.split('v=')[1] || href.split('youtu.be/')[1];
                         if(videoId) videoId = videoId.split('&')[0];
                         return `
                         <div class="my-4 w-full max-w-[600px] rounded-xl overflow-hidden border border-dark-border shadow-panel group/vid">
-                            <iframe src="[https://www.youtube.com/embed/$](https://www.youtube.com/embed/$){videoId}" title="YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full aspect-video bg-black"></iframe>
+                            <iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full aspect-video bg-black"></iframe>
                             <div class="bg-dark-panel px-3 py-2 flex items-center justify-between border-t border-dark-border">
                                 <span class="text-[10px] text-zinc-400 font-mono"><i class="fa-brands fa-youtube text-brand mr-1"></i> YouTube Player</span>
                                 <a href="${href}" target="_blank" class="text-[10px] text-brand hover:text-white transition-colors bg-dark-bg px-2 py-1 rounded border border-dark-border">Buka di Tab Baru <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></a>
@@ -464,12 +495,8 @@
             } catch(e) { console.error("Markdown init error:", e); }
         }
 
-        // Fungsi Escape Standar (Aman)
-        function escapeHtml(str) { 
-            return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
-        }
+        function escapeHtml(str) { return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-        // Fungsi Copy Code
         window.copyCodeBlock = async function(btn) {
             try {
                 const codeEl = btn.closest('.group\\/code').querySelector('code');
@@ -478,15 +505,11 @@
                     const originalHTML = btn.innerHTML;
                     btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Tersalin!</span>';
                     btn.classList.add('border-emerald-500/50', 'bg-emerald-900/30');
-                    setTimeout(() => {
-                        btn.innerHTML = originalHTML;
-                        btn.classList.remove('border-emerald-500/50', 'bg-emerald-900/30');
-                    }, 2000);
+                    setTimeout(() => { btn.innerHTML = originalHTML; btn.classList.remove('border-emerald-500/50', 'bg-emerald-900/30'); }, 2000);
                 }
             } catch(e) {}
         }
         
-        // Fitur Baru v8: Copy Full AI Message
         window.copyAiMessage = async function(btn) {
             try {
                 const msgBody = btn.closest('.group\\/msg').querySelector('.markdown-body');
@@ -499,6 +522,21 @@
             } catch(e) {}
         }
 
+        window.regenerateResponse = function() {
+            if(isGenerating) return;
+            let chat = getCurrentChat();
+            if(!chat || chat.messages.length < 2) return;
+            
+            // Remove last AI response and any errors
+            while(chat.messages.length > 0 && chat.messages[chat.messages.length-1].role !== 'user') {
+                chat.messages.pop();
+            }
+            if(chat.messages.length === 0) return;
+            
+            // Resubmit silently
+            handleChatSubmit(null, true);
+        }
+
         // --- 4. CORE CHAT LOGIC ---
         function startNewChat() {
             if(isGenerating) abortGeneration();
@@ -506,10 +544,7 @@
             appState.chats.unshift(newChat); 
             appState.currentChatId = newChat.id;
             
-            saveChatsToStorage(); 
-            renderChatHistory(); 
-            renderMessages();
-            updateHeaderTitle();
+            saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
             if(window.innerWidth < 1024) toggleSidebar(false);
         }
 
@@ -524,9 +559,7 @@
                 if(select) select.value = chat.model;
             }
             
-            renderChatHistory(); 
-            renderMessages();
-            updateHeaderTitle();
+            renderChatHistory(); renderMessages(); updateHeaderTitle();
             if (window.innerWidth < 1024) toggleSidebar(false);
         }
 
@@ -537,13 +570,17 @@
             const titleEl = document.getElementById('headerChatTitle');
             if(titleEl && chat) titleEl.innerText = chat.title;
         }
+        
+        function handleSearchHistory(query) { renderChatHistory(query.toLowerCase()); }
 
-        function renderChatHistory() {
+        function renderChatHistory(filter = '') {
             const listEl = document.getElementById('chatHistoryList'); 
             if (!listEl) return;
             listEl.innerHTML = '';
             
-            appState.chats.forEach(chat => {
+            const filteredChats = appState.chats.filter(c => c.title.toLowerCase().includes(filter));
+            
+            filteredChats.forEach(chat => {
                 const isActive = chat.id === appState.currentChatId;
                 const activeClass = isActive 
                     ? 'bg-zinc-800/80 border-l-2 border-brand text-white shadow-sm' 
@@ -565,17 +602,29 @@
             });
         }
 
-        // Fitur Pintar Auto-Scroll ke Bawah
-        function scrollToBottom(force = false) {
+        // Smart Scroll Handling
+        function handleScroll() {
+            const scrollArea = document.getElementById('chatScrollArea');
+            const scrollBtn = document.getElementById('scrollBtn');
+            if(!scrollArea || !scrollBtn) return;
+            
+            const isAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop <= scrollArea.clientHeight + 150;
+            isAutoScrolling = isAtBottom;
+            
+            if(!isAtBottom) { scrollBtn.classList.add('visible'); } 
+            else { scrollBtn.classList.remove('visible'); }
+        }
+        
+        function forceScrollBottom() {
+            const scrollArea = document.getElementById('chatScrollArea');
+            if(scrollArea) { scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' }); }
+        }
+
+        function scrollToBottom() {
             const scrollArea = document.getElementById('chatScrollArea');
             if (!scrollArea) return;
-            
-            // Jeda sedikit agar browser me-render elemen baru (terutama markdown & gambar)
             setTimeout(() => {
-                const isAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop <= scrollArea.clientHeight + 150;
-                if (force || isAtBottom) {
-                    scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
-                }
+                if (isAutoScrolling) scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
             }, 50);
         }
 
@@ -594,7 +643,7 @@
             
             listContainer.innerHTML = '';
 
-            chat.messages.forEach(msg => {
+            chat.messages.forEach((msg, index) => {
                 const msgNode = document.createElement('div');
                 const isUser = msg.role === 'user';
                 msgNode.className = `flex ${isUser ? 'justify-end' : 'justify-start'} w-full animate-slide-up opacity-0`;
@@ -620,8 +669,9 @@
                     } catch(e){}
                     
                     const isError = (msg.text || '').includes('⚠️');
+                    const isLastAiMsg = index === chat.messages.length - 1;
                     
-                    // Struktur Pesan AI V8 dengan Action Bar
+                    // Struktur Pesan AI V9 dengan Advanced Action Bar
                     bodyHtml = `
                     <div class="flex gap-4 w-full max-w-[100%] sm:max-w-[95%] group/msg">
                         <div class="w-10 h-10 rounded-[10px] bg-gradient-to-br from-brand to-rose-900 border border-brand/40 flex items-center justify-center text-white text-sm font-orbitron font-bold shrink-0 shadow-neon mt-1 relative overflow-hidden">
@@ -634,37 +684,46 @@
                             </div>
                             
                             ${!msg.isTyping && !isError ? `
-                            <div class="mt-2.5 ml-2 flex items-center gap-3 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-300">
-                                <button type="button" onclick="copyAiMessage(this)" class="text-[10px] font-mono text-zinc-500 hover:text-zinc-300 flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2.5 py-1 rounded-md shadow-sm">
+                            <div class="mt-2.5 ml-2 flex items-center gap-2 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-300">
+                                <button type="button" onclick="copyAiMessage(this)" class="text-[10px] font-mono text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2.5 py-1 rounded-md shadow-sm hover:border-zinc-500">
                                     <i class="fa-regular fa-copy"></i> Salin Teks
                                 </button>
-                                <span class="text-[9px] text-zinc-600 font-mono">${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                                ${isLastAiMsg ? `
+                                <button type="button" onclick="regenerateResponse()" class="text-[10px] font-mono text-zinc-400 hover:text-brand flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2.5 py-1 rounded-md shadow-sm hover:border-brand/50">
+                                    <i class="fa-solid fa-rotate-right"></i> Regenerate
+                                </button>` : ''}
+                                <span class="text-[9px] text-zinc-600 font-mono ml-2">${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                             </div>` : ''}
                         </div>
                     </div>`;
                 }
+                
                 msgNode.innerHTML = bodyHtml; 
                 listContainer.appendChild(msgNode);
+                
+                // Kicking KaTeX for Math Rendering
+                if(!isUser && !msg.isTyping && typeof renderMathInElement !== 'undefined') {
+                    try {
+                        renderMathInElement(msgNode, {
+                            delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '[', right: ']', display: true} ],
+                            throwOnError: false
+                        });
+                    } catch(e) { console.warn("KaTeX render error", e); }
+                }
             });
 
-            scrollToBottom(true);
+            scrollToBottom();
         }
 
         // --- 5. NETWORK & GENERATION PROCESS ---
         function sendQuickPrompt(promptText) {
             const inputEl = document.getElementById('chatInput');
-            if (inputEl) {
-                inputEl.value = promptText;
-                handleInputAutoResize({target: inputEl});
-            }
+            if (inputEl) { inputEl.value = promptText; handleInputAutoResize({target: inputEl}); }
             handleChatSubmit(new Event('submit'));
         }
 
         function abortGeneration() {
-            if(currentAbortController) {
-                currentAbortController.abort();
-                currentAbortController = null;
-            }
+            if(currentAbortController) { currentAbortController.abort(); currentAbortController = null; }
             toggleInputState(false);
             
             let chat = getCurrentChat();
@@ -672,9 +731,8 @@
                 const lastMsg = chat.messages[chat.messages.length-1];
                 if(lastMsg.isTyping) {
                     lastMsg.isTyping = false;
-                    lastMsg.text = "*(Koneksi/Proses dihentikan secara manual)*";
-                    saveChatsToStorage();
-                    renderMessages();
+                    lastMsg.text = "*(Proses dihentikan manual)*";
+                    saveChatsToStorage(); renderMessages();
                 }
             }
         }
@@ -686,22 +744,16 @@
             const input = document.getElementById('chatInput');
             
             if(!btn || !stopBtn || !input) return;
-
             if(generating) {
-                btn.classList.add('hidden');
-                stopBtn.classList.remove('hidden');
-                input.disabled = true;
-                input.classList.add('opacity-50');
+                btn.classList.add('hidden'); stopBtn.classList.remove('hidden');
+                input.disabled = true; input.classList.add('opacity-50');
             } else {
-                btn.classList.remove('hidden');
-                stopBtn.classList.add('hidden');
-                input.disabled = false;
-                input.classList.remove('opacity-50');
-                input.focus();
+                btn.classList.remove('hidden'); stopBtn.classList.add('hidden');
+                input.disabled = false; input.classList.remove('opacity-50'); input.focus();
             }
         }
 
-        async function handleChatSubmit(e) {
+        async function handleChatSubmit(e, isRegenerate = false) {
             if (e) e.preventDefault();
             if (isGenerating) return;
 
@@ -709,36 +761,35 @@
             const charCountEl = document.getElementById('charCount');
             
             if (!inputEl) return;
-            const prompt = inputEl.value.trim();
+            let prompt = "";
+            
+            if(!isRegenerate) {
+                prompt = inputEl.value.trim();
+                if (!prompt) return;
+            }
 
             if (!appState.baseUrl || !appState.apiKey) { 
-                showErrorToast("Atur Kredensial API di Pengaturan Sistem!"); 
-                openModal('settingsModal'); 
-                return; 
+                showErrorToast("Atur Kredensial API di Pengaturan Sistem!"); openModal('settingsModal'); return; 
             }
-            if (!prompt) return;
 
             let chat = getCurrentChat();
             if (!chat) { startNewChat(); chat = getCurrentChat(); }
             
-            if (chat.messages.length === 0) {
-                chat.title = prompt.length > 28 ? prompt.substring(0, 28) + '...' : prompt;
-                updateHeaderTitle();
-                renderChatHistory();
+            if (!isRegenerate) {
+                if (chat.messages.length === 0) {
+                    chat.title = prompt.length > 28 ? prompt.substring(0, 28) + '...' : prompt;
+                    updateHeaderTitle(); renderChatHistory();
+                }
+                chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             }
-
-            // User Message Push
-            chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             
-            // Input Reset Animation
-            inputEl.value = ''; 
-            inputEl.style.height = 'auto'; 
+            inputEl.value = ''; inputEl.style.height = 'auto'; 
             if (charCountEl) charCountEl.innerText = '0 chars'; 
             
-            // Loading Message Push
             const loadingMsgIndex = chat.messages.length;
             chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
             renderMessages();
+            forceScrollBottom();
             
             toggleInputState(true);
             currentAbortController = new AbortController();
@@ -749,18 +800,13 @@
                 saveChatsToStorage();
             } catch (err) {
                 if (err.name === 'AbortError') return; 
-
                 console.error("API Gateway Error:", err);
                 const errMsg = err.message || "Unknown Connection Error";
-                
-                let userFriendlyError = `⚠️ **System Failure:** \`${errMsg}\`\n\n> **Tips:** Jika browser memblokir koneksi API eksternal (CORS), matikan fitur keamanan sementara seperti **Brave Shields / AdBlocker** untuk domain ini.`;
-
+                let userFriendlyError = `⚠️ **System Failure:** \`${errMsg}\`\n\n> **Info:** Matikan *AdBlock/Shield* jika CORS terblokir.`;
                 chat.messages[loadingMsgIndex] = { role: 'model', text: userFriendlyError, timestamp: new Date().toISOString() };
                 showErrorToast("Gagal menerima respons AI.");
             } finally {
-                toggleInputState(false);
-                currentAbortController = null;
-                renderMessages(); 
+                toggleInputState(false); currentAbortController = null; renderMessages(); 
             }
         }
 
@@ -773,19 +819,12 @@
                 content: m.text || ''
             }));
             
-            if (appState.systemPersona) {
-                formattedMessages.unshift({ role: "system", content: appState.systemPersona });
-            }
+            if (appState.systemPersona) { formattedMessages.unshift({ role: "system", content: appState.systemPersona }); }
 
             const payload = { model: appState.currentModel, messages: formattedMessages, temperature: parseFloat(appState.temperature) };
             const reqHeaders = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${appState.apiKey}` };
 
-            const response = await fetch(apiUrl, { 
-                method: 'POST', 
-                headers: reqHeaders, 
-                body: JSON.stringify(payload), 
-                signal: signal 
-            });
+            const response = await fetch(apiUrl, { method: 'POST', headers: reqHeaders, body: JSON.stringify(payload), signal: signal });
 
             if (!response.ok) {
                 let errMsg = `HTTP Status ${response.status}`;
@@ -799,24 +838,20 @@
 
             const data = await response.json();
             const generatedText = data.choices?.[0]?.message?.content || data.response;
-            if(!generatedText) throw new Error("Format JSON API tidak mendukung struktur respon standar AkaShiro.");
+            if(!generatedText) throw new Error("Format JSON API tidak valid.");
             
             return { text: generatedText };
         }
 
         // --- 6. EVENT HANDLERS & HELPERS ---
         function handleInputKeydown(e) { 
-            // Cuma enter (tanpa shift) pada layar besar untuk send
             if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { 
-                e.preventDefault(); 
-                if(!isGenerating) handleChatSubmit(e); 
+                e.preventDefault(); if(!isGenerating) handleChatSubmit(e); 
             } 
         }
         
         function handleInputAutoResize(e) {
-            const el = e.target; 
-            el.style.height = 'auto'; 
-            el.style.height = Math.min(el.scrollHeight, 192) + 'px'; 
+            const el = e.target; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 192) + 'px'; 
             const charCountEl = document.getElementById('charCount'); 
             if (charCountEl) charCountEl.innerText = `${el.value.length} chars`;
         }
@@ -832,15 +867,15 @@
             if (elTempSlider) appState.temperature = parseFloat(elTempSlider.value);
             if (elSystemPersona) appState.systemPersona = elSystemPersona.value.trim();
 
-            localStorage.setItem('akashiro_baseurl_v8', appState.baseUrl); 
-            localStorage.setItem('akashiro_apikey_v8', appState.apiKey);
-            localStorage.setItem('akashiro_temp_v8', appState.temperature); 
-            localStorage.setItem('akashiro_persona_v8', appState.systemPersona);
+            localStorage.setItem('akashiro_baseurl_v9', appState.baseUrl); 
+            localStorage.setItem('akashiro_apikey_v9', appState.apiKey);
+            localStorage.setItem('akashiro_temp_v9', appState.temperature); 
+            localStorage.setItem('akashiro_persona_v9', appState.systemPersona);
             
             closeModal('settingsModal'); 
         }
 
-        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v8', JSON.stringify(appState.chats)); }
+        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v9', JSON.stringify(appState.chats)); }
         
         function deleteChatSession(e, chatId) {
             if(e) e.stopPropagation(); 
@@ -850,13 +885,9 @@
         }
         
         function clearAllChats() { 
-            if(confirm("PERINGATAN: Yakin ingin menghapus secara permanen semua riwayat chat dari browser ini?")) {
-                appState.chats = []; 
-                appState.currentChatId = null; 
-                saveChatsToStorage(); 
-                renderChatHistory(); 
-                renderMessages(); 
-                updateHeaderTitle();
+            if(confirm("Hapus secara permanen semua riwayat chat dari browser ini?")) {
+                appState.chats = []; appState.currentChatId = null; 
+                saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
             }
         }
 
@@ -871,40 +902,28 @@
             });
             
             const blob = new Blob([textData], { type: 'text/markdown;charset=utf-8;' });
-            const url = URL.createObjectURL(blob); 
-            const a = document.createElement('a'); a.href = url;
+            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
             a.download = `AkaShiro_${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
 
         function openModal(id) { 
-            const el = document.getElementById(id); 
-            const content = document.getElementById(id + 'Content');
+            const el = document.getElementById(id); const content = document.getElementById(id + 'Content');
             if (el) { el.classList.remove('hidden'); setTimeout(() => { if(content) {content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100');} }, 10); }
         }
         
         function closeModal(id) { 
-            const el = document.getElementById(id); 
-            const content = document.getElementById(id + 'Content');
+            const el = document.getElementById(id); const content = document.getElementById(id + 'Content');
             if(content) { content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0'); }
             setTimeout(() => { if (el) el.classList.add('hidden'); }, 200);
         }
         
         let toastTimeout;
         function showErrorToast(msg) {
-            const toast = document.getElementById('errorToast');
-            const toastTxt = document.getElementById('errorToastText');
-            if(!toast || !toastTxt) return;
-            
-            clearTimeout(toastTimeout);
-            toastTxt.innerText = msg;
-            toast.classList.remove('opacity-0', 'translate-y-4');
-            toast.classList.add('opacity-100', 'translate-y-0');
-            
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'translate-y-4');
-            }, 4000);
+            const toast = document.getElementById('errorToast'); const toastTxt = document.getElementById('errorToastText');
+            if(!toast || !toastTxt) return; clearTimeout(toastTimeout); toastTxt.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4'); toast.classList.add('opacity-100', 'translate-y-0');
+            toastTimeout = setTimeout(() => { toast.classList.remove('opacity-100', 'translate-y-0'); toast.classList.add('opacity-0', 'translate-y-4'); }, 4000);
         }
     </script>
 </body>
