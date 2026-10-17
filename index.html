@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AkaShiro AI (赤白 AI) — Premium Enterprise Engine</title>
+    <title>AkaShiro AI — Ultimate Workspace</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,459 +18,335 @@
             theme: {
                 extend: {
                     colors: {
-                        crimson: { DEFAULT: '#FF3B5C', 50: '#fff0f3', 100: '#ffe1e6', 400: '#ff6b85', 500: '#FF3B5C', 600: '#e01e42', 700: '#b80f2f', 900: '#520412' },
-                        surface: { 50: '#07090e', 100: '#0d1017', 200: '#151923', 300: '#1e2433' }
+                        brand: { DEFAULT: '#E11D48', hover: '#BE123C', glow: '#FF3B5C' },
+                        dark: { bg: '#09090b', panel: '#18181b', border: '#27272a', input: '#141417' }
                     },
                     fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
-                    boxShadow: { 'glow-crimson': '0 0 25px rgba(255, 59, 92, 0.4)', 'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.4)' },
-                    animation: { 'fade-in-up': 'fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
-                    keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                    boxShadow: { 'neon': '0 0 20px rgba(225, 29, 72, 0.4)', 'panel': '0 10px 30px -10px rgba(0,0,0,0.5)' },
+                    animation: { 'fade-in': 'fadeIn 0.4s ease-out forwards', 'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite' },
+                    keyframes: { fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
                 }
             }
         }
     </script>
 
-    <!-- Plugins -->
+    <!-- Core Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
     <style>
-        :root { --glass-bg: rgba(13, 16, 23, 0.75); --glass-border: rgba(255, 255, 255, 0.08); }
         body {
-            background-color: #07090e; color: #f8fafc;
-            background-image: radial-gradient(circle at 15% 10%, rgba(255, 59, 92, 0.08), transparent 40%), radial-gradient(circle at 85% 90%, rgba(255, 59, 92, 0.05), transparent 40%);
-            background-attachment: fixed; -webkit-tap-highlight-color: transparent;
+            background-color: #09090b; color: #f4f4f5;
+            background-image: radial-gradient(circle at 50% 0%, rgba(225, 29, 72, 0.05), transparent 50%);
+            -webkit-tap-highlight-color: transparent;
         }
         
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); }
-        .glass-bubble { background: rgba(21, 25, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 4px 25px rgba(0,0,0,0.25); }
-        .glass-card-hover { transition: all 0.3s ease; }
-        .glass-card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 59, 92, 0.15); border-color: rgba(255, 59, 92, 0.3); }
-
+        /* Premium Scrollbar */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #FF3B5C; }
-        
-        .markdown-body { font-size: 0.9rem; line-height: 1.7; color: #cbd5e1; }
-        @media (min-width: 768px) { .markdown-body { font-size: 0.95rem; } }
-        .markdown-body p { margin-bottom: 1.25rem; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Orbitron', sans-serif; font-weight: 700; color: #fff; margin-top: 2rem; margin-bottom: 1rem; }
-        .markdown-body ul, .markdown-body ol { margin-left: 1.5rem; margin-bottom: 1.25rem; }
-        .markdown-body ul { list-style-type: disc; }
-        .markdown-body a { color: #FF3B5C; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s; }
-        .markdown-body a:hover { border-bottom-color: #FF3B5C; text-shadow: 0 0 8px rgba(255,59,92,0.5); }
-        .markdown-body strong { color: #fff; font-weight: 600; }
-        .markdown-body blockquote { border-left: 3px solid #FF3B5C; background: rgba(255,59,92,0.05); padding: 1rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; font-style: italic; color: #94a3b8; }
-        .markdown-body code:not(pre code) { background: rgba(0,0,0,0.5); padding: 0.2rem 0.4rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #ff8fa3; border: 1px solid rgba(255,255,255,0.05); }
-        
-        .markdown-body table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.5rem 0; display: block; overflow-x: auto; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .markdown-body th, .markdown-body td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
-        .markdown-body th { background: rgba(255,59,92,0.1); color: #fff; font-weight: 600; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.05em; }
-        .markdown-body tr:last-child td { border-bottom: none; }
-        .markdown-body tr:hover td { background: rgba(255,255,255,0.02); }
-        
-        .markdown-body img { max-width: 100%; border-radius: 12px; margin: 1.5rem 0; border: 1px solid var(--glass-border); box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: transform 0.3s; }
-        .markdown-body img:hover { transform: scale(1.02); }
-        .markdown-body iframe, .markdown-body video { width: 100%; max-width: 600px; height: 315px; border-radius: 12px; margin: 1.5rem 0; border: 1px solid var(--glass-border); box-shadow: 0 8px 25px rgba(0,0,0,0.3); background: #000; }
-        .markdown-body audio { width: 100%; max-width: 400px; margin: 1rem 0; border-radius: 30px; }
-        
-        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #FF3B5C; border-radius: 50%; margin: 0 3px; animation: bounce 1.4s infinite ease-in-out both; }
-        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; box-shadow: 0 0 10px #FF3B5C; } }
-
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E11D48; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Glassmorphism & UI Adjustments */
+        .glass-header { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-input { background: rgba(20, 20, 23, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+        
+        /* Markdown Pro Styling */
+        .markdown-body { font-size: 0.9rem; line-height: 1.6; color: #d4d4d8; }
+        @media (min-width: 768px) { .markdown-body { font-size: 0.95rem; } }
+        .markdown-body p { margin-bottom: 1rem; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Inter', sans-serif; font-weight: 700; color: #fff; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-body h1 { font-size: 1.5rem; border-bottom: 1px solid #27272a; padding-bottom: 0.3rem; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 1rem; list-style-type: disc; }
+        .markdown-body a { color: #E11D48; text-decoration: none; border-bottom: 1px dashed #E11D48; transition: all 0.2s; }
+        .markdown-body a:hover { color: #FF3B5C; border-bottom-style: solid; }
+        .markdown-body strong { color: #fff; font-weight: 600; }
+        .markdown-body blockquote { border-left: 3px solid #E11D48; background: rgba(225,29,72,0.05); padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; color: #a1a1aa; }
+        .markdown-body code:not(pre code) { background: rgba(255,255,255,0.1); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #FF3B5C; }
+        
+        /* Table & Media */
+        .markdown-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px #27272a; }
+        .markdown-body th, .markdown-body td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #27272a; }
+        .markdown-body th { background: rgba(255,255,255,0.02); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; }
+        .markdown-body img { max-width: 100%; border-radius: 12px; margin: 1rem 0; border: 1px solid #27272a; }
+        .markdown-body iframe, .markdown-body video { width: 100%; max-width: 600px; height: 315px; border-radius: 12px; margin: 1rem 0; border: 1px solid #27272a; background: #000; }
+        .markdown-body audio { width: 100%; max-width: 400px; margin: 1rem 0; outline: none; }
+        
+        /* Loading Animation */
+        .typing-dots span { display: inline-block; width: 6px; height: 6px; background-color: #E11D48; border-radius: 50%; margin: 0 2px; animation: bounce 1.4s infinite ease-in-out both; }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; box-shadow: 0 0 8px #E11D48; } }
     </style>
 </head>
-<body class="h-[100dvh] flex flex-col overflow-hidden selection:bg-crimson-500 selection:text-white">
+<body class="h-[100dvh] flex overflow-hidden text-zinc-100 selection:bg-brand selection:text-white font-sans">
 
-    <!-- HEADER NAVIGATION -->
-    <header class="h-16 glass-panel border-b border-white/10 px-3 lg:px-6 flex items-center justify-between z-40 shrink-0 relative">
-        <div class="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-crimson-500/50 to-transparent"></div>
+    <!-- ==========================================
+         LEFT SIDEBAR: HISTORY & SYSTEM
+         ========================================== -->
+    <aside id="appSidebar" class="w-72 bg-dark-panel border-r border-dark-border flex flex-col shrink-0 transition-transform duration-300 absolute lg:relative z-50 h-full -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
         
-        <!-- Left: Logo & Sidebar Toggle -->
-        <div class="flex items-center gap-3">
-            <button id="mobileMenuBtn" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
-                <i class="fa-solid fa-bars-staggered text-lg"></i>
-            </button>
-            <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('chat')">
-                <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-crimson-600 to-surface-200 border border-crimson-400/50 shadow-glow-crimson group-hover:scale-105 transition-transform duration-300">
-                    <span class="font-orbitron font-bold text-white text-lg tracking-wider drop-shadow-md">赤</span>
-                    <span class="absolute -bottom-1 -right-1 flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-crimson-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-crimson-500 border-2 border-surface-50"></span>
-                    </span>
+        <!-- Sidebar Header -->
+        <div class="h-16 flex items-center justify-between px-5 border-b border-dark-border shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/50 shadow-neon">
+                    <span class="font-orbitron font-bold text-white text-sm">赤</span>
                 </div>
-                <div class="hidden sm:flex flex-col justify-center">
-                    <div class="flex items-center gap-2">
-                        <span class="font-orbitron font-bold text-lg text-white tracking-wide">AkaShiro<span class="text-crimson-500">.AI</span></span>
-                        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded flex items-center justify-center bg-crimson-500/20 text-crimson-400 border border-crimson-500/30 font-bold uppercase tracking-widest">v6.0</span>
+                <div class="flex flex-col">
+                    <span class="font-orbitron font-bold text-sm tracking-wide">AkaShiro<span class="text-brand">.AI</span></span>
+                    <span class="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">Enterprise v7</span>
+                </div>
+            </div>
+            <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-md bg-dark-border/50 text-zinc-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <!-- Start New Chat Btn -->
+        <div class="p-4 shrink-0 border-b border-dark-border/50">
+            <button onclick="startNewChat()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-xs font-semibold tracking-wide transition-all shadow-neon active:scale-95">
+                <i class="fa-solid fa-pen-to-square"></i> CHAT BARU
+            </button>
+        </div>
+
+        <!-- Chat History List -->
+        <div class="px-3 py-2 text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest shrink-0">Riwayat Sesi</div>
+        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 space-y-1 scroll-smooth">
+            <!-- List item injected by JS -->
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="p-4 border-t border-dark-border bg-dark-panel/95 shrink-0 space-y-2">
+            <button onclick="clearAllChats()" class="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-zinc-900 hover:bg-rose-950/50 text-zinc-400 hover:text-rose-400 text-[11px] font-mono border border-zinc-800 hover:border-rose-900 transition-all">
+                <i class="fa-regular fa-trash-can"></i> Bersihkan Data
+            </button>
+            <button onclick="openModal('settingsModal')" class="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white text-[11px] font-mono border border-zinc-800 hover:border-zinc-700 transition-all">
+                <i class="fa-solid fa-sliders"></i> Parameter AI
+            </button>
+        </div>
+    </aside>
+
+    <!-- Overlay for Mobile Sidebar -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden transition-opacity lg:hidden" onclick="toggleSidebar(false)"></div>
+
+    <!-- ==========================================
+         MAIN WORKSPACE: HEADER, CHAT & INPUT
+         ========================================== -->
+    <main class="flex-1 flex flex-col h-full relative min-w-0 bg-dark-bg">
+        
+        <!-- HEADER -->
+        <header class="h-16 glass-header px-4 flex items-center justify-between z-30 shrink-0 sticky top-0">
+            <!-- Left: Toggle Sidebar Mobile -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar(true)" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all">
+                    <i class="fa-solid fa-bars-staggered text-lg"></i>
+                </button>
+                <div class="hidden sm:flex items-center gap-2 text-zinc-400 text-sm font-medium border-l border-zinc-800 pl-4 lg:border-none lg:pl-0">
+                    <i class="fa-regular fa-message text-brand"></i>
+                    <span id="headerChatTitle" class="truncate max-w-[200px] text-xs font-mono">Sesi Baru</span>
+                </div>
+            </div>
+
+            <!-- Right: AI Model Selector (DROPDOWN IN HEADER) -->
+            <div class="flex items-center">
+                <div class="relative flex items-center bg-dark-input border border-dark-border rounded-lg p-1 pr-2 hover:border-zinc-600 transition-colors shadow-sm group">
+                    <div class="w-7 h-7 rounded bg-zinc-800 flex items-center justify-center text-brand shrink-0">
+                        <i class="fa-solid fa-microchip text-[11px]"></i>
                     </div>
+                    <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-zinc-200 text-[11px] md:text-xs font-mono focus:outline-none focus:ring-0 cursor-pointer w-32 md:w-48 appearance-none pl-2 pr-6 py-1 font-semibold truncate z-10 relative">
+                        <!-- Options generated by JS -->
+                    </select>
+                    <i class="fa-solid fa-chevron-down text-[10px] text-zinc-500 absolute right-3 pointer-events-none group-hover:text-zinc-300"></i>
                 </div>
-            </div>
-        </div>
-
-        <!-- Center: Desktop Tabs -->
-        <div class="hidden md:flex bg-surface-200/50 p-1 rounded-xl border border-white/10 backdrop-blur-md">
-            <button onclick="switchTab('chat')" class="tab-chat-btn px-5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white/10 text-white shadow-sm border border-white/5">
-                <i class="fa-solid fa-message mr-1.5"></i> Chat Hub
-            </button>
-            <button onclick="switchTab('catalog')" class="tab-catalog-btn px-5 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white border border-transparent">
-                <i class="fa-solid fa-cube mr-1.5"></i> Model Hub
-            </button>
-        </div>
-
-        <!-- Right: Actions -->
-        <div class="flex items-center gap-2 md:gap-3">
-            <button onclick="openModal('settingsModal')" class="w-10 h-10 rounded-xl flex items-center justify-center bg-surface-200/60 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-crimson-400 transition-all shadow-sm group" title="Pengaturan">
-                <i class="fa-solid fa-sliders group-hover:rotate-90 transition-transform duration-300"></i>
-            </button>
-            <button onclick="startNewChat(); switchTab('chat');" class="h-10 px-4 flex items-center gap-2 rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white font-semibold text-xs font-mono shadow-glow-crimson transition-all active:scale-95 group">
-                <i class="fa-solid fa-plus group-hover:rotate-180 transition-transform duration-300"></i>
-                <span class="hidden md:inline tracking-wider">NEW CHAT</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Mobile Tabs (Visible only on small screens) -->
-    <nav class="md:hidden flex bg-surface-100 border-b border-white/5 shrink-0 z-30">
-        <button onclick="switchTab('chat')" class="tab-chat-btn flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-crimson-500 text-crimson-400 bg-crimson-900/10">
-            <i class="fa-solid fa-message mr-2"></i> Chat
-        </button>
-        <button onclick="switchTab('catalog')" class="tab-catalog-btn flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200">
-            <i class="fa-solid fa-cube mr-2"></i> Model Hub
-        </button>
-    </nav>
-
-    <!-- MAIN APP LAYOUT -->
-    <main class="flex-1 relative flex overflow-hidden bg-surface-50/50">
-
-        <!-- SIDEBAR: CHAT HISTORY -->
-        <aside id="chatSidebar" class="w-72 glass-panel border-r border-white/5 flex flex-col shrink-0 transition-transform duration-300 ease-out absolute lg:relative z-40 h-full -translate-x-full lg:translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.5)] lg:shadow-none bg-surface-100/90">
-            <div class="p-5 border-b border-white/5 flex items-center justify-between">
-                <div class="flex items-center gap-3 text-slate-300">
-                    <i class="fa-regular fa-folder-open text-sm text-crimson-400"></i>
-                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-slate-200">Riwayat Sesi</span>
-                </div>
-                <button onclick="if(window.innerWidth < 1024) toggleSidebar(false);" class="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center bg-white/5 text-slate-400 hover:text-white transition-colors">
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                
+                <!-- Export Btn -->
+                <button onclick="exportCurrentChat()" class="ml-2 w-9 h-9 flex items-center justify-center rounded-lg border border-dark-border bg-dark-panel hover:bg-zinc-800 text-zinc-400 hover:text-emerald-400 transition-colors" title="Export ke Markdown">
+                    <i class="fa-solid fa-download text-xs"></i>
                 </button>
             </div>
-            <div id="chatHistoryList" class="flex-1 overflow-y-auto p-3 space-y-1.5 scroll-smooth"></div>
-            <div class="p-4 border-t border-white/5 bg-surface-200/50">
-                <button onclick="clearAllChats()" class="w-full h-11 rounded-xl flex items-center justify-center gap-2 bg-surface-300/30 hover:bg-rose-500/20 text-rose-400 text-xs font-mono font-bold border border-transparent hover:border-rose-500/30 transition-all">
-                    <i class="fa-regular fa-trash-can"></i> BERSIHKAN RIWAYAT
-                </button>
-            </div>
-        </aside>
+        </header>
 
-        <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden lg:hidden transition-opacity" onclick="toggleSidebar(false)"></div>
-
-        <!-- ========================================== -->
-        <!-- TAB 1: CHAT WORKSPACE -->
-        <!-- ========================================== -->
-        <section id="view-chat" class="tab-view flex-1 flex flex-col h-full relative overflow-hidden">
+        <!-- CHAT SCROLL AREA -->
+        <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex flex-col scroll-smooth relative">
             
-            <!-- Floating Top Info Bar -->
-            <div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 glass-panel px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg border-white/10 backdrop-blur-md opacity-80 hover:opacity-100 transition-opacity">
-                <i class="fa-solid fa-microchip text-crimson-400 text-[10px] animate-pulse"></i>
-                <span id="floatingModelName" class="text-[10px] font-mono text-slate-300 font-bold tracking-widest uppercase">Qwen 3.8 27B</span>
+            <!-- Hero / Empty State -->
+            <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-10 w-full animate-fade-in flex flex-col items-center justify-center text-center">
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-dark-border to-dark-panel border border-zinc-700 flex items-center justify-center mb-6 shadow-panel relative">
+                    <div class="absolute inset-0 bg-brand/20 blur-xl rounded-full"></div>
+                    <i class="fa-solid fa-bolt text-3xl text-brand relative z-10"></i>
+                </div>
+                <h2 class="text-2xl font-orbitron font-bold text-white mb-3 tracking-wide">Sistem Siap.</h2>
+                <p class="text-zinc-400 text-sm max-w-md mx-auto leading-relaxed mb-8">Pilih model komputasi pada menu di sudut kanan atas. Engine ini mendukung pemrosesan <b class="text-zinc-200">Gambar, Audio, Video YouTube,</b> dan penulisan <b class="text-zinc-200">Kode Kompleks</b>.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                    <button onclick="sendQuickPrompt('Jelaskan konsep dasar Quantum Computing dengan analogi sederhana.')" class="p-4 rounded-xl bg-dark-panel border border-dark-border hover:border-brand/50 hover:shadow-neon transition-all text-left text-xs text-zinc-300">
+                        <i class="fa-solid fa-atom text-cyan-400 mb-2 block text-base"></i>
+                        Jelaskan Quantum Computing
+                    </button>
+                    <button onclick="sendQuickPrompt('Tuliskan script Python untuk membuat API sederhana menggunakan FastAPI.')" class="p-4 rounded-xl bg-dark-panel border border-dark-border hover:border-brand/50 hover:shadow-neon transition-all text-left text-xs text-zinc-300">
+                        <i class="fa-brands fa-python text-emerald-400 mb-2 block text-base"></i>
+                        Script Python FastAPI
+                    </button>
+                    <button onclick="sendQuickPrompt('Tampilkan gambar ilustrasi pemandangan kota cyberpunk malam hari.')" class="p-4 rounded-xl bg-dark-panel border border-dark-border hover:border-brand/50 hover:shadow-neon transition-all text-left text-xs text-zinc-300 sm:col-span-2">
+                        <i class="fa-regular fa-image text-purple-400 mb-2 block text-base"></i>
+                        Render Visual / Gambar AI
+                    </button>
+                </div>
             </div>
 
-            <!-- CHAT SCROLL AREA -->
-            <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex flex-col scroll-smooth">
+            <!-- Messages Container -->
+            <div id="chatMessagesList" class="flex flex-col space-y-6 w-full max-w-4xl mx-auto pb-4">
+                <!-- Messages appended here -->
+            </div>
+            
+            <div class="h-28 shrink-0"></div> <!-- Spacer for absolute input -->
+        </div>
+
+        <!-- INPUT AREA -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-20 pointer-events-none">
+            <form id="chatForm" onsubmit="handleChatSubmit(event)" class="max-w-4xl mx-auto flex flex-col relative pointer-events-auto">
                 
-                <!-- WELCOME HERO STATE -->
-                <div id="welcomeHero" class="max-w-3xl mx-auto my-auto py-10 px-4 text-center space-y-6 w-full animate-fade-in-up">
-                    <div class="relative inline-flex items-center justify-center mb-4">
-                        <div class="absolute inset-0 bg-crimson-500/20 blur-[50px] rounded-full"></div>
-                        <div class="relative p-6 rounded-[2.5rem] bg-gradient-to-b from-surface-200 to-surface-100 border border-white/10 shadow-glass">
-                            <i class="fa-solid fa-layer-group text-5xl text-transparent bg-clip-text bg-gradient-to-r from-crimson-400 to-rose-200 mb-3 block"></i>
-                            <h2 class="text-3xl md:text-4xl font-orbitron font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 tracking-tight">AkaShiro Engine</h2>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-3">
-                        <h3 class="text-lg font-semibold text-white tracking-wide">Enterprise Media Workspace v6</h3>
-                        <p class="text-slate-400 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">Pilih model melalui <b>Model Hub</b>. Mendukung rendering visual penuh untuk gambar, video player (YouTube/MP4), tabel, dan syntax kode presisi.</p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-8 max-w-3xl mx-auto">
-                        <button onclick="sendQuickPrompt('Tampilkan gambar pemandangan alam cyberpunk beserta penjelasannya.')" class="p-4 rounded-2xl bg-surface-200/50 border border-white/5 glass-card-hover text-left group">
-                            <i class="fa-regular fa-image text-emerald-400 mb-2 text-lg"></i>
-                            <h4 class="text-slate-200 text-xs font-bold mb-1">Render Gambar</h4>
-                            <p class="text-slate-500 text-[10px]">Tampilkan visual via AI.</p>
-                        </button>
-                        <button onclick="sendQuickPrompt('Carikan lagu atau video musik Synthwave di YouTube.')" class="p-4 rounded-2xl bg-surface-200/50 border border-white/5 glass-card-hover text-left group">
-                            <i class="fa-brands fa-youtube text-rose-500 mb-2 text-lg"></i>
-                            <h4 class="text-slate-200 text-xs font-bold mb-1">Media Player</h4>
-                            <p class="text-slate-500 text-[10px]">Putar video/audio in-app.</p>
-                        </button>
-                        <button onclick="sendQuickPrompt('Tulis script Python untuk membuat machine learning dasar.')" class="p-4 rounded-2xl bg-surface-200/50 border border-white/5 glass-card-hover text-left group">
-                            <i class="fa-solid fa-code text-cyan-400 mb-2 text-lg"></i>
-                            <h4 class="text-slate-200 text-xs font-bold mb-1">Code Generator</h4>
-                            <p class="text-slate-500 text-[10px]">Blok kode dengan syntax highlight.</p>
-                        </button>
-                    </div>
+                <!-- Error Toast -->
+                <div id="errorToast" class="absolute -top-14 left-0 right-0 mx-auto w-max max-w-[90%] px-4 py-2.5 rounded-xl bg-rose-950/90 border border-rose-500/50 text-rose-200 text-xs font-mono shadow-panel backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4 flex items-center gap-2.5 z-50">
+                    <i class="fa-solid fa-circle-exclamation text-rose-500 text-sm shrink-0"></i> 
+                    <span id="errorToastText" class="truncate">Error Occurred</span>
                 </div>
 
-                <!-- MESSAGES CONTAINER -->
-                <div id="chatMessagesList" class="flex flex-col space-y-8 w-full max-w-4xl mx-auto pb-4"></div>
-            </div>
-
-            <!-- FLOATING INPUT COMPONENT -->
-            <div class="p-4 md:p-6 bg-gradient-to-t from-surface-50 via-surface-50/90 to-transparent shrink-0 z-20 absolute bottom-0 left-0 right-0 pointer-events-none">
-                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex flex-col max-w-4xl mx-auto relative pointer-events-auto">
+                <div class="glass-input rounded-2xl p-1.5 flex items-end shadow-panel transition-all focus-within:border-brand/70 focus-within:shadow-neon">
+                    <textarea id="chatInput" rows="1" placeholder="Ketik pesan Anda... (Shift + Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 resize-none max-h-48 min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                     
-                    <div id="errorToast" class="absolute -top-16 left-0 right-0 mx-auto w-max max-w-full px-5 py-3 rounded-2xl bg-rose-950/90 border border-rose-500/50 text-rose-200 text-[11px] font-mono shadow-[0_10px_30px_rgba(225,29,72,0.3)] backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4 flex items-center gap-3 z-50">
-                        <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i> 
-                        <span id="errorToastText" class="leading-relaxed">Error Message</span>
+                    <div class="flex items-center gap-2 p-1">
+                        <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-9 w-9 rounded-xl bg-zinc-800 hover:bg-rose-900/40 text-rose-400 border border-zinc-700 hover:border-rose-500/50 transition-all items-center justify-center" title="Hentikan Generasi">
+                            <i class="fa-solid fa-stop text-xs"></i>
+                        </button>
+                        <button type="submit" id="sendBtn" class="h-9 w-9 flex items-center justify-center rounded-xl bg-brand hover:bg-brand-hover text-white transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-arrow-up text-sm"></i>
+                        </button>
                     </div>
-
-                    <div class="relative flex items-end glass-panel rounded-[1.5rem] border border-white/10 focus-within:border-crimson-500/80 focus-within:shadow-glow-crimson transition-all p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
-                        <textarea id="chatInput" rows="1" placeholder="Ketik instruksi Anda di sini... (Shift + Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-0 resize-none max-h-48 min-h-[48px] px-5 py-3.5 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
-                        
-                        <div class="flex items-center p-1.5 gap-2">
-                            <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 md:h-11 md:w-11 rounded-xl bg-surface-200 hover:bg-rose-500/20 text-rose-400 border border-white/5 hover:border-rose-500/50 transition-all items-center justify-center shadow-inner" title="Hentikan">
-                                <i class="fa-solid fa-stop text-sm"></i>
-                            </button>
-                            <button type="submit" id="sendBtn" class="h-10 w-10 md:h-11 md:w-11 flex items-center justify-center rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white shadow-glow-crimson transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <i class="fa-solid fa-paper-plane text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-between items-center px-4 mt-3">
-                        <div class="text-[10px] font-mono text-slate-500 flex items-center gap-2.5">
-                            <span id="charCount" class="font-semibold text-slate-400">0 char</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button type="button" onclick="exportCurrentChat()" class="text-[10px] font-mono text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-1.5 bg-white/5 px-3 py-1 rounded-full border border-white/5">
-                                <i class="fa-solid fa-download"></i> Ekspor MD
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="h-32 shrink-0"></div> <!-- Spacer -->
-        </section>
-
-        <!-- ========================================== -->
-        <!-- TAB 2: CATALOG MODEL HUB -->
-        <!-- ========================================== -->
-        <section id="view-catalog" class="tab-view hidden flex-1 h-full overflow-y-auto p-4 md:p-8 relative w-full scroll-smooth">
-            <div class="max-w-6xl mx-auto space-y-6 pb-20">
-                <div class="border-b border-white/10 pb-5 mb-8">
-                    <h2 class="font-orbitron text-2xl md:text-3xl font-bold text-white mb-2"><i class="fa-solid fa-cubes text-crimson-500 mr-2"></i> Model Hub</h2>
-                    <p class="text-xs md:text-sm text-slate-400 font-mono">Direktori Mesin Komputasi AI. Pilih model yang sesuai dengan kompleksitas tugas Anda.</p>
                 </div>
                 
-                <!-- Grid Model -->
-                <div id="modelCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
-                    <!-- Dinamis dari JS -->
+                <div class="flex justify-between items-center px-3 mt-2 text-[10px] font-mono text-zinc-500">
+                    <span id="charCount">0 karakter</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> Encrypted Session</span>
                 </div>
-            </div>
-        </section>
+            </form>
+        </div>
     </main>
 
-    <!-- MODAL: SETTINGS -->
-    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto transition-opacity">
-        <div class="w-full max-w-xl glass-panel rounded-[2rem] p-6 md:p-8 space-y-6 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] my-auto transform transition-transform scale-95" id="settingsModalContent">
+    <!-- ==========================================
+         MODAL: SETTINGS / PARAMETER
+         ========================================== -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="w-full max-w-lg bg-dark-panel rounded-2xl border border-dark-border shadow-2xl transform scale-95 opacity-0 transition-all duration-200" id="settingsModalContent">
             
-            <div class="flex items-center justify-between border-b border-white/10 pb-5">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-surface-200 to-surface-300 border border-white/5 flex items-center justify-center text-white shadow-inner">
-                        <i class="fa-solid fa-sliders text-xl text-crimson-400"></i>
+            <div class="flex items-center justify-between p-5 border-b border-dark-border">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-brand">
+                        <i class="fa-solid fa-sliders text-sm"></i>
                     </div>
-                    <div>
-                        <h3 class="font-orbitron font-bold text-lg text-white">Parameter Sistem</h3>
-                        <p class="text-[10px] font-mono text-slate-400 tracking-wide mt-0.5">Konfigurasi URL & API Key (Default sudah tertanam)</p>
-                    </div>
+                    <h3 class="font-orbitron font-bold text-sm text-white">Parameter AI</h3>
                 </div>
-                <button onclick="closeModal('settingsModal')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-200 text-slate-400 hover:text-white hover:bg-rose-500/80 transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button onclick="closeModal('settingsModal')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-dark-bg text-zinc-400 hover:text-white transition-colors border border-dark-border hover:border-zinc-500">
+                    <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
 
-            <div class="space-y-6 text-xs font-mono max-h-[60vh] overflow-y-auto pr-2 no-scrollbar">
-                <div class="bg-gradient-to-r from-emerald-900/40 to-surface-200 border border-emerald-500/30 text-emerald-100 p-4 rounded-2xl text-[11px] leading-relaxed flex gap-3 shadow-inner">
-                    <i class="fa-solid fa-shield-check text-emerald-400 mt-0.5 text-base"></i> 
-                    <div><b class="text-emerald-300 block mb-1">Kredensial API telah diperbarui.</b> Sistem terhubung ke `intern-ai.org.cn`. URL dan API Key baru sudah ditanamkan di script ini secara default.</div>
+            <div class="p-5 space-y-5 text-xs font-mono max-h-[65vh] overflow-y-auto no-scrollbar">
+                
+                <div class="bg-emerald-950/30 border border-emerald-900/50 text-emerald-200 p-3 rounded-xl flex gap-3">
+                    <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i> 
+                    <div>Koneksi API default aktif & aman. Matikan ekstensi AdBlock/Shield jika chat tidak merespon.</div>
                 </div>
                 
-                <div class="space-y-2">
-                    <label class="text-slate-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-server text-crimson-400"></i><span>API Endpoint URL</span></label>
-                    <input type="text" id="customBaseUrl" class="w-full bg-surface-100 border border-white/10 rounded-xl px-4 py-3.5 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all text-[11px] font-sans">
+                <div class="space-y-1.5">
+                    <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-server text-brand"></i> API Base URL</label>
+                    <input type="text" id="customBaseUrl" class="w-full bg-dark-input border border-dark-border rounded-lg px-3 py-2.5 text-zinc-200 focus:outline-none focus:border-brand transition-colors">
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-slate-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-key text-amber-400"></i><span>Bearer Token (API Key)</span></label>
-                    <input type="password" id="customApiKey" class="w-full bg-surface-100 border border-white/10 rounded-xl px-4 py-3.5 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all text-[11px] font-sans tracking-widest">
+                <div class="space-y-1.5">
+                    <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-key text-amber-400"></i> API Key / Bearer</label>
+                    <input type="password" id="customApiKey" class="w-full bg-dark-input border border-dark-border rounded-lg px-3 py-2.5 text-zinc-200 focus:outline-none focus:border-brand transition-colors tracking-widest">
                 </div>
 
-                <div class="space-y-3 bg-surface-200/50 p-5 rounded-2xl border border-white/5 shadow-inner">
+                <div class="bg-dark-bg p-4 rounded-xl border border-dark-border space-y-3">
                     <div class="flex justify-between items-center">
-                        <label class="text-slate-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-temperature-half text-cyan-400"></i><span>Creativity (Temperature)</span></label>
-                        <span id="tempVal" class="text-white font-bold bg-surface-300 px-3 py-1 rounded-lg border border-white/10 text-xs">0.7</span>
+                        <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-temperature-half text-cyan-400"></i> Temperature</label>
+                        <span id="tempVal" class="text-white font-bold bg-dark-panel px-2 py-0.5 rounded border border-dark-border text-[10px]">0.7</span>
                     </div>
-                    <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText = this.value" class="w-full h-2 bg-surface-300 rounded-lg appearance-none cursor-pointer accent-crimson-500 mt-2">
-                    <div class="flex justify-between text-[9px] text-slate-500 mt-1"><span>Presisi (0.0)</span><span>Kreatif (1.0)</span></div>
+                    <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText = this.value" class="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-brand">
+                    <div class="flex justify-between text-[9px] text-zinc-500"><span>Kaku (0.0)</span><span>Kreatif (1.0)</span></div>
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-slate-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-user-astronaut text-purple-400"></i><span>System Prompt (Persona AI)</span></label>
-                    <textarea id="systemPersonaInput" rows="4" class="w-full bg-surface-100 border border-white/10 rounded-xl p-4 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all resize-none text-[11px] leading-relaxed no-scrollbar font-sans"></textarea>
+                <div class="space-y-1.5">
+                    <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-robot text-purple-400"></i> System Prompt</label>
+                    <textarea id="systemPersonaInput" rows="3" class="w-full bg-dark-input border border-dark-border rounded-lg p-3 text-zinc-200 focus:outline-none focus:border-brand transition-colors resize-none leading-relaxed"></textarea>
                 </div>
             </div>
 
-            <div class="pt-2">
-                <button onclick="saveSettings()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white text-xs font-mono font-bold shadow-glow-crimson transition-all active:scale-[0.98]">SIMPAN KONFIGURASI</button>
+            <div class="p-4 border-t border-dark-border">
+                <button onclick="saveSettings()" class="w-full py-3 rounded-xl bg-white text-black text-xs font-mono font-bold hover:bg-zinc-200 transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)] active:scale-[0.98]">
+                    SIMPAN PENGATURAN
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT LOGIKA UTAMA -->
+    <!-- ==========================================
+         ENGINE SCRIPT (BUG FIXED & OPTIMIZED)
+         ========================================== -->
     <script>
-        // ==========================================
-        // 1. DEFAULT API SETTINGS & MODELS
-        // ==========================================
+        // CONFIGURATION DEFAULT
         const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
         const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
-        const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI, asisten cerdas berformat Markdown. Gunakan bahasa Indonesia. Jika user meminta gambar, berikan format Markdown: ![alt](url). Jika meminta video atau lagu (seperti YouTube), berikan URL lengkapnya secara langsung atau gunakan iframe HTML (<iframe src='...'></iframe>). Untuk file mp4/mp3, gunakan tag <video src='...'> atau <audio src='...'>.";
+        const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI v7. Gunakan bahasa Indonesia secara profesional. Render gambar dengan format Markdown ![alt](url). Jika menyertakan video/lagu berikan iframe YouTube (<iframe src='...'></iframe>) atau link audio/video langsung.";
         
         const AVAILABLE_MODELS = [
-            { id: 'qwen3.8-27b', name: '🌟 Qwen 3.8 27B', category: 'General', desc: 'Performa tinggi untuk berbagai tugas umum.' },
-            { id: 'minimax-m3', name: '⚡ Minimax M3', category: 'Fast Engine', desc: 'Sangat cepat dan responsif.' },
-            { id: 'kimi-k2.6', name: '🔥 Kimi K2.6', category: 'Advanced', desc: 'Unggul dalam konteks teks panjang.' },
-            { id: 'intern-s2', name: '🚀 Intern S2', category: 'Standard', desc: 'Kestabilan tinggi.' },
-            { id: 'intern-decision-4b', name: '⚙️ Intern Decision 4B', category: 'Logic', desc: 'Cepat untuk pengambilan keputusan.' },
-            { id: 'glm-5.3', name: '🧠 GLM 5.3', category: 'Reasoning', desc: 'Handal untuk pemecahan masalah logika.' },
-            { id: 'deepseek-v4-pro-0813', name: '💎 DeepSeek V4 Pro', category: 'Flagship', desc: 'Sangat pintar memecahkan masalah koding.' },
-            { id: 'deepseek-v4-flash-vision', name: '👁️ DeepSeek V4 Vision', category: 'Vision', desc: 'Mendukung pemrosesan visual (jika ada input gambar).' },
-            { id: 'deepseek-v4-flash-0731', name: '⚡ DeepSeek V4 Flash', category: 'Fast Engine', desc: 'Versi ringan dan kilat dari DeepSeek.' },
-            { id: 'Atria-Dawn-Preview', name: '🌅 Atria Dawn Prev', category: 'Experimental', desc: 'Model preview terbaru dari Atria.' },
-            { id: 'Atria-Dawn', name: '☀️ Atria Dawn', category: 'Advanced', desc: 'Model canggih dengan penalaran tinggi.' },
-            { id: 'Agents-A1', name: '🤖 Agents A1', category: 'Agentic', desc: 'Dioptimalkan untuk task agen mandiri.' }
+            { id: 'qwen3.8-27b', name: 'Qwen 3.8 27B (General)' },
+            { id: 'minimax-m3', name: 'Minimax M3 (Fast)' },
+            { id: 'kimi-k2.6', name: 'Kimi K2.6 (Advanced)' },
+            { id: 'intern-s2', name: 'Intern S2 (Stable)' },
+            { id: 'intern-decision-4b', name: 'Intern Decision 4B (Logic)' },
+            { id: 'glm-5.3', name: 'GLM 5.3 (Reasoning)' },
+            { id: 'deepseek-v4-pro-0813', name: 'DeepSeek V4 Pro (Coder)' },
+            { id: 'deepseek-v4-flash-vision', name: 'DeepSeek V4 Vision' },
+            { id: 'deepseek-v4-flash-0731', name: 'DeepSeek V4 Flash' },
+            { id: 'Atria-Dawn-Preview', name: 'Atria Dawn Preview' },
+            { id: 'Atria-Dawn', name: 'Atria Dawn (Flagship)' },
+            { id: 'Agents-A1', name: 'Agents A1 (Agentic)' }
         ];
 
         let appState = {
-            activeTab: 'chat',
-            baseUrl: localStorage.getItem('akashiro_baseurl_v6') || DEFAULT_API_BASE_URL,
-            apiKey: localStorage.getItem('akashiro_apikey_v6') || DEFAULT_API_KEY,
-            temperature: parseFloat(localStorage.getItem('akashiro_temp_v6')) || 0.7,
-            systemPersona: localStorage.getItem('akashiro_persona_v6') || DEFAULT_SYSTEM_PERSONA,
-            currentModel: localStorage.getItem('akashiro_model_v6') || 'qwen3.8-27b',
-            chats: JSON.parse(localStorage.getItem('akashiro_chats_v6')) || [],
+            baseUrl: localStorage.getItem('akashiro_baseurl_v7') || DEFAULT_API_BASE_URL,
+            apiKey: localStorage.getItem('akashiro_apikey_v7') || DEFAULT_API_KEY,
+            temperature: parseFloat(localStorage.getItem('akashiro_temp_v7')) || 0.7,
+            systemPersona: localStorage.getItem('akashiro_persona_v7') || DEFAULT_SYSTEM_PERSONA,
+            currentModel: localStorage.getItem('akashiro_model_v7') || 'qwen3.8-27b',
+            chats: JSON.parse(localStorage.getItem('akashiro_chats_v7')) || [],
             currentChatId: null
         };
 
         let currentAbortController = null;
         let isGenerating = false;
 
+        // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
             setupDOMBindings();
-            setupMarkedRenderer();
-            renderCatalogModels();
+            setupMarkedRenderer(); // BUG FIX APPLIED HERE
+            populateModelDropdown();
             
-            if (appState.chats.length > 0) { loadChatSession(appState.chats[0].id); } 
-            else { startNewChat(); }
-            
-            updateModelUI();
-            switchTab('chat'); // Pastikan tab chat aktif saat awal
+            if (appState.chats.length > 0) { 
+                loadChatSession(appState.chats[0].id); 
+            } else { 
+                startNewChat(); 
+            }
         });
 
-        // ==========================================
-        // 2. TAB & UI NAVIGATION LOGIC (BUG FIX)
-        // ==========================================
-        function switchTab(tabId) {
-            appState.activeTab = tabId;
-            
-            // Sembunyikan semua section
-            document.querySelectorAll('.tab-view').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
-            
-            // Tampilkan section yang dipilih
-            const activeView = document.getElementById(`view-${tabId}`);
-            if(activeView) {
-                activeView.classList.remove('hidden');
-                if(tabId === 'chat') activeView.classList.add('flex'); // Chat butuh flex flex-col
-            }
-            
-            // Ubah style tombol navigasi
-            document.querySelectorAll('.tab-chat-btn, .tab-catalog-btn').forEach(el => {
-                if(window.innerWidth >= 768) {
-                    // Desktop Style
-                    el.classList.remove('bg-white/10', 'text-white', 'border-white/5');
-                    el.classList.add('text-slate-400', 'border-transparent');
-                } else {
-                    // Mobile Style
-                    el.classList.remove('border-crimson-500', 'text-crimson-400', 'bg-crimson-900/10');
-                    el.classList.add('border-transparent', 'text-slate-400');
-                }
-            });
-            
-            // Highlight tombol aktif
-            document.querySelectorAll(`.tab-${tabId}-btn`).forEach(el => {
-                if(window.innerWidth >= 768) {
-                    el.classList.remove('text-slate-400', 'border-transparent');
-                    el.classList.add('bg-white/10', 'text-white', 'border-white/5');
-                } else {
-                    el.classList.remove('border-transparent', 'text-slate-400');
-                    el.classList.add('border-crimson-500', 'text-crimson-400', 'bg-crimson-900/10');
-                }
-            });
-
-            if (window.innerWidth < 1024) toggleSidebar(false);
-        }
-
-        function renderCatalogModels() {
-            const gridEl = document.getElementById('modelCatalogGrid');
-            if(!gridEl) return;
-            gridEl.innerHTML = '';
-            
-            AVAILABLE_MODELS.forEach(m => {
-                const isActive = appState.currentModel === m.id;
-                const card = document.createElement('div');
-                card.className = `glass-panel glass-card-hover p-5 rounded-2xl flex flex-col justify-between space-y-4 border ${isActive ? 'border-crimson-500 shadow-[0_0_15px_rgba(255,59,92,0.3)]' : 'border-white/10'}`;
-                card.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-surface-300 text-slate-300 border border-white/5">${m.category}</span>${isActive ? '<span class="flex w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>' : ''}
-                        </div>
-                        <h3 class="font-orbitron font-bold text-sm text-white">${m.name}</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">${m.desc}</p>
-                    </div>
-                    <button onclick="changeChatModel('${m.id}')" class="w-full py-2.5 mt-2 rounded-xl text-[11px] font-mono font-bold transition-all ${isActive ? 'bg-crimson-600 text-white shadow-glow-crimson' : 'bg-surface-200 hover:bg-white/10 text-slate-300 hover:text-white border border-white/5'}">
-                        ${isActive ? '<i class="fa-solid fa-check mr-1.5"></i> DIPILIH' : 'PILIH MODEL'}
-                    </button>
-                `;
-                gridEl.appendChild(card);
-            });
-        }
-
-        function changeChatModel(val) {
-            appState.currentModel = val; 
-            localStorage.setItem('akashiro_model_v6', val);
-            let chat = getCurrentChat(); 
-            if(chat) { chat.model = val; saveChatsToStorage(); }
-            updateModelUI();
-            renderCatalogModels(); // Re-render grid to update active styling
-            switchTab('chat'); // Langsung pindah ke chat setelah memilih
-        }
-
-        function updateModelUI() {
-            const modelData = AVAILABLE_MODELS.find(m => m.id === appState.currentModel);
-            const floatingTxt = document.getElementById('floatingModelName');
-            if(floatingTxt && modelData) floatingTxt.innerText = modelData.name;
-        }
-
-        // ==========================================
-        // 3. CORE LOGIC (MARKDOWN, CHAT, API)
-        // ==========================================
+        // 1. SETUP & UI BINDINGS
         function setupDOMBindings() {
             document.getElementById('customBaseUrl').value = appState.baseUrl;
             document.getElementById('customApiKey').value = appState.apiKey;
@@ -479,21 +355,44 @@
             document.getElementById('systemPersonaInput').value = appState.systemPersona;
         }
 
-        function toggleSidebar(show) {
-            const sidebar = document.getElementById('chatSidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (!sidebar || !overlay) return;
-            if (show) { 
-                sidebar.classList.remove('-translate-x-full'); 
-                overlay.classList.remove('hidden'); 
-                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-            } else { 
-                sidebar.classList.add('-translate-x-full'); 
-                overlay.classList.add('opacity-0');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
+        function populateModelDropdown() {
+            const select = document.getElementById('chatModelSelect');
+            if(!select) return;
+            select.innerHTML = '';
+            AVAILABLE_MODELS.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.textContent = m.name;
+                if(m.id === appState.currentModel) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function changeChatModel(val) {
+            appState.currentModel = val; 
+            localStorage.setItem('akashiro_model_v7', val);
+            let chat = getCurrentChat(); 
+            if(chat) { 
+                chat.model = val; 
+                saveChatsToStorage(); 
             }
         }
 
+        function toggleSidebar(show) {
+            const sidebar = document.getElementById('appSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (!sidebar || !overlay) return;
+            
+            if (show) { 
+                sidebar.classList.remove('-translate-x-full'); 
+                overlay.classList.remove('hidden'); 
+            } else { 
+                sidebar.classList.add('-translate-x-full'); 
+                overlay.classList.add('hidden'); 
+            }
+        }
+
+        // 2. MARKDOWN RENDERER (BUG FIXED)
         function setupMarkedRenderer() {
             try {
                 if (typeof marked === 'undefined') return;
@@ -502,36 +401,39 @@
                 renderer.code = function(code, language) {
                     const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
                     const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
-                    const langName = language ? language.toUpperCase() : 'TEXT';
+                    const langName = language ? language.toUpperCase() : 'CODE';
                     
                     return `
-                    <div class="relative my-6 rounded-2xl border border-white/10 bg-[#1e222d] overflow-hidden shadow-glass group">
-                        <div class="flex justify-between items-center px-4 py-3 bg-[#161922] border-b border-white/5">
-                            <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-code text-[11px] text-crimson-500"></i>
-                                <span class="text-[11px] text-slate-300 font-mono font-bold tracking-widest">${langName}</span>
-                            </div>
-                            <button class="text-[10px] text-slate-400 hover:text-white transition-all flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5" onclick="copyCodeBlock(this)">
-                                <i class="fa-regular fa-copy"></i> <span>Copy Code</span>
+                    <div class="my-4 rounded-xl border border-dark-border bg-dark-bg overflow-hidden shadow-panel group">
+                        <div class="flex justify-between items-center px-4 py-2 bg-dark-panel border-b border-dark-border">
+                            <span class="text-[10px] text-zinc-400 font-mono font-bold tracking-widest">${langName}</span>
+                            <button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-800 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)">
+                                <i class="fa-regular fa-copy"></i> <span>Copy</span>
                             </button>
                         </div>
-                        <div class="overflow-x-auto p-5 text-[13px] font-mono no-scrollbar bg-[#1e222d]">
-                            <pre class="m-0"><code class="hljs ${language \vert{}\vert{} ''}">${highlighted}</code></pre>
+                        <div class="overflow-x-auto p-4 text-[13px] font-mono no-scrollbar bg-dark-bg">
+                            <pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre>
                         </div>
                     </div>`;
                 };
 
+                // BUG FIX: Removed corrupted `\vert{}\vert{}` syntax, replaced with standard `||`
                 renderer.link = function(href, title, text) {
                     if(href.includes('youtube.com/watch') || href.includes('youtu.be/')) {
                         let videoId = href.split('v=')[1] || href.split('youtu.be/')[1];
                         if(videoId) videoId = videoId.split('&')[0];
-                        return `<iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br><a href="${href}" target="_blank" class="text-xs opacity-50 text-crimson-400"><i class="fa-brands fa-youtube"></i> Buka di YouTube</a>`;
+                        return `<div class="my-3"><iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full max-w-md h-[250px] rounded-xl border border-dark-border shadow-panel"></iframe></div><a href="${href}" target="_blank" class="text-[11px] text-brand hover:text-white transition-colors"><i class="fa-brands fa-youtube"></i> Tonton di YouTube</a>`;
                     }
-                    return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title \vert{}\vert{} ''}">${text}</a>`;
+                    return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title || ''}">${text}</a>`;
                 };
 
                 marked.setOptions({ renderer: renderer, breaks: true });
-            } catch(e) { console.warn("Markdown engine error:", e); }
+            } catch(e) { console.error("Markdown engine init failed:", e); }
+        }
+
+        // PERBAIKAN: Fungsi escapeHtml menggunakan || normal
+        function escapeHtml(str) { 
+            return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); 
         }
 
         window.copyCodeBlock = async function(btn) {
@@ -540,34 +442,50 @@
                 if(codeEl) {
                     await navigator.clipboard.writeText(codeEl.innerText);
                     const originalHTML = btn.innerHTML;
-                    btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Tersalin!</span>';
-                    btn.classList.add('border-emerald-500/50', 'bg-emerald-500/10');
-                    setTimeout(() => {
-                        btn.innerHTML = originalHTML;
-                        btn.classList.remove('border-emerald-500/50', 'bg-emerald-500/10');
-                    }, 2000);
+                    btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Copied!</span>';
+                    setTimeout(() => btn.innerHTML = originalHTML, 2000);
                 }
             } catch(e) {}
         }
 
+        // 3. CHAT MANAGEMENT
         function startNewChat() {
             if(isGenerating) abortGeneration();
-            const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
+            const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Komputasi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
             appState.chats.unshift(newChat); 
             appState.currentChatId = newChat.id;
-            saveChatsToStorage(); renderChatHistory(); renderMessages();
+            
+            saveChatsToStorage(); 
+            renderChatHistory(); 
+            renderMessages();
+            updateHeaderTitle();
+            if(window.innerWidth < 1024) toggleSidebar(false);
         }
 
         function loadChatSession(chatId) {
             if(isGenerating) abortGeneration();
             appState.currentChatId = chatId;
             const chat = getCurrentChat();
-            if(chat && chat.model) { changeChatModel(chat.model); }
-            renderChatHistory(); renderMessages();
+            
+            if(chat && chat.model) {
+                appState.currentModel = chat.model;
+                const select = document.getElementById('chatModelSelect');
+                if(select) select.value = chat.model;
+            }
+            
+            renderChatHistory(); 
+            renderMessages();
+            updateHeaderTitle();
             if (window.innerWidth < 1024) toggleSidebar(false);
         }
 
         function getCurrentChat() { return appState.chats.find(c => c.id === appState.currentChatId); }
+
+        function updateHeaderTitle() {
+            const chat = getCurrentChat();
+            const titleEl = document.getElementById('headerChatTitle');
+            if(titleEl && chat) titleEl.innerText = chat.title;
+        }
 
         function renderChatHistory() {
             const listEl = document.getElementById('chatHistoryList'); 
@@ -577,19 +495,19 @@
             appState.chats.forEach(chat => {
                 const isActive = chat.id === appState.currentChatId;
                 const activeClass = isActive 
-                    ? 'bg-gradient-to-r from-crimson-600/20 to-transparent border-l-2 border-crimson-500 text-white' 
-                    : 'hover:bg-white/5 border-l-2 border-transparent text-slate-400 hover:text-slate-200';
+                    ? 'bg-zinc-800 border-l-2 border-brand text-white' 
+                    : 'hover:bg-zinc-900 border-l-2 border-transparent text-zinc-400 hover:text-zinc-200';
                 
                 const item = document.createElement('div');
-                item.className = `p-3 rounded-r-xl text-[11px] md:text-xs font-mono transition-all flex items-center justify-between group cursor-pointer ${activeClass}`;
+                item.className = `p-2.5 rounded-r-lg text-[11px] font-mono transition-all flex items-center justify-between group cursor-pointer ${activeClass}`;
                 item.onclick = () => loadChatSession(chat.id);
                 item.innerHTML = `
-                    <div class="flex items-center gap-3 w-[85%]">
-                        <i class="fa-solid fa-microchip text-[11px] ${isActive ? 'text-crimson-400 drop-shadow-[0_0_5px_rgba(255,59,92,0.8)]' : 'text-slate-600'} shrink-0"></i>
+                    <div class="flex items-center gap-2.5 w-[85%]">
+                        <i class="fa-regular fa-message text-[10px] ${isActive ? 'text-brand' : 'text-zinc-600'} shrink-0"></i>
                         <span class="truncate">${escapeHtml(chat.title)}</span>
                     </div>
-                    <button onclick="deleteChatSession(event, '${chat.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/20 transition-all shrink-0">
-                        <i class="fa-solid fa-xmark text-xs"></i>
+                    <button onclick="deleteChatSession(event, '${chat.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 rounded bg-dark-bg text-zinc-500 hover:text-rose-400 transition-colors shrink-0">
+                        <i class="fa-solid fa-xmark text-[10px]"></i>
                     </button>
                 `;
                 listEl.appendChild(item);
@@ -618,13 +536,12 @@
             chat.messages.forEach(msg => {
                 const msgNode = document.createElement('div');
                 const isUser = msg.role === 'user';
-                msgNode.className = `flex ${isUser ? 'justify-end' : 'justify-start'} w-full animate-fade-in-up opacity-0`;
-                msgNode.style.animationFillMode = 'forwards'; 
-
+                msgNode.className = `flex ${isUser ? 'justify-end' : 'justify-start'} w-full animate-fade-in opacity-0`;
+                
                 let bodyHtml = '';
                 if (isUser) {
                     bodyHtml = `
-                    <div class="max-w-[90%] sm:max-w-[75%] rounded-[1.5rem] rounded-tr-sm bg-gradient-to-br from-crimson-600 to-crimson-800 text-white p-5 shadow-[0_10px_25px_rgba(255,59,92,0.2)] text-[13px] md:text-sm leading-relaxed border border-crimson-400/40 relative">
+                    <div class="max-w-[90%] sm:max-w-[75%] rounded-2xl rounded-tr-sm bg-zinc-800 text-zinc-100 px-5 py-3.5 shadow-panel text-[13px] md:text-sm leading-relaxed border border-zinc-700">
                         <p class="whitespace-pre-wrap font-sans">${escapeHtml(msg.text)}</p>
                     </div>`;
                 } else {
@@ -636,7 +553,7 @@
                         if(typeof DOMPurify !== 'undefined') {
                             safeHtml = DOMPurify.sanitize(rawHtml, { 
                                 ADD_TAGS: ['img', 'iframe', 'video', 'audio', 'source'], 
-                                ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls'] 
+                                ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls', 'class'] 
                             }); 
                         }
                     } catch(e){}
@@ -644,14 +561,11 @@
                     const isError = (msg.text || '').includes('⚠️');
                     
                     bodyHtml = `
-                    <div class="flex gap-4 w-full max-w-[100%] sm:max-w-[95%]">
-                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-surface-200 to-surface-100 border border-white/10 flex items-center justify-center text-white text-sm md:text-base font-orbitron font-bold shrink-0 shadow-glass mt-1 relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-crimson-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 drop-shadow-md">赤</span>
-                        </div>
+                    <div class="flex gap-3.5 w-full max-w-[100%] sm:max-w-[95%]">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-rose-900 border border-brand/50 flex items-center justify-center text-white text-xs font-orbitron font-bold shrink-0 shadow-neon mt-1">赤</div>
                         <div class="flex-1 min-w-0">
-                            <div class="glass-bubble rounded-[1.5rem] rounded-tl-sm p-5 md:p-6 text-[13px] md:text-sm text-slate-100 markdown-body ${isError ? 'border-rose-500/50 bg-rose-950/30 shadow-[0_0_20px_rgba(225,29,72,0.1)]' : ''}">
-                                ${msg.isTyping ? `<div class="typing-indicator flex items-center h-6"><span></span><span></span><span></span></div>` : safeHtml}
+                            <div class="rounded-2xl rounded-tl-sm px-5 py-4 text-[13px] md:text-sm text-zinc-200 markdown-body bg-dark-panel border border-dark-border shadow-panel ${isError ? 'border-rose-900/50 bg-rose-950/20' : ''}">
+                                ${msg.isTyping ? `<div class="typing-dots flex items-center h-5"><span></span><span></span><span></span></div>` : safeHtml}
                             </div>
                         </div>
                     </div>`;
@@ -661,10 +575,11 @@
             });
 
             if (isAtBottom || chat.messages.length <= 2) {
-                setTimeout(() => scrollArea.scrollTop = scrollArea.scrollHeight, 15);
+                setTimeout(() => scrollArea.scrollTop = scrollArea.scrollHeight, 50);
             }
         }
 
+        // 4. CHAT INTERACTIONS
         function sendQuickPrompt(promptText) {
             const inputEl = document.getElementById('chatInput');
             if (inputEl) {
@@ -686,7 +601,7 @@
                 const lastMsg = chat.messages[chat.messages.length-1];
                 if(lastMsg.isTyping) {
                     lastMsg.isTyping = false;
-                    lastMsg.text = "*(Proses dihentikan oleh pengguna)*";
+                    lastMsg.text = "*(Proses dihentikan)*";
                     saveChatsToStorage();
                     renderMessages();
                 }
@@ -735,14 +650,21 @@
             let chat = getCurrentChat();
             if (!chat) { startNewChat(); chat = getCurrentChat(); }
             
-            if (chat.messages.length === 0) chat.title = prompt.length > 30 ? prompt.substring(0, 30) + '...' : prompt;
+            if (chat.messages.length === 0) {
+                chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
+                updateHeaderTitle();
+                renderChatHistory();
+            }
 
+            // User Message
             chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             
+            // Reset Input
             inputEl.value = ''; 
             inputEl.style.height = 'auto'; 
-            if (charCountEl) charCountEl.innerText = '0 char'; 
+            if (charCountEl) charCountEl.innerText = '0 karakter'; 
             
+            // Loading Message
             const loadingMsgIndex = chat.messages.length;
             chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
             renderMessages();
@@ -757,17 +679,13 @@
             } catch (err) {
                 if (err.name === 'AbortError') return; 
 
-                console.error("Engine Error:", err);
-                const errMsg = err.message || "Unknown Error";
-                const isCors = errMsg.toLowerCase().includes('fetch');
+                console.error("API Error:", err);
+                const errMsg = err.message || "Unknown Network Error";
                 
-                let userFriendlyError = `⚠️ **System Failure:** \`${errMsg}\``;
-                if(isCors) {
-                    userFriendlyError += `\n\n> **Diagnosa Jaringan:** Koneksi ditolak oleh browser/server. \n> \n> **Solusi:** Matikan **Brave Shields** (Ikon Singa) atau ekstensi **AdBlocker** Anda untuk situs ini.`;
-                }
+                let userFriendlyError = `⚠️ **Gateway Error:** \`${errMsg}\`\n\n*Catatan: Pastikan ekstensi AdBlocker atau Brave Shield dimatikan untuk domain ini jika koneksi ditolak secara sepihak oleh browser.*`;
 
                 chat.messages[loadingMsgIndex] = { role: 'model', text: userFriendlyError, timestamp: new Date().toISOString() };
-                showErrorToast("Koneksi ke Gateway API Gagal.");
+                showErrorToast("Gagal menyambung ke server AI.");
             } finally {
                 toggleInputState(false);
                 currentAbortController = null;
@@ -810,11 +728,12 @@
 
             const data = await response.json();
             const generatedText = data.choices?.[0]?.message?.content || data.response;
-            if(!generatedText) throw new Error("Format JSON respons tidak dikenali.");
+            if(!generatedText) throw new Error("Format JSON respons tidak dikenali oleh sistem AkaShiro.");
             
             return { text: generatedText };
         }
 
+        // 5. UTILITIES
         function handleInputKeydown(e) { 
             if (e.key === 'Enter' && !e.shiftKey) { 
                 e.preventDefault(); 
@@ -827,7 +746,7 @@
             el.style.height = 'auto'; 
             el.style.height = Math.min(el.scrollHeight, 192) + 'px'; 
             const charCountEl = document.getElementById('charCount'); 
-            if (charCountEl) charCountEl.innerText = `${el.value.length} char`;
+            if (charCountEl) charCountEl.innerText = `${el.value.length} karakter`;
         }
 
         function saveSettings() {
@@ -841,30 +760,31 @@
             if (elTempSlider) appState.temperature = parseFloat(elTempSlider.value);
             if (elSystemPersona) appState.systemPersona = elSystemPersona.value.trim();
 
-            localStorage.setItem('akashiro_baseurl_v6', appState.baseUrl); 
-            localStorage.setItem('akashiro_apikey_v6', appState.apiKey);
-            localStorage.setItem('akashiro_temp_v6', appState.temperature); 
-            localStorage.setItem('akashiro_persona_v6', appState.systemPersona);
+            localStorage.setItem('akashiro_baseurl_v7', appState.baseUrl); 
+            localStorage.setItem('akashiro_apikey_v7', appState.apiKey);
+            localStorage.setItem('akashiro_temp_v7', appState.temperature); 
+            localStorage.setItem('akashiro_persona_v7', appState.systemPersona);
             
             closeModal('settingsModal'); 
         }
 
-        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v6', JSON.stringify(appState.chats)); }
+        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v7', JSON.stringify(appState.chats)); }
         
         function deleteChatSession(e, chatId) {
             if(e) e.stopPropagation(); 
             appState.chats = appState.chats.filter(c => c.id !== chatId);
             if (appState.currentChatId === chatId) appState.currentChatId = appState.chats[0]?.id || null;
-            saveChatsToStorage(); renderChatHistory(); renderMessages();
+            saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
         }
         
         function clearAllChats() { 
-            if(confirm("Hapus seluruh riwayat percakapan secara permanen?")) {
+            if(confirm("Yakin ingin menghapus seluruh riwayat chat? Tindakan ini permanen.")) {
                 appState.chats = []; 
                 appState.currentChatId = null; 
                 saveChatsToStorage(); 
                 renderChatHistory(); 
                 renderMessages(); 
+                updateHeaderTitle();
             }
         }
 
@@ -872,7 +792,7 @@
             const chat = getCurrentChat(); 
             if (!chat || chat.messages.length === 0) return; 
             
-            let textData = `# AkaShiro Transkrip: ${chat.title}\nID Sesi: ${chat.id}\nTanggal: ${new Date().toLocaleString()}\nModel: ${chat.model}\n\n---\n\n`;
+            let textData = `# AkaShiro Transkrip: ${chat.title}\nID: ${chat.id}\nTanggal: ${new Date().toLocaleString()}\nModel: ${chat.model}\n\n---\n\n`;
             chat.messages.forEach(m => { 
                 const roleName = m.role === 'user' ? 'USER' : 'AKASHIRO ENGINE';
                 textData += `### ${roleName} (${m.timestamp})\n${m.text}\n\n---\n\n`; 
@@ -888,13 +808,13 @@
         function openModal(id) { 
             const el = document.getElementById(id); 
             const content = document.getElementById(id + 'Content');
-            if (el) { el.classList.remove('hidden'); setTimeout(() => { if(content) content.classList.remove('scale-95', 'opacity-0'); }, 10); }
+            if (el) { el.classList.remove('hidden'); setTimeout(() => { if(content) {content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100');} }, 10); }
         }
         
         function closeModal(id) { 
             const el = document.getElementById(id); 
             const content = document.getElementById(id + 'Content');
-            if(content) content.classList.add('scale-95', 'opacity-0');
+            if(content) { content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0'); }
             setTimeout(() => { if (el) el.classList.add('hidden'); }, 200);
         }
         
@@ -914,8 +834,6 @@
                 toast.classList.add('opacity-0', 'translate-y-4');
             }, 4000);
         }
-
-        function escapeHtml(str) { return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
     </script>
 </body>
 </html>
