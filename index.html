@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AkaShiro AI — V10 Ultimate Pro (Fixed Auth)</title>
+    <title>AkaShiro AI — V10 Ultimate Pro</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,6 +55,7 @@
             -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
         }
         
+        /* Premium Scrollbar */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
@@ -62,9 +63,11 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* UI Adjustments */
         .glass-header { background: rgba(18, 18, 20, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .glass-input { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.06); }
         
+        /* Markdown Styling (V10 Ergonomics) */
         .markdown-body { font-size: 0.95rem; line-height: 1.65; color: #d4d4d8; word-wrap: break-word; }
         @media (max-width: 768px) { .markdown-body { font-size: 0.9rem; } }
         .markdown-body p { margin-bottom: 1rem; }
@@ -82,11 +85,14 @@
         .markdown-body blockquote { border-left: 3px solid #E11D48; background: rgba(225,29,72,0.05); padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 6px 6px 0; color: #a1a1aa; font-style: italic; }
         .markdown-body code:not(pre code) { background: rgba(255,255,255,0.08); padding: 0.15rem 0.35rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff8fa3; }
         
+        /* Table & Media */
         .markdown-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; border-radius: 8px; overflow: hidden; border: 1px solid #27272a; display: block; overflow-x: auto; }
         .markdown-body th, .markdown-body td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #27272a; white-space: nowrap; }
         .markdown-body th { background: rgba(255,255,255,0.02); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; }
         .markdown-body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; border: 1px solid #27272a; }
+        .markdown-body iframe, .markdown-body video { width: 100%; max-width: 600px; aspect-ratio: 16/9; border-radius: 8px; margin: 1rem 0; border: 1px solid #27272a; background: #000; }
         
+        /* Stream Cursor */
         .stream-cursor::after { content: '▋'; display: inline-block; animation: blink 1s step-end infinite; color: #E11D48; margin-left: 4px; vertical-align: baseline; font-size: 1em; }
         .typing-dots { display: inline-flex; align-items: center; height: 20px; gap: 4px; }
         .typing-dots span { width: 6px; height: 6px; background-color: #E11D48; border-radius: 50%; animation: pulseDots 1.4s infinite ease-in-out both; }
@@ -94,63 +100,20 @@
         .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes pulseDots { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
 
+        /* Floating Utilities */
         #scrollBtn { opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px); }
         #scrollBtn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
         
-        #toastContainer { position: fixed; top: 1rem; right: 1rem; z-index: 120; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
+        /* Toast Container */
+        #toastContainer { position: fixed; top: 1rem; right: 1rem; z-index: 100; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
         .toast { pointer-events: auto; transform: translateX(120%); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .toast.show { transform: translateX(0); }
     </style>
 </head>
 <body class="h-[100dvh] flex overflow-hidden text-zinc-100 selection:bg-brand selection:text-white font-sans antialiased">
 
-    <!-- Toast Notifications -->
+    <!-- Toast Notifications (V10 System) -->
     <div id="toastContainer"></div>
-
-    <!-- ==========================================
-         AUTH OVERLAY (GMAIL / EMAIL REG & LOGIN)
-         ========================================== -->
-    <div id="authOverlay" class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-dark-panel rounded-3xl border border-dark-border shadow-[0_0_50px_rgba(225,29,72,0.2)] p-8 relative overflow-hidden animate-slide-up">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-brand/20 blur-[60px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
-            
-            <div class="text-center mb-8 relative z-10">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/30 shadow-neon mb-4">
-                    <span class="font-orbitron font-bold text-white text-2xl">赤</span>
-                </div>
-                <h1 id="authTitle" class="font-orbitron font-bold text-xl text-white">Masuk ke AkaShiro</h1>
-                <p id="authSubtitle" class="text-[11px] font-mono text-zinc-400 mt-1">Gunakan Gmail atau Email Anda</p>
-            </div>
-
-            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4 relative z-10">
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-wider pl-1">Alamat Email / Gmail</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 transform -translate-y-1/2 text-zinc-500 text-xs"></i>
-                        <input type="email" id="authEmailInput" required placeholder="nama@gmail.com" class="w-full bg-dark-input border border-dark-border rounded-xl pl-10 pr-4 py-3 text-[13px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all">
-                    </div>
-                </div>
-
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-wider pl-1">Password</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3.5 top-1/2 transform -translate-y-1/2 text-zinc-500 text-xs"></i>
-                        <input type="password" id="authPasswordInput" required placeholder="••••••••" class="w-full bg-dark-input border border-dark-border rounded-xl pl-10 pr-4 py-3 text-[13px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all">
-                    </div>
-                </div>
-
-                <button type="submit" id="authSubmitBtn" class="w-full mt-2 py-3.5 rounded-xl bg-white text-black hover:bg-zinc-200 text-xs font-bold tracking-widest uppercase transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] active:scale-[0.98]">
-                    MASUK SEKARANG
-                </button>
-
-                <div class="text-center pt-4 border-t border-dark-border/60 mt-4">
-                    <p id="authToggleText" class="text-[11px] font-mono text-zinc-400">
-                        Belum punya akun? <button type="button" onclick="switchAuthMode('register')" class="text-brand hover:underline font-bold ml-1">Daftar dengan Email</button>
-                    </p>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- ==========================================
          LEFT SIDEBAR: NAVIGATION & HISTORY
@@ -163,31 +126,20 @@
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/30 shadow-neon">
                     <span class="font-orbitron font-bold text-white text-sm">赤</span>
                 </div>
-                <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-1.5">
-                        <span class="font-orbitron font-bold text-sm tracking-wide text-white">AkaShiro</span>
-                        <span id="userTierBadge" class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded uppercase tracking-wider">FREE</span>
-                    </div>
-                    <span id="sidebarUserEmail" class="text-[10px] font-mono text-zinc-400 truncate max-w-[130px]">email@domain.com</span>
+                <div class="flex flex-col">
+                    <span class="font-orbitron font-bold text-sm tracking-wide text-white">AkaShiro<span class="text-brand">.AI</span></span>
+                    <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800/40 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700/50">V10 Ultimate</span>
                 </div>
             </div>
-            <div class="flex items-center gap-1.5">
-                <button onclick="handleLogout()" class="w-7 h-7 flex items-center justify-center rounded-lg bg-dark-border/40 text-zinc-400 hover:text-rose-400 hover:bg-rose-950/40 transition-all" title="Keluar Akun">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
-                </button>
-                <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-dark-border/40 text-zinc-400 hover:text-white transition-all">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
+            <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-dark-border/40 text-zinc-400 hover:text-white hover:bg-rose-900/50 transition-all">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
         </div>
 
         <!-- Start New Chat Action -->
-        <div class="p-4 shrink-0 space-y-2">
+        <div class="p-4 shrink-0">
             <button onclick="startNewChat()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white text-black hover:bg-zinc-200 text-xs font-semibold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] active:scale-[0.98]">
                 <i class="fa-solid fa-plus text-[10px]"></i> SESI BARU
-            </button>
-            <button id="upgradeTierBtn" onclick="toggleUserTier()" class="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-gradient-to-r from-amber-500/20 to-brand/20 border border-brand/40 text-amber-300 hover:text-white text-[10px] font-mono font-bold tracking-wider transition-all">
-                <i class="fa-solid fa-crown text-amber-400"></i> <span id="upgradeTierText">UPGRADE KE PREMIUM</span>
             </button>
         </div>
 
@@ -282,6 +234,13 @@
                         <span class="text-zinc-200 text-[12px] font-semibold block mb-0.5">Design UI Dashboard</span>
                         <span class="text-zinc-500 text-[9px] font-mono">Penulisan struktur kode kompleks.</span>
                     </button>
+                    <button onclick="sendQuickPrompt('Jelaskan teori Fisika Kuantum menggunakan rumus Probabilitas matematika (gunakan syntax LaTeX).')" class="p-3.5 rounded-xl bg-dark-input border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left sm:col-span-2 group flex items-center justify-between">
+                        <div>
+                            <i class="fa-solid fa-atom text-cyan-400 mb-1.5 block text-base"></i>
+                            <span class="text-zinc-200 text-[12px] font-semibold block">Render Matematika (KaTeX)</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-zinc-600 group-hover:text-brand transition-colors mr-2"></i>
+                    </button>
                 </div>
             </div>
 
@@ -306,6 +265,9 @@
                     <textarea id="chatInput" rows="1" placeholder="Masukkan instruksi sistem... (Shift+Enter: Baris Baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 resize-none max-h-[200px] min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed font-sans" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                     
                     <div class="flex items-center gap-1.5 p-1 shrink-0">
+                        <button type="button" id="voiceBtn" class="hidden sm:flex h-9 w-9 rounded-xl bg-transparent text-zinc-500 hover:text-zinc-300 transition-colors items-center justify-center" title="Voice Input (Segera Hadir)">
+                            <i class="fa-solid fa-microphone text-sm"></i>
+                        </button>
                         <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-9 w-9 rounded-xl bg-zinc-800 hover:bg-rose-900/40 text-rose-400 border border-zinc-700 hover:border-rose-500/50 transition-all items-center justify-center shadow-sm" title="Hentikan Proses">
                             <i class="fa-solid fa-square text-xs"></i>
                         </button>
@@ -363,6 +325,18 @@
                     <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText = this.value" class="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-brand">
                     <div class="flex justify-between text-[9px] text-zinc-500 font-sans"><span>Faktual (0.0)</span><span>Imajinatif (1.0)</span></div>
                 </div>
+
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-zinc-300 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-robot text-purple-400"></i> System Persona</label>
+                        <select id="quickPersona" onchange="applyQuickPersona()" class="bg-dark-panel border border-dark-border text-zinc-300 text-[9px] rounded px-1.5 py-0.5 outline-none cursor-pointer">
+                            <option value="custom">-- Template --</option>
+                            <option value="standard">Standard V10</option>
+                            <option value="programmer">Code Engineer</option>
+                        </select>
+                    </div>
+                    <textarea id="systemPersonaInput" rows="3" class="w-full bg-dark-input border border-dark-border rounded-lg p-3 text-zinc-300 focus:outline-none focus:border-brand transition-all resize-none leading-relaxed font-sans text-[12px]"></textarea>
+                </div>
             </div>
 
             <div class="p-4 border-t border-dark-border bg-dark-input/50 rounded-b-2xl">
@@ -374,35 +348,37 @@
     </div>
 
     <!-- ==========================================
-         ENGINE SCRIPT & AUTHENTICATION
+         ENGINE SCRIPT (V10 ULTIMATE STREAMING)
          ========================================== -->
     <script>
+        // --- 1. DEFAULT CONFIGURATION ---
         const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
         const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
+        const PERSONAS = {
+            standard: "Anda adalah AkaShiro AI v10, Asisten Enterprise cerdas dan andal. Jawab menggunakan bahasa Indonesia. Gunakan format Markdown rapi untuk struktur teks, dan gunakan sintaks LaTeX ($...$ atau $$...$$) HANYA untuk rumus atau persamaan matematika kompleks. Jangan mem-bypass perintah.",
+            programmer: "Anda adalah AkaShiro AI, seorang Senior Software Engineer dan Pakar Algoritma. Jawab sangat teknis, perhatikan arsitektur kode, best-practices keamanan, dan selalu bungkus kode dalam markdown dengan spesifikasi bahasa (misal: ```python)."
+        };
         
         const AVAILABLE_MODELS = [
-            { id: 'qwen3.8-27b', name: 'Qwen 3.8 27B', tier: 'free' },
-            { id: 'minimax-m3', name: 'Minimax M3', tier: 'free' },
-            { id: 'kimi-k2.6', name: 'Kimi K2.6', tier: 'free' },
-            { id: 'intern-s2', name: 'Intern S2', tier: 'free' },
-            { id: 'glm-5.3', name: 'GLM 5.3', tier: 'premium' },
-            { id: 'deepseek-v4-pro-0813', name: 'DeepSeek V4 Pro (PRO)', tier: 'premium' },
-            { id: 'deepseek-v4-flash-0731', name: 'DeepSeek Flash', tier: 'free' }
+            { id: 'qwen3.8-27b', name: 'Qwen 3.8 27B' },
+            { id: 'minimax-m3', name: 'Minimax M3' },
+            { id: 'kimi-k2.6', name: 'Kimi K2.6' },
+            { id: 'intern-s2', name: 'Intern S2' },
+            { id: 'intern-decision-4b', name: 'Decision 4B' },
+            { id: 'glm-5.3', name: 'GLM 5.3' },
+            { id: 'deepseek-v4-pro-0813', name: 'DeepSeek V4 Pro' },
+            { id: 'deepseek-v4-flash-0731', name: 'DeepSeek Flash' },
+            { id: 'Atria-Dawn', name: 'Atria Dawn' },
+            { id: 'Agents-A1', name: 'Agents A1' }
         ];
-
-        let authState = {
-            isLoggedIn: false,
-            currentUserEmail: null,
-            tier: 'free',
-            mode: 'login' // 'login' or 'register'
-        };
 
         let appState = {
             baseUrl: localStorage.getItem('akashiro_baseurl_v10') || DEFAULT_API_BASE_URL,
             apiKey: localStorage.getItem('akashiro_apikey_v10') || DEFAULT_API_KEY,
             temperature: parseFloat(localStorage.getItem('akashiro_temp_v10')) || 0.7,
+            systemPersona: localStorage.getItem('akashiro_persona_v10') || PERSONAS.standard,
             currentModel: localStorage.getItem('akashiro_model_v10') || 'qwen3.8-27b',
-            chats: [],
+            chats: JSON.parse(localStorage.getItem('akashiro_chats_v10')) || [],
             currentChatId: null
         };
 
@@ -410,191 +386,42 @@
         let isGenerating = false;
         let isAutoScrolling = true;
 
-        // --- AUTHENTICATION & TIER MANAGEMENT ---
+        // --- 2. INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', () => {
-            const savedAuth = JSON.parse(localStorage.getItem('akashiro_session_v10'));
-            if (savedAuth && savedAuth.isLoggedIn) {
-                authState = savedAuth;
-                document.getElementById('authOverlay').classList.add('hidden');
-                initAppWorkspace();
-            } else {
-                document.getElementById('authOverlay').classList.remove('hidden');
-            }
-        });
-
-        function switchAuthMode(mode) {
-            authState.mode = mode;
-            const title = document.getElementById('authTitle');
-            const subtitle = document.getElementById('authSubtitle');
-            const btn = document.getElementById('authSubmitBtn');
-            const toggleText = document.getElementById('authToggleText');
-
-            if (mode === 'register') {
-                title.innerText = "Daftar Akun Baru";
-                subtitle.innerText = "Gunakan Gmail atau email valid untuk mendaftar";
-                btn.innerText = "DAFTAR SEKARANG";
-                toggleText.innerHTML = `Sudah punya akun? <button type="button" onclick="switchAuthMode('login')" class="text-brand hover:underline font-bold ml-1">Masuk di sini</button>`;
-            } else {
-                title.innerText = "Masuk ke AkaShiro";
-                subtitle.innerText = "Gunakan Gmail atau Email terdaftar Anda";
-                btn.innerText = "MASUK SEKARANG";
-                toggleText.innerHTML = `Belum punya akun? <button type="button" onclick="switchAuthMode('register')" class="text-brand hover:underline font-bold ml-1">Daftar dengan Email</button>`;
-            }
-        }
-
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            const emailInput = document.getElementById('authEmailInput').value.trim().toLowerCase();
-            const passwordInput = document.getElementById('authPasswordInput').value.trim();
-
-            if (!emailInput || !passwordInput) {
-                showToast("Email dan password wajib diisi!", "error");
-                return;
-            }
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(emailInput)) {
-                showToast("Format alamat email atau Gmail tidak valid!", "error");
-                return;
-            }
-
-            let usersDb = JSON.parse(localStorage.getItem('akashiro_users_db_v10')) || {};
-
-            if (authState.mode === 'register') {
-                if (usersDb[emailInput]) {
-                    showToast("Email ini sudah terdaftar! Silakan langsung Masuk.", "error");
-                    return;
-                }
-                usersDb[emailInput] = { password: passwordInput, tier: 'free', createdAt: new Date().toISOString() };
-                localStorage.setItem('akashiro_users_db_v10', JSON.stringify(usersDb));
-                showToast("Registrasi berhasil! Berhasil masuk ke workspace.", "success");
-            } else {
-                if (!usersDb[emailInput]) {
-                    showToast("Email belum terdaftar. Silakan daftar terlebih dahulu!", "error");
-                    return;
-                }
-                if (usersDb[emailInput].password !== passwordInput) {
-                    showToast("Password yang Anda masukkan salah!", "error");
-                    return;
-                }
-                showToast("Login berhasil! Selamat datang kembali.", "success");
-            }
-
-            authState.isLoggedIn = true;
-            authState.currentUserEmail = emailInput;
-            authState.tier = usersDb[emailInput].tier || 'free';
-            localStorage.setItem('akashiro_session_v10', JSON.stringify(authState));
-
-            document.getElementById('authOverlay').classList.add('opacity-0', 'transition-opacity', 'duration-300');
-            setTimeout(() => {
-                document.getElementById('authOverlay').classList.add('hidden');
-                initAppWorkspace();
-            }, 300);
-        }
-
-        function handleLogout() {
-            if(confirm("Apakah Anda yakin ingin keluar dari sesi ini?")) {
-                localStorage.removeItem('akashiro_session_v10');
-                window.location.reload();
-            }
-        }
-
-        function toggleUserTier() {
-            authState.tier = authState.tier === 'free' ? 'premium' : 'free';
-            localStorage.setItem('akashiro_session_v10', JSON.stringify(authState));
-
-            let usersDb = JSON.parse(localStorage.getItem('akashiro_users_db_v10')) || {};
-            if(usersDb[authState.currentUserEmail]) {
-                usersDb[authState.currentUserEmail].tier = authState.tier;
-                localStorage.setItem('akashiro_users_db_v10', JSON.stringify(usersDb));
-            }
-
-            updateTierUI();
-            showToast(`Akun berhasil diubah ke mode: ${authState.tier.toUpperCase()}`, authState.tier === 'premium' ? 'success' : 'info');
-        }
-
-        function updateTierUI() {
-            const badge = document.getElementById('userTierBadge');
-            const upgradeBtnText = document.getElementById('upgradeTierText');
-            const upgradeBtn = document.getElementById('upgradeTierBtn');
-
-            if (!badge) return;
-
-            if (authState.tier === 'premium') {
-                badge.innerText = "PRO";
-                badge.className = "text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/40";
-                if(upgradeBtnText) upgradeBtnText.innerText = "STATUS: AKUN PREMIUM";
-                if(upgradeBtn) upgradeBtn.classList.add('border-amber-500/60', 'bg-amber-950/20');
-            } else {
-                badge.innerText = "FREE";
-                badge.className = "text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase tracking-wider bg-zinc-800 text-zinc-400 border border-zinc-700";
-                if(upgradeBtnText) upgradeBtnText.innerText = "UPGRADE KE PREMIUM";
-                if(upgradeBtn) upgradeBtn.classList.remove('border-amber-500/60', 'bg-amber-950/20');
-            }
-            populateModelDropdown();
-        }
-
-        function initAppWorkspace() {
-            document.getElementById('sidebarUserEmail').innerText = authState.currentUserEmail;
-            updateTierUI();
-            loadUserChats();
             setupDOMBindings();
             setupMarkedRenderer();
+            populateModelDropdown();
             
-            if (appState.chats.length > 0) { 
-                loadChatSession(appState.chats[0].id); 
-            } else { 
-                startNewChat(); 
-            }
-        }
-
-        function getChatStorageKey() {
-            return `akashiro_chats_${authState.currentUserEmail}_v10`;
-        }
-
-        function loadUserChats() {
-            appState.chats = JSON.parse(localStorage.getItem(getChatStorageKey())) || [];
-        }
-
-        function saveChatsToStorage() { 
-            localStorage.setItem(getChatStorageKey(), JSON.stringify(appState.chats)); 
-        }
+            if (appState.chats.length > 0) { loadChatSession(appState.chats[0].id); } 
+            else { startNewChat(); }
+        });
 
         function setupDOMBindings() {
             document.getElementById('customBaseUrl').value = appState.baseUrl;
             document.getElementById('customApiKey').value = appState.apiKey;
             document.getElementById('tempSlider').value = appState.temperature;
             document.getElementById('tempVal').innerText = appState.temperature;
+            document.getElementById('systemPersonaInput').value = appState.systemPersona;
+        }
+        
+        function applyQuickPersona() {
+            const val = document.getElementById('quickPersona').value;
+            if(PERSONAS[val]) document.getElementById('systemPersonaInput').value = PERSONAS[val];
         }
 
         function populateModelDropdown() {
             const select = document.getElementById('chatModelSelect');
             if(!select) return;
             select.innerHTML = '';
-            
             AVAILABLE_MODELS.forEach(m => {
                 const opt = document.createElement('option');
-                opt.value = m.id;
-                
-                if (m.tier === 'premium' && authState.tier !== 'premium') {
-                    opt.textContent = `${m.name} (🔒 Khusus Premium)`;
-                    opt.disabled = true;
-                } else {
-                    opt.textContent = m.name;
-                }
-
+                opt.value = m.id; opt.textContent = m.name;
                 if(m.id === appState.currentModel) opt.selected = true;
                 select.appendChild(opt);
             });
         }
 
         function changeChatModel(val) {
-            const selectedModelObj = AVAILABLE_MODELS.find(m => m.id === val);
-            if (selectedModelObj && selectedModelObj.tier === 'premium' && authState.tier !== 'premium') {
-                showToast("Model ini memerlukan akun Premium!", "error");
-                populateModelDropdown();
-                return;
-            }
             appState.currentModel = val; localStorage.setItem('akashiro_model_v10', val);
             let chat = getCurrentChat(); if(chat) { chat.model = val; saveChatsToStorage(); }
         }
@@ -607,6 +434,7 @@
             else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
         }
 
+        // --- 3. TOAST SYSTEM (V10) ---
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             if(!container) return;
@@ -622,21 +450,27 @@
             toast.innerHTML = `<div class="shrink-0 text-sm">${iconStr}</div> <div class="leading-relaxed break-words">${message}</div>`;
             
             container.appendChild(toast);
+            // Trigger animation
             setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Remove after 4 seconds
             setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => { if(toast.parentNode) toast.parentNode.removeChild(toast); }, 400);
             }, 4000);
         }
 
+        // --- 4. MARKDOWN, MEDIA & MATH (V10) ---
         function setupMarkedRenderer() {
             try {
                 if (typeof marked === 'undefined') return;
                 const renderer = new marked.Renderer();
+                
                 renderer.code = function(code, language) {
                     const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
                     const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
                     const langName = language ? language.toUpperCase() : 'TEXT';
+                    
                     return `
                     <div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code">
                         <div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border">
@@ -646,12 +480,21 @@
                             </button>
                         </div>
                         <div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar">
-                            <pre class="m-0"><code class="hljs ${language \vert{}\vert{} ''}">${highlighted}</code></pre>
+                            <pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre>
                         </div>
                     </div>`;
                 };
+
+                renderer.link = function(href, title, text) {
+                    if(href.includes('[youtube.com/watch](https://youtube.com/watch)') || href.includes('youtu.be/')) {
+                        let videoId = href.split('v=')[1] || href.split('youtu.be/')[1];
+                        if(videoId) videoId = videoId.split('&')[0];
+                        return `<div class="my-4 w-full max-w-[500px] rounded-lg overflow-hidden border border-dark-border shadow-panel"><iframe src="[https://www.youtube.com/embed/$](https://www.youtube.com/embed/$){videoId}" frameborder="0" allowfullscreen class="w-full aspect-video bg-black"></iframe><div class="bg-dark-input px-3 py-1.5 text-[10px] text-zinc-400 font-mono border-t border-dark-border flex justify-between"><span class="truncate">Video Player</span><a href="${href}" target="_blank" class="text-brand hover:text-white ml-2 shrink-0">Buka <i class="fa-solid fa-external-link-alt text-[9px]"></i></a></div></div>`;
+                    }
+                    return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title || ''}">${text}</a>`;
+                };
                 marked.setOptions({ renderer: renderer, breaks: true });
-            } catch(e) {}
+            } catch(e) { console.error("Markdown init error:", e); }
         }
 
         function escapeHtml(str) { return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
@@ -668,17 +511,40 @@
             } catch(e) {}
         }
 
+        window.copyAiMessage = async function(msgIndex) {
+            try {
+                let chat = getCurrentChat();
+                if(chat && chat.messages[msgIndex]) {
+                    await navigator.clipboard.writeText(chat.messages[msgIndex].text);
+                    showToast("Teks berhasil disalin ke clipboard.", "success");
+                }
+            } catch(e) {}
+        }
+        
         window.editUserMessage = function(msgIndex) {
             let chat = getCurrentChat();
             if(!chat || !chat.messages[msgIndex] || isGenerating) return;
+            
             const originalText = chat.messages[msgIndex].text;
             document.getElementById('chatInput').value = originalText;
+            
+            // Hapus pesan ini dan semua pesan setelahnya (AI responses)
             chat.messages = chat.messages.slice(0, msgIndex);
             saveChatsToStorage();
             renderMessages();
             document.getElementById('chatInput').focus();
         }
 
+        window.regenerateResponse = function() {
+            if(isGenerating) return;
+            let chat = getCurrentChat();
+            if(!chat || chat.messages.length < 2) return;
+            while(chat.messages.length > 0 && chat.messages[chat.messages.length-1].role !== 'user') { chat.messages.pop(); }
+            if(chat.messages.length === 0) return;
+            handleChatSubmit(null, true);
+        }
+
+        // --- 5. CORE CHAT LOGIC ---
         function startNewChat() {
             if(isGenerating) abortGeneration();
             const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Komputasi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
@@ -726,6 +592,7 @@
             });
         }
 
+        // Smart Scroll
         function handleScroll() {
             const scrollArea = document.getElementById('chatScrollArea'); const scrollBtn = document.getElementById('scrollBtn');
             if(!scrollArea || !scrollBtn) return;
@@ -744,8 +611,10 @@
             if (isAutoScrolling) scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
         }
 
+        // Render Individual Message HTML (To be used by full render and streaming update)
         function generateMessageHTML(msg, index, isLastMsg) {
             const isUser = msg.role === 'user';
+            
             if (isUser) {
                 return `
                 <div class="flex justify-end w-full animate-slide-up opacity-0" id="msg-${index}">
@@ -761,8 +630,13 @@
             } else {
                 let rawHtml = escapeHtml(msg.text || '');
                 try { if(typeof marked !== 'undefined') rawHtml = marked.parse(msg.text || ''); } catch(e){}
+                
                 let safeHtml = rawHtml;
-                try { if(typeof DOMPurify !== 'undefined') safeHtml = DOMPurify.sanitize(rawHtml); } catch(e){}
+                try { 
+                    if(typeof DOMPurify !== 'undefined') {
+                        safeHtml = DOMPurify.sanitize(rawHtml, { ADD_TAGS: ['img', 'iframe', 'video', 'audio', 'source'], ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls', 'class'] }); 
+                    }
+                } catch(e){}
                 
                 const isError = (msg.text || '').includes('⚠️');
                 const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream-cursor' : '';
@@ -774,6 +648,17 @@
                         <div class="rounded-[1.25rem] rounded-tl-sm px-4 md:px-5 py-4 text-[13px] md:text-sm text-zinc-200 markdown-body bg-dark-panel border border-dark-border shadow-panel ${isError ? 'border-rose-900/50 bg-rose-950/20' : ''} ${streamClass}">
                             ${msg.isTyping && msg.text.length === 0 ? `<div class="typing-dots"><span></span><span></span><span></span></div>` : safeHtml}
                         </div>
+                        
+                        ${!msg.isTyping && !isError ? `
+                        <div class="mt-2 ml-2 flex flex-wrap items-center gap-2 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-300">
+                            <button type="button" onclick="copyAiMessage(${index})" class="text-[9px] font-mono text-zinc-400 hover:text-white flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2 py-1 rounded shadow-sm hover:bg-zinc-800">
+                                <i class="fa-regular fa-copy"></i> Salin
+                            </button>
+                            ${isLastMsg ? `
+                            <button type="button" onclick="regenerateResponse()" class="text-[9px] font-mono text-zinc-400 hover:text-brand flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2 py-1 rounded shadow-sm hover:border-brand/30 hover:bg-brand/5">
+                                <i class="fa-solid fa-rotate-right"></i> Regenerate
+                            </button>` : ''}
+                        </div>` : ''}
                     </div>
                 </div>`;
             }
@@ -794,10 +679,21 @@
             chat.messages.forEach((msg, index) => {
                 const isLast = index === chat.messages.length - 1;
                 listContainer.insertAdjacentHTML('beforeend', generateMessageHTML(msg, index, isLast));
+                
+                // KaTeX Rendering (Delayed to ensure DOM is ready)
+                if(msg.role !== 'user' && !msg.isTyping && typeof renderMathInElement !== 'undefined') {
+                    const node = document.getElementById(`msg-${index}`);
+                    if(node) {
+                        try {
+                            renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '[', right: ']', display: true} ], throwOnError: false });
+                        } catch(e) {}
+                    }
+                }
             });
             scrollToBottom();
         }
         
+        // Fast Update for Streaming
         function updateLastMessageUI() {
             const chat = getCurrentChat();
             if(!chat || chat.messages.length === 0) return;
@@ -806,22 +702,31 @@
             const node = document.getElementById(`msg-${index}`);
             
             if(node) {
+                const isError = (msg.text || '').includes('⚠️');
                 const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream-cursor' : '';
+                
                 let rawHtml = escapeHtml(msg.text || '');
                 try { if(typeof marked !== 'undefined') rawHtml = marked.parse(msg.text || ''); } catch(e){}
                 let safeHtml = rawHtml;
-                try { if(typeof DOMPurify !== 'undefined') safeHtml = DOMPurify.sanitize(rawHtml); } catch(e){}
+                try { if(typeof DOMPurify !== 'undefined') safeHtml = DOMPurify.sanitize(rawHtml, { ADD_TAGS: ['img', 'iframe', 'video', 'audio', 'source'], ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls', 'class'] }); } catch(e){}
                 
                 const markdownBody = node.querySelector('.markdown-body');
                 if(markdownBody) {
                     markdownBody.innerHTML = (msg.isTyping && msg.text.length === 0) ? `<div class="typing-dots"><span></span><span></span><span></span></div>` : safeHtml;
+                    
                     if(msg.isTyping && msg.text.length > 0) markdownBody.classList.add('stream-cursor');
                     else markdownBody.classList.remove('stream-cursor');
+                }
+                
+                // Render Math real-time ONLY if not typing to save CPU
+                if(!msg.isTyping && typeof renderMathInElement !== 'undefined') {
+                    try { renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '[', right: ']', display: true} ], throwOnError: false }); } catch(e) {}
                 }
             }
             scrollToBottom();
         }
 
+        // --- 6. NETWORK & STREAMING PROCESS (V10) ---
         function sendQuickPrompt(promptText) {
             const inputEl = document.getElementById('chatInput');
             if (inputEl) { inputEl.value = promptText; handleInputAutoResize({target: inputEl}); }
@@ -831,13 +736,14 @@
         function abortGeneration() {
             if(currentAbortController) { currentAbortController.abort(); currentAbortController = null; }
             toggleInputState(false);
+            
             let chat = getCurrentChat();
             if(chat && chat.messages.length > 0) {
                 const lastMsg = chat.messages[chat.messages.length-1];
                 if(lastMsg.isTyping) {
                     lastMsg.isTyping = false;
                     if(lastMsg.text.length === 0) lastMsg.text = "*(Proses dibatalkan)*";
-                    saveChatsToStorage(); updateLastMessageUI(); renderMessages();
+                    saveChatsToStorage(); updateLastMessageUI(); renderMessages(); // Full render to show action bar
                 }
             }
         }
@@ -846,6 +752,7 @@
             isGenerating = generating;
             const btn = document.getElementById('sendBtn'); const stopBtn = document.getElementById('stopBtn'); const input = document.getElementById('chatInput');
             if(!btn || !stopBtn || !input) return;
+            
             if(generating) {
                 btn.classList.add('hidden'); stopBtn.classList.remove('hidden');
                 input.disabled = true; input.classList.add('opacity-50');
@@ -855,7 +762,7 @@
             }
         }
 
-        async function handleChatSubmit(e) {
+        async function handleChatSubmit(e, isRegenerate = false) {
             if (e) e.preventDefault();
             if (isGenerating) return;
 
@@ -863,8 +770,11 @@
             const charCountEl = document.getElementById('charCount');
             if (!inputEl) return;
             
-            const prompt = inputEl.value.trim();
-            if (!prompt) return;
+            let prompt = "";
+            if(!isRegenerate) {
+                prompt = inputEl.value.trim();
+                if (!prompt) return;
+            }
 
             if (!appState.baseUrl || !appState.apiKey) { 
                 showToast("Konfigurasi API belum diatur!", "error"); openModal('settingsModal'); return; 
@@ -873,11 +783,13 @@
             let chat = getCurrentChat();
             if (!chat) { startNewChat(); chat = getCurrentChat(); }
             
-            if (chat.messages.length === 0) {
-                chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
-                updateHeaderTitle(); renderChatHistory();
+            if (!isRegenerate) {
+                if (chat.messages.length === 0) {
+                    chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
+                    updateHeaderTitle(); renderChatHistory();
+                }
+                chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             }
-            chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             
             inputEl.value = ''; inputEl.style.height = 'auto'; 
             if (charCountEl) charCountEl.innerText = '0 chars'; 
@@ -890,39 +802,46 @@
             currentAbortController = new AbortController();
 
             try {
+                // Konteks Memori Pintar: Ambil maksimal 12 pesan terakhir agar tidak over-token
                 let contextMessages = chat.messages.slice(0, -1);
-                if(contextMessages.length > 12) contextMessages = contextMessages.slice(contextMessages.length - 12);
+                if(contextMessages.length > 12) {
+                    contextMessages = contextMessages.slice(contextMessages.length - 12);
+                }
                 
                 await callAIAPI_Stream(contextMessages, currentAbortController.signal, loadingMsgIndex);
                 saveChatsToStorage();
             } catch (err) {
                 if (err.name === 'AbortError') return; 
+                console.error("API Fetch Error:", err);
                 chat.messages[loadingMsgIndex].isTyping = false;
-                chat.messages[loadingMsgIndex].text = `⚠️ **Gateway Error:** \`${err.message}\``;
-                showToast("Gagal menerima respons dari server.", "error");
+                chat.messages[loadingMsgIndex].text = `⚠️ **Gateway Error:** \`${err.message}\`\n\n*Jika API tidak merespons, coba ganti Model, pastikan API Key benar, atau matikan ekstensi pengaman.*`;
+                showToast("Gagal menerima stream data dari server.", "error");
             } finally {
                 chat.messages[loadingMsgIndex].isTyping = false;
                 saveChatsToStorage();
-                toggleInputState(false); currentAbortController = null; renderMessages();
+                toggleInputState(false); currentAbortController = null; 
+                renderMessages(); // Final full render to attach action bar
             }
         }
 
+        // V10 STREAMING LOGIC
         async function callAIAPI_Stream(messagesHistory, signal, msgIndex) {
             const cleanBaseUrl = appState.baseUrl.replace(/\/+$/, '');
             let apiUrl = `${cleanBaseUrl}/chat/completions`;
             let chat = getCurrentChat();
             
             const formattedMessages = messagesHistory.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text || '' }));
-            formattedMessages.unshift({ role: "system", content: "Anda adalah AkaShiro AI, asisten virtual profesional. Jawab menggunakan bahasa Indonesia." });
+            if (appState.systemPersona) { formattedMessages.unshift({ role: "system", content: appState.systemPersona }); }
 
             const payload = { 
                 model: appState.currentModel, 
                 messages: formattedMessages, 
                 temperature: parseFloat(appState.temperature),
-                stream: true 
+                stream: true // Enable Streaming!
             };
             
             const reqHeaders = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${appState.apiKey}` };
+
             const response = await fetch(apiUrl, { method: 'POST', headers: reqHeaders, body: JSON.stringify(payload), signal: signal });
 
             if (!response.ok) {
@@ -931,6 +850,7 @@
                 throw new Error(errMsg);
             }
 
+            // Stream Reader
             const reader = response.body.getReader();
             const decoder = new TextDecoder("utf-8");
             let aiFullResponse = "";
@@ -952,13 +872,18 @@
                         if (token) {
                             aiFullResponse += token;
                             chat.messages[msgIndex].text = aiFullResponse;
+                            
+                            // Throttle UI update using RequestAnimationFrame for buttery smooth typing
                             window.requestAnimationFrame(updateLastMessageUI);
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        // Silent ignore for non-JSON lines during stream
+                    }
                 }
             }
         }
 
+        // --- 7. EVENT HANDLERS & UTILS ---
         function handleInputKeydown(e) { 
             if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { 
                 e.preventDefault(); if(!isGenerating) handleChatSubmit(e); 
@@ -972,18 +897,27 @@
         }
 
         function saveSettings() {
-            appState.baseUrl = document.getElementById('customBaseUrl').value.trim();
-            appState.apiKey = document.getElementById('customApiKey').value.trim();
-            appState.temperature = parseFloat(document.getElementById('tempSlider').value);
+            const elBaseUrl = document.getElementById('customBaseUrl');
+            const elApiKey = document.getElementById('customApiKey');
+            const elTempSlider = document.getElementById('tempSlider');
+            const elSystemPersona = document.getElementById('systemPersonaInput');
+
+            if (elBaseUrl) appState.baseUrl = elBaseUrl.value.trim();
+            if (elApiKey) appState.apiKey = elApiKey.value.trim();
+            if (elTempSlider) appState.temperature = parseFloat(elTempSlider.value);
+            if (elSystemPersona) appState.systemPersona = elSystemPersona.value.trim();
 
             localStorage.setItem('akashiro_baseurl_v10', appState.baseUrl); 
             localStorage.setItem('akashiro_apikey_v10', appState.apiKey);
             localStorage.setItem('akashiro_temp_v10', appState.temperature); 
+            localStorage.setItem('akashiro_persona_v10', appState.systemPersona);
             
             closeModal('settingsModal'); 
             showToast("Konfigurasi sistem berhasil disimpan.", "success");
         }
 
+        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v10', JSON.stringify(appState.chats)); }
+        
         function deleteChatSession(e, chatId) {
             if(e) e.stopPropagation(); 
             appState.chats = appState.chats.filter(c => c.id !== chatId);
@@ -992,7 +926,7 @@
         }
         
         function clearAllChats() { 
-            if(confirm("Hapus PERMANEN semua riwayat komputasi akun ini?")) {
+            if(confirm("Hapus PERMANEN semua riwayat komputasi dari browser ini?")) {
                 appState.chats = []; appState.currentChatId = null; 
                 saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
                 showToast("Seluruh riwayat berhasil dibersihkan.");
@@ -1004,12 +938,14 @@
             if (!chat || chat.messages.length === 0) {
                 showToast("Tidak ada data untuk diekspor.", "error"); return;
             }
+            
             if(format === 'markdown') {
                 let textData = `# AkaShiro Transkrip: ${chat.title}\nID: ${chat.id}\nTanggal: ${new Date().toLocaleString()}\nModel: ${chat.model}\n\n---\n\n`;
                 chat.messages.forEach(m => { 
                     const roleName = m.role === 'user' ? 'USER' : 'AKASHIRO ENGINE';
                     textData += `### ${roleName} (${new Date(m.timestamp).toLocaleTimeString()})\n${m.text}\n\n---\n\n`; 
                 });
+                
                 const blob = new Blob([textData], { type: 'text/markdown;charset=utf-8;' });
                 const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
                 a.download = `AkaShiro_${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
