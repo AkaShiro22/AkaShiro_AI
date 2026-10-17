@@ -23,7 +23,12 @@
                     },
                     fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
                     boxShadow: { 'neon': '0 0 20px rgba(225, 29, 72, 0.3)', 'panel': '0 8px 32px rgba(0,0,0,0.5)', 'float': '0 10px 40px rgba(0,0,0,0.8)' },
-                    animation: { 'fade-in': 'fadeIn 0.2s ease-out forwards', 'slide-up': 'slideUp 0.3s cubic-bezier(0.2, 1, 0.3, 1) forwards', 'blink': 'blink 1s step-end infinite' },
+                    animation: { 
+                        'fade-in': 'fadeIn 0.2s ease-out forwards', 
+                        'slide-up': 'slideUp 0.3s cubic-bezier(0.2, 1, 0.3, 1) forwards', 
+                        'blink': 'blink 1s step-end infinite',
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    },
                     keyframes: { 
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
                         slideUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
@@ -65,7 +70,8 @@
 
         /* UI Adjustments */
         .glass-header { background: rgba(18, 18, 20, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .glass-input { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.06); }
+        .glass-input { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.06); transition: all 0.3s ease; }
+        .glass-input.recording { border-color: #E11D48; box-shadow: 0 0 20px rgba(225, 29, 72, 0.3); }
         
         /* Markdown Styling (V10 Ergonomics) */
         .markdown-body { font-size: 0.95rem; line-height: 1.65; color: #d4d4d8; word-wrap: break-word; }
@@ -112,15 +118,10 @@
 </head>
 <body class="h-[100dvh] flex overflow-hidden text-zinc-100 selection:bg-brand selection:text-white font-sans antialiased">
 
-    <!-- Toast Notifications (V10 System) -->
     <div id="toastContainer"></div>
 
-    <!-- ==========================================
-         LEFT SIDEBAR: NAVIGATION & HISTORY
-         ========================================== -->
+    <!-- LEFT SIDEBAR -->
     <aside id="appSidebar" class="w-72 bg-dark-panel border-r border-dark-border flex flex-col shrink-0 transition-transform duration-300 ease-in-out absolute lg:relative z-50 h-full -translate-x-full lg:translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.5)] lg:shadow-none">
-        
-        <!-- Sidebar Header -->
         <div class="h-16 flex items-center justify-between px-5 border-b border-dark-border shrink-0 bg-dark-bg/20">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/30 shadow-neon">
@@ -136,14 +137,12 @@
             </button>
         </div>
 
-        <!-- Start New Chat Action -->
         <div class="p-4 shrink-0">
             <button onclick="startNewChat()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white text-black hover:bg-zinc-200 text-xs font-semibold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] active:scale-[0.98]">
                 <i class="fa-solid fa-plus text-[10px]"></i> SESI BARU
             </button>
         </div>
 
-        <!-- Search & Chat History List -->
         <div class="px-4 py-1.5 flex flex-col gap-2 shrink-0">
             <div class="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
                 <i class="fa-solid fa-folder-open"></i> Riwayat Komputasi
@@ -153,11 +152,8 @@
                 <input type="text" id="searchHistory" oninput="handleSearchHistory(this.value)" placeholder="Cari transkrip..." class="w-full bg-dark-input border border-dark-border rounded-md pl-8 pr-3 py-1.5 text-[11px] text-zinc-200 focus:outline-none focus:border-zinc-500 transition-colors placeholder-zinc-600">
             </div>
         </div>
-        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 mt-2 space-y-1 scroll-smooth no-scrollbar">
-            <!-- List item injected by JS -->
-        </div>
+        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 mt-2 space-y-1 scroll-smooth no-scrollbar"></div>
 
-        <!-- Bottom Actions -->
         <div class="p-4 border-t border-dark-border bg-dark-bg/30 shrink-0 flex gap-2">
             <button onclick="clearAllChats()" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md bg-dark-panel hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 text-[10px] font-mono border border-dark-border hover:border-rose-900/80 transition-all group" title="Hapus Semua Riwayat">
                 <i class="fa-solid fa-trash-can group-hover:scale-110 transition-transform"></i> Bersihkan
@@ -168,15 +164,10 @@
         </div>
     </aside>
 
-    <!-- Overlay for Mobile Sidebar -->
     <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden transition-opacity lg:hidden" onclick="toggleSidebar(false)"></div>
 
-    <!-- ==========================================
-         MAIN WORKSPACE: HEADER, CHAT & INPUT
-         ========================================== -->
+    <!-- MAIN WORKSPACE -->
     <main class="flex-1 flex flex-col h-full relative min-w-0 bg-dark-bg">
-        
-        <!-- HEADER -->
         <header class="h-14 glass-header px-4 flex items-center justify-between z-30 shrink-0 sticky top-0">
             <div class="flex items-center gap-2 md:gap-3">
                 <button onclick="toggleSidebar(true)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-md bg-dark-input border border-dark-border text-zinc-400 hover:text-white hover:border-zinc-500 transition-all">
@@ -188,14 +179,12 @@
                 </div>
             </div>
 
-            <!-- Dynamic Model Selector & PDF Export -->
             <div class="flex items-center gap-2">
                 <div class="relative flex items-center bg-dark-input border border-dark-border rounded-lg p-1 pr-2 hover:border-zinc-600 transition-colors shadow-sm group">
                     <div class="w-6 h-6 rounded bg-zinc-800/80 flex items-center justify-center text-brand shrink-0">
                         <i class="fa-solid fa-microchip text-[10px]"></i>
                     </div>
                     <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-zinc-200 text-[10px] md:text-xs font-mono focus:outline-none focus:ring-0 cursor-pointer w-28 md:w-44 appearance-none pl-2 pr-5 py-0.5 truncate z-10 relative outline-none">
-                        <!-- Options populated by JS -->
                     </select>
                     <i class="fa-solid fa-chevron-down text-[9px] text-zinc-500 absolute right-2 pointer-events-none group-hover:text-zinc-300"></i>
                 </div>
@@ -211,62 +200,68 @@
             </div>
         </header>
 
-        <!-- CHAT SCROLL AREA -->
         <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col scroll-smooth relative" onscroll="handleScroll()">
             
-            <!-- Hero / Empty State -->
-            <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-4 w-full animate-fade-in flex flex-col items-center justify-center text-center">
-                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-dark-input to-dark-bg border border-zinc-700/50 flex items-center justify-center mb-6 shadow-panel relative group">
-                    <div class="absolute inset-0 bg-brand/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <i class="fa-solid fa-bolt-lightning text-3xl text-zinc-200 relative z-10"></i>
+            <!-- Terminal-Native, Developer-First Hero Section -->
+            <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-8 w-full animate-fade-in flex flex-col items-center justify-center text-center">
+                <div class="flex flex-col items-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-inter font-bold text-white mb-2 leading-tight">Terminal-native,<br>developer-first.</h2>
+                    <p class="text-zinc-400 text-xs md:text-sm max-w-md mx-auto">Ilustrasi bagaimana AkaShiro AI membaca sebuah project.</p>
                 </div>
-                <h2 class="text-xl md:text-2xl font-orbitron font-bold text-white mb-2">Sistem V10 Aktif.</h2>
-                <p class="text-zinc-400 text-[12px] md:text-[13px] max-w-md mx-auto leading-relaxed mb-8">Dilengkapi fitur <b>Streaming Real-Time</b>, proteksi Memori Konteks, dan rendering Eksekusi Kode presisi tingkat tinggi.</p>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
-                    <button onclick="sendQuickPrompt('Tuliskan fungsi JavaScript yang mengimplementasikan algoritma QuickSort beserta penjelasannya.')" class="p-3.5 rounded-xl bg-dark-input border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
-                        <i class="fa-brands fa-js text-yellow-400 mb-2 block text-base group-hover:scale-110 transition-transform origin-left"></i>
-                        <span class="text-zinc-200 text-[12px] font-semibold block mb-0.5">Generate Algoritma (JS)</span>
-                        <span class="text-zinc-500 text-[9px] font-mono">Uji kecepatan Streaming Response.</span>
-                    </button>
-                    <button onclick="sendQuickPrompt('Buatkan template HTML lengkap dengan CSS Grid untuk layout Dashboard Admin minimalis.')" class="p-3.5 rounded-xl bg-dark-input border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
-                        <i class="fa-brands fa-html5 text-orange-500 mb-2 block text-base group-hover:scale-110 transition-transform origin-left"></i>
-                        <span class="text-zinc-200 text-[12px] font-semibold block mb-0.5">Design UI Dashboard</span>
-                        <span class="text-zinc-500 text-[9px] font-mono">Penulisan struktur kode kompleks.</span>
-                    </button>
-                    <button onclick="sendQuickPrompt('Jelaskan teori Fisika Kuantum menggunakan rumus Probabilitas matematika (gunakan syntax LaTeX).')" class="p-3.5 rounded-xl bg-dark-input border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left sm:col-span-2 group flex items-center justify-between">
-                        <div>
-                            <i class="fa-solid fa-atom text-cyan-400 mb-1.5 block text-base"></i>
-                            <span class="text-zinc-200 text-[12px] font-semibold block">Render Matematika (KaTeX)</span>
+                <!-- Terminal Window Simulation -->
+                <div class="w-full max-w-[460px] bg-[#0c0c0e] border border-zinc-800 rounded-xl shadow-panel overflow-hidden font-mono text-[12px] md:text-[13px] text-left mx-auto hover:border-zinc-700 transition-colors">
+                    <div class="flex items-center px-4 py-2.5 bg-[#141416] border-b border-zinc-800">
+                        <div class="flex gap-1.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-zinc-700"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-zinc-700"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-zinc-700"></div>
                         </div>
-                        <i class="fa-solid fa-arrow-right text-zinc-600 group-hover:text-brand transition-colors mr-2"></i>
-                    </button>
+                        <div class="flex-1 text-center text-zinc-500 text-[11px] font-semibold">bash</div>
+                    </div>
+                    
+                    <div class="p-4 md:p-5 space-y-2">
+                        <div class="flex items-center gap-2 text-emerald-400 font-medium">
+                            <span class="text-emerald-500 font-bold">$</span> akashiro analyze project
+                        </div>
+                        <div class="text-amber-400/90 font-medium animate-pulse-fast">Scanning project ...</div>
+                        
+                        <div class="space-y-1 mt-2 text-zinc-300 pl-1">
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> package.json</div>
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> src/</div>
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> API routes</div>
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> database</div>
+                            <div class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 text-xs"></i> configuration</div>
+                        </div>
+                        
+                        <div class="text-emerald-400 font-bold pt-1">Analysis complete.</div>
+                    </div>
                 </div>
+                
+                <p class="text-zinc-500 text-[10px] md:text-[11px] mt-5 px-4 font-inter">*Ilustrasi alur kerja — analisis dilakukan melalui workspace chat AkaShiro AI.</p>
             </div>
 
-            <!-- Messages Container -->
-            <div id="chatMessagesList" class="flex flex-col space-y-6 w-full max-w-4xl mx-auto pb-6">
-                <!-- Messages appended here dynamically -->
-            </div>
-            
-            <div class="h-28 shrink-0"></div> <!-- Floating Input Spacer -->
+            <div id="chatMessagesList" class="flex flex-col space-y-6 w-full max-w-4xl mx-auto pb-6"></div>
+            <div class="h-28 shrink-0"></div> 
         </div>
 
-        <!-- Floating Scroll to Bottom Button -->
         <button id="scrollBtn" onclick="forceScrollBottom()" class="absolute bottom-[100px] right-4 md:right-8 w-9 h-9 rounded-full bg-dark-input border border-dark-border text-zinc-400 hover:text-white hover:border-brand shadow-float flex items-center justify-center z-20">
             <i class="fa-solid fa-arrow-down text-xs"></i>
         </button>
 
-        <!-- INPUT AREA -->
         <div class="absolute bottom-0 left-0 right-0 p-3 md:p-5 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-30 pointer-events-none">
             <form id="chatForm" onsubmit="handleChatSubmit(event)" class="max-w-4xl mx-auto flex flex-col relative pointer-events-auto">
-                <!-- Input Box -->
-                <div class="glass-input rounded-2xl p-1.5 flex items-end shadow-panel transition-all duration-300 focus-within:border-brand/60 focus-within:shadow-neon relative">
-                    <textarea id="chatInput" rows="1" placeholder="Masukkan instruksi sistem... (Shift+Enter: Baris Baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 resize-none max-h-[200px] min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed font-sans" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
+                <div id="inputContainer" class="glass-input rounded-2xl p-1.5 flex items-end shadow-panel transition-all duration-300 focus-within:border-brand/60 focus-within:shadow-neon relative">
+                    
+                    <button type="button" class="hidden sm:flex h-9 w-9 mb-1 ml-1 rounded-xl bg-transparent text-zinc-500 hover:text-zinc-300 transition-colors items-center justify-center shrink-0" title="Lampirkan File">
+                        <i class="fa-solid fa-paperclip text-sm"></i>
+                    </button>
+
+                    <textarea id="chatInput" rows="1" placeholder="Ketik perintah atau instruksi project... (Shift+Enter: Baris Baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 resize-none max-h-[200px] min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed font-sans" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                     
                     <div class="flex items-center gap-1.5 p-1 shrink-0">
-                        <button type="button" id="voiceBtn" class="hidden sm:flex h-9 w-9 rounded-xl bg-transparent text-zinc-500 hover:text-zinc-300 transition-colors items-center justify-center" title="Voice Input (Segera Hadir)">
-                            <i class="fa-solid fa-microphone text-sm"></i>
+                        <button type="button" id="voiceBtn" onclick="AkaShiroVoice.toggleDictation()" class="flex h-9 w-9 rounded-xl bg-dark-panel border border-dark-border text-zinc-400 hover:text-brand hover:border-brand/30 transition-all items-center justify-center group" title="Dikte Suara (Speech to Text)">
+                            <i id="voiceIcon" class="fa-solid fa-microphone text-sm group-hover:scale-110 transition-transform"></i>
                         </button>
                         <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-9 w-9 rounded-xl bg-zinc-800 hover:bg-rose-900/40 text-rose-400 border border-zinc-700 hover:border-rose-500/50 transition-all items-center justify-center shadow-sm" title="Hentikan Proses">
                             <i class="fa-solid fa-square text-xs"></i>
@@ -277,18 +272,15 @@
                     </div>
                 </div>
                 
-                <!-- Footer Info -->
                 <div class="flex justify-between items-center px-3 mt-2 text-[9px] font-mono text-zinc-500 select-none hidden md:flex">
                     <span id="charCount" class="bg-dark-panel border border-dark-border px-1.5 py-0.5 rounded text-zinc-400">0 chars</span>
-                    <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-emerald-500/80"></i> AkaShiro Secure Execution</span>
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-emerald-500/80"></i> AkaShiro Secure Execution & Voice Engine Aktif</span>
                 </div>
             </form>
         </div>
     </main>
 
-    <!-- ==========================================
-         MODAL: SETTINGS & API CONFIGURATION
-         ========================================== -->
+    <!-- MODAL SETTINGS -->
     <div id="settingsModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4 transition-opacity">
         <div class="w-full max-w-lg bg-dark-panel rounded-2xl border border-dark-border shadow-[0_20px_60px_rgba(0,0,0,0.8)] transform scale-95 opacity-0 transition-all duration-300" id="settingsModalContent">
             
@@ -348,10 +340,9 @@
     </div>
 
     <!-- ==========================================
-         ENGINE SCRIPT (V10 ULTIMATE STREAMING)
+         JAVASCRIPT MODULES (V10 ENTERPRISE CORE)
          ========================================== -->
     <script>
-        // --- 1. DEFAULT CONFIGURATION ---
         const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
         const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
         const PERSONAS = {
@@ -386,10 +377,90 @@
         let isGenerating = false;
         let isAutoScrolling = true;
 
-        // --- 2. INITIALIZATION ---
+        /* ==============================================================
+           1. VOICE MODULE (SPEECH-TO-TEXT & TEXT-TO-SPEECH)
+           ============================================================== */
+        const AkaShiroVoice = (() => {
+            let recognition;
+            let isRecording = false;
+
+            if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = true;
+                recognition.lang = 'id-ID';
+
+                recognition.onstart = () => {
+                    isRecording = true;
+                    document.getElementById('inputContainer').classList.add('recording');
+                    document.getElementById('voiceIcon').classList.replace('fa-microphone', 'fa-stop');
+                    document.getElementById('voiceIcon').classList.add('animate-pulse-fast', 'text-brand');
+                };
+
+                recognition.onresult = (event) => {
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            const input = document.getElementById('chatInput');
+                            input.value += event.results[i][0].transcript + ' ';
+                            handleInputAutoResize({target: input});
+                        }
+                    }
+                };
+
+                recognition.onerror = (e) => { console.error('Voice Error:', e); showToast('Gagal mendeteksi suara.', 'error'); stopDictation(); };
+                recognition.onend = () => { stopDictation(); };
+            }
+
+            const toggleDictation = () => {
+                if (!recognition) { showToast('Browser Anda tidak mendukung deteksi suara.', 'error'); return; }
+                if (isRecording) { recognition.stop(); } else { recognition.start(); }
+            };
+
+            const stopDictation = () => {
+                isRecording = false;
+                const container = document.getElementById('inputContainer');
+                if(container) container.classList.remove('recording');
+                const icon = document.getElementById('voiceIcon');
+                if(icon) {
+                    icon.classList.replace('fa-stop', 'fa-microphone');
+                    icon.classList.remove('animate-pulse-fast', 'text-brand');
+                }
+            };
+
+            const playTTS = (btn, text) => {
+                if(window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                    btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Baca';
+                    btn.classList.remove('text-brand', 'border-brand/30', 'bg-brand/5');
+                    return;
+                }
+                
+                const cleanText = text.replace(/[#*`_]/g, '').replace(/<[^>]*>?/gm, '');
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'id-ID';
+                utterance.rate = 1.0;
+                
+                utterance.onend = () => {
+                    btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Baca';
+                    btn.classList.remove('text-brand', 'border-brand/30', 'bg-brand/5');
+                };
+
+                btn.innerHTML = '<i class="fa-solid fa-stop"></i> Stop';
+                btn.classList.add('text-brand', 'border-brand/30', 'bg-brand/5');
+                window.speechSynthesis.speak(utterance);
+            };
+
+            return { toggleDictation, playTTS };
+        })();
+        window.AkaShiroVoice = AkaShiroVoice;
+
+        /* ==============================================================
+           2. MARKDOWN & UI RENDERER MODULE
+           ============================================================== */
         window.addEventListener('DOMContentLoaded', () => {
             setupDOMBindings();
-            setupMarkedRenderer();
+            setupAdvancedMarked();
             populateModelDropdown();
             
             if (appState.chats.length > 0) { loadChatSession(appState.chats[0].id); } 
@@ -403,215 +474,61 @@
             document.getElementById('tempVal').innerText = appState.temperature;
             document.getElementById('systemPersonaInput').value = appState.systemPersona;
         }
-        
-        function applyQuickPersona() {
-            const val = document.getElementById('quickPersona').value;
-            if(PERSONAS[val]) document.getElementById('systemPersonaInput').value = PERSONAS[val];
-        }
 
-        function populateModelDropdown() {
-            const select = document.getElementById('chatModelSelect');
-            if(!select) return;
-            select.innerHTML = '';
-            AVAILABLE_MODELS.forEach(m => {
-                const opt = document.createElement('option');
-                opt.value = m.id; opt.textContent = m.name;
-                if(m.id === appState.currentModel) opt.selected = true;
-                select.appendChild(opt);
-            });
-        }
-
-        function changeChatModel(val) {
-            appState.currentModel = val; localStorage.setItem('akashiro_model_v10', val);
-            let chat = getCurrentChat(); if(chat) { chat.model = val; saveChatsToStorage(); }
-        }
-
-        function toggleSidebar(show) {
-            const sidebar = document.getElementById('appSidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (!sidebar || !overlay) return;
-            if (show) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); } 
-            else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
-        }
-
-        // --- 3. TOAST SYSTEM (V10) ---
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            if(!container) return;
+        function setupAdvancedMarked() {
+            if (typeof marked === 'undefined') return;
+            const renderer = new marked.Renderer();
             
-            const toast = document.createElement('div');
-            let iconStr = '<i class="fa-solid fa-circle-info text-blue-400"></i>';
-            let bgClass = 'bg-blue-950/90 border-blue-500/50';
-            
-            if(type === 'error') { iconStr = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i>'; bgClass = 'bg-rose-950/90 border-rose-500/50'; }
-            if(type === 'success') { iconStr = '<i class="fa-solid fa-check-circle text-emerald-400"></i>'; bgClass = 'bg-emerald-950/90 border-emerald-500/50'; }
-
-            toast.className = `toast flex items-center gap-3 px-4 py-2.5 rounded-xl border ${bgClass} text-zinc-200 text-xs font-mono shadow-panel backdrop-blur-xl max-w-sm`;
-            toast.innerHTML = `<div class="shrink-0 text-sm">${iconStr}</div> <div class="leading-relaxed break-words">${message}</div>`;
-            
-            container.appendChild(toast);
-            // Trigger animation
-            setTimeout(() => toast.classList.add('show'), 10);
-            
-            // Remove after 4 seconds
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => { if(toast.parentNode) toast.parentNode.removeChild(toast); }, 400);
-            }, 4000);
-        }
-
-        // --- 4. MARKDOWN, MEDIA & MATH (V10) ---
-        function setupMarkedRenderer() {
-            try {
-                if (typeof marked === 'undefined') return;
-                const renderer = new marked.Renderer();
+            renderer.code = function(code, language) {
+                const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
+                const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
+                const langName = language ? language.toUpperCase() : 'TEXT';
                 
-                renderer.code = function(code, language) {
-                    const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
-                    const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
-                    const langName = language ? language.toUpperCase() : 'TEXT';
-                    
-                    return `
-                    <div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code">
-                        <div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border">
-                            <span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span>
+                return `
+                <div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code">
+                    <div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border">
+                        <span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span>
+                        <div class="flex gap-2">
+                            <button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2 py-1 rounded border border-dark-border" onclick="downloadCode(this, '${langName}')" title="Download Script">
+                                <i class="fa-solid fa-download"></i>
+                            </button>
                             <button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)">
                                 <i class="fa-regular fa-copy"></i> <span>Copy</span>
                             </button>
                         </div>
-                        <div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar">
-                            <pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre>
-                        </div>
-                    </div>`;
-                };
-
-                renderer.link = function(href, title, text) {
-                    if(href.includes('[youtube.com/watch](https://youtube.com/watch)') || href.includes('youtu.be/')) {
-                        let videoId = href.split('v=')[1] || href.split('youtu.be/')[1];
-                        if(videoId) videoId = videoId.split('&')[0];
-                        return `<div class="my-4 w-full max-w-[500px] rounded-lg overflow-hidden border border-dark-border shadow-panel"><iframe src="[https://www.youtube.com/embed/$](https://www.youtube.com/embed/$){videoId}" frameborder="0" allowfullscreen class="w-full aspect-video bg-black"></iframe><div class="bg-dark-input px-3 py-1.5 text-[10px] text-zinc-400 font-mono border-t border-dark-border flex justify-between"><span class="truncate">Video Player</span><a href="${href}" target="_blank" class="text-brand hover:text-white ml-2 shrink-0">Buka <i class="fa-solid fa-external-link-alt text-[9px]"></i></a></div></div>`;
-                    }
-                    return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title || ''}">${text}</a>`;
-                };
-                marked.setOptions({ renderer: renderer, breaks: true });
-            } catch(e) { console.error("Markdown init error:", e); }
+                    </div>
+                    <div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar">
+                        <pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre>
+                    </div>
+                </div>`;
+            };
+            marked.setOptions({ renderer: renderer, breaks: true });
         }
+
+        window.downloadCode = function(btn, lang) {
+            const codeEl = btn.closest('.group\\/code').querySelector('code');
+            if(codeEl) {
+                const text = codeEl.innerText;
+                const blob = new Blob([text], { type: 'text/plain' });
+                const extMap = { 'JAVASCRIPT': 'js', 'HTML': 'html', 'PYTHON': 'py', 'CSS': 'css', 'PHP': 'php', 'C++': 'cpp', 'JSON': 'json' };
+                const ext = extMap[lang] || 'txt';
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `AkaShiro_Script.${ext}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                showToast(`Script berhasil diunduh (.${ext})`, 'success');
+            }
+        };
 
         function escapeHtml(str) { return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-        window.copyCodeBlock = async function(btn) {
-            try {
-                const codeEl = btn.closest('.group\\/code').querySelector('code');
-                if(codeEl) {
-                    await navigator.clipboard.writeText(codeEl.innerText);
-                    const originalHTML = btn.innerHTML;
-                    btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Copied!</span>';
-                    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
-                }
-            } catch(e) {}
-        }
-
-        window.copyAiMessage = async function(msgIndex) {
-            try {
-                let chat = getCurrentChat();
-                if(chat && chat.messages[msgIndex]) {
-                    await navigator.clipboard.writeText(chat.messages[msgIndex].text);
-                    showToast("Teks berhasil disalin ke clipboard.", "success");
-                }
-            } catch(e) {}
-        }
-        
-        window.editUserMessage = function(msgIndex) {
-            let chat = getCurrentChat();
-            if(!chat || !chat.messages[msgIndex] || isGenerating) return;
-            
-            const originalText = chat.messages[msgIndex].text;
-            document.getElementById('chatInput').value = originalText;
-            
-            // Hapus pesan ini dan semua pesan setelahnya (AI responses)
-            chat.messages = chat.messages.slice(0, msgIndex);
-            saveChatsToStorage();
-            renderMessages();
-            document.getElementById('chatInput').focus();
-        }
-
-        window.regenerateResponse = function() {
-            if(isGenerating) return;
-            let chat = getCurrentChat();
-            if(!chat || chat.messages.length < 2) return;
-            while(chat.messages.length > 0 && chat.messages[chat.messages.length-1].role !== 'user') { chat.messages.pop(); }
-            if(chat.messages.length === 0) return;
-            handleChatSubmit(null, true);
-        }
-
-        // --- 5. CORE CHAT LOGIC ---
-        function startNewChat() {
-            if(isGenerating) abortGeneration();
-            const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Komputasi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
-            appState.chats.unshift(newChat); appState.currentChatId = newChat.id;
-            saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
-            if(window.innerWidth < 1024) toggleSidebar(false);
-        }
-
-        function loadChatSession(chatId) {
-            if(isGenerating) abortGeneration();
-            appState.currentChatId = chatId; const chat = getCurrentChat();
-            if(chat && chat.model) {
-                appState.currentModel = chat.model; const select = document.getElementById('chatModelSelect'); if(select) select.value = chat.model;
-            }
-            renderChatHistory(); renderMessages(); updateHeaderTitle();
-            if (window.innerWidth < 1024) toggleSidebar(false);
-        }
-
-        function getCurrentChat() { return appState.chats.find(c => c.id === appState.currentChatId); }
-
-        function updateHeaderTitle() {
-            const chat = getCurrentChat(); const titleEl = document.getElementById('headerChatTitle');
-            if(titleEl && chat) titleEl.innerText = chat.title;
-        }
-        
-        function handleSearchHistory(query) { renderChatHistory(query.toLowerCase()); }
-
-        function renderChatHistory(filter = '') {
-            const listEl = document.getElementById('chatHistoryList'); if (!listEl) return;
-            listEl.innerHTML = '';
-            const filteredChats = appState.chats.filter(c => c.title.toLowerCase().includes(filter));
-            
-            filteredChats.forEach(chat => {
-                const isActive = chat.id === appState.currentChatId;
-                const activeClass = isActive ? 'bg-dark-input border-l-2 border-brand text-white shadow-sm' : 'hover:bg-zinc-900 border-l-2 border-transparent text-zinc-400 hover:text-zinc-200';
-                
-                const item = document.createElement('div');
-                item.className = `p-2.5 rounded-r-lg text-[11px] font-mono transition-all flex items-center justify-between group cursor-pointer ${activeClass}`;
-                item.onclick = () => loadChatSession(chat.id);
-                item.innerHTML = `
-                    <div class="flex items-center gap-2.5 w-[85%]"><i class="fa-regular fa-message text-[10px] ${isActive ? 'text-brand' : 'text-zinc-600'} shrink-0"></i><span class="truncate">${escapeHtml(chat.title)}</span></div>
-                    <button onclick="deleteChatSession(event, '${chat.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 rounded bg-dark-bg text-zinc-500 hover:text-rose-400 hover:bg-rose-950/50 transition-colors shrink-0"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
-                `;
-                listEl.appendChild(item);
-            });
-        }
-
-        // Smart Scroll
-        function handleScroll() {
-            const scrollArea = document.getElementById('chatScrollArea'); const scrollBtn = document.getElementById('scrollBtn');
-            if(!scrollArea || !scrollBtn) return;
-            const isAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop <= scrollArea.clientHeight + 150;
-            isAutoScrolling = isAtBottom;
-            if(!isAtBottom) { scrollBtn.classList.add('visible'); } else { scrollBtn.classList.remove('visible'); }
-        }
-        
-        function forceScrollBottom() {
-            const scrollArea = document.getElementById('chatScrollArea');
-            if(scrollArea) { scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' }); }
-        }
-
-        function scrollToBottom() {
-            const scrollArea = document.getElementById('chatScrollArea'); if (!scrollArea) return;
-            if (isAutoScrolling) scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
-        }
-
-        // Render Individual Message HTML (To be used by full render and streaming update)
+        /* ==============================================================
+           3. UI RENDERER & MESSAGE HANDLING
+           ============================================================== */
         function generateMessageHTML(msg, index, isLastMsg) {
             const isUser = msg.role === 'user';
             
@@ -651,6 +568,9 @@
                         
                         ${!msg.isTyping && !isError ? `
                         <div class="mt-2 ml-2 flex flex-wrap items-center gap-2 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-300">
+                            <button type="button" onclick="AkaShiroVoice.playTTS(this, getCurrentChat().messages[${index}].text)" class="text-[9px] font-mono text-zinc-400 hover:text-white flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2 py-1 rounded shadow-sm hover:bg-zinc-800 w-20 justify-center">
+                                <i class="fa-solid fa-volume-high"></i> Baca
+                            </button>
                             <button type="button" onclick="copyAiMessage(${index})" class="text-[9px] font-mono text-zinc-400 hover:text-white flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2 py-1 rounded shadow-sm hover:bg-zinc-800">
                                 <i class="fa-regular fa-copy"></i> Salin
                             </button>
@@ -664,36 +584,6 @@
             }
         }
 
-        function renderMessages() {
-            const chat = getCurrentChat();
-            const listContainer = document.getElementById('chatMessagesList');
-            const welcomeHero = document.getElementById('welcomeHero');
-
-            if (!listContainer) return; 
-            if (!chat || chat.messages.length === 0) {
-                listContainer.innerHTML = ''; if (welcomeHero) welcomeHero.classList.remove('hidden'); return;
-            }
-            if (welcomeHero) welcomeHero.classList.add('hidden');
-            
-            listContainer.innerHTML = '';
-            chat.messages.forEach((msg, index) => {
-                const isLast = index === chat.messages.length - 1;
-                listContainer.insertAdjacentHTML('beforeend', generateMessageHTML(msg, index, isLast));
-                
-                // KaTeX Rendering (Delayed to ensure DOM is ready)
-                if(msg.role !== 'user' && !msg.isTyping && typeof renderMathInElement !== 'undefined') {
-                    const node = document.getElementById(`msg-${index}`);
-                    if(node) {
-                        try {
-                            renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '[', right: ']', display: true} ], throwOnError: false });
-                        } catch(e) {}
-                    }
-                }
-            });
-            scrollToBottom();
-        }
-        
-        // Fast Update for Streaming
         function updateLastMessageUI() {
             const chat = getCurrentChat();
             if(!chat || chat.messages.length === 0) return;
@@ -702,9 +592,7 @@
             const node = document.getElementById(`msg-${index}`);
             
             if(node) {
-                const isError = (msg.text || '').includes('⚠️');
                 const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream-cursor' : '';
-                
                 let rawHtml = escapeHtml(msg.text || '');
                 try { if(typeof marked !== 'undefined') rawHtml = marked.parse(msg.text || ''); } catch(e){}
                 let safeHtml = rawHtml;
@@ -713,55 +601,20 @@
                 const markdownBody = node.querySelector('.markdown-body');
                 if(markdownBody) {
                     markdownBody.innerHTML = (msg.isTyping && msg.text.length === 0) ? `<div class="typing-dots"><span></span><span></span><span></span></div>` : safeHtml;
-                    
                     if(msg.isTyping && msg.text.length > 0) markdownBody.classList.add('stream-cursor');
                     else markdownBody.classList.remove('stream-cursor');
                 }
                 
-                // Render Math real-time ONLY if not typing to save CPU
                 if(!msg.isTyping && typeof renderMathInElement !== 'undefined') {
-                    try { renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '[', right: ']', display: true} ], throwOnError: false }); } catch(e) {}
+                    try { renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], throwOnError: false }); } catch(e) {}
                 }
             }
             scrollToBottom();
         }
 
-        // --- 6. NETWORK & STREAMING PROCESS (V10) ---
-        function sendQuickPrompt(promptText) {
-            const inputEl = document.getElementById('chatInput');
-            if (inputEl) { inputEl.value = promptText; handleInputAutoResize({target: inputEl}); }
-            handleChatSubmit(new Event('submit'));
-        }
-
-        function abortGeneration() {
-            if(currentAbortController) { currentAbortController.abort(); currentAbortController = null; }
-            toggleInputState(false);
-            
-            let chat = getCurrentChat();
-            if(chat && chat.messages.length > 0) {
-                const lastMsg = chat.messages[chat.messages.length-1];
-                if(lastMsg.isTyping) {
-                    lastMsg.isTyping = false;
-                    if(lastMsg.text.length === 0) lastMsg.text = "*(Proses dibatalkan)*";
-                    saveChatsToStorage(); updateLastMessageUI(); renderMessages(); // Full render to show action bar
-                }
-            }
-        }
-
-        function toggleInputState(generating) {
-            isGenerating = generating;
-            const btn = document.getElementById('sendBtn'); const stopBtn = document.getElementById('stopBtn'); const input = document.getElementById('chatInput');
-            if(!btn || !stopBtn || !input) return;
-            
-            if(generating) {
-                btn.classList.add('hidden'); stopBtn.classList.remove('hidden');
-                input.disabled = true; input.classList.add('opacity-50');
-            } else {
-                btn.classList.remove('hidden'); stopBtn.classList.add('hidden');
-                input.disabled = false; input.classList.remove('opacity-50'); input.focus();
-            }
-        }
-
+        /* ==============================================================
+           4. CORE API & STREAMING ENGINE
+           ============================================================== */
         async function handleChatSubmit(e, isRegenerate = false) {
             if (e) e.preventDefault();
             if (isGenerating) return;
@@ -771,23 +624,15 @@
             if (!inputEl) return;
             
             let prompt = "";
-            if(!isRegenerate) {
-                prompt = inputEl.value.trim();
-                if (!prompt) return;
-            }
+            if(!isRegenerate) { prompt = inputEl.value.trim(); if (!prompt) return; }
 
-            if (!appState.baseUrl || !appState.apiKey) { 
-                showToast("Konfigurasi API belum diatur!", "error"); openModal('settingsModal'); return; 
-            }
+            if (!appState.baseUrl || !appState.apiKey) { showToast("Konfigurasi API belum diatur!", "error"); openModal('settingsModal'); return; }
 
             let chat = getCurrentChat();
             if (!chat) { startNewChat(); chat = getCurrentChat(); }
             
             if (!isRegenerate) {
-                if (chat.messages.length === 0) {
-                    chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
-                    updateHeaderTitle(); renderChatHistory();
-                }
+                if (chat.messages.length === 0) { chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt; updateHeaderTitle(); renderChatHistory(); }
                 chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             }
             
@@ -802,55 +647,41 @@
             currentAbortController = new AbortController();
 
             try {
-                // Konteks Memori Pintar: Ambil maksimal 12 pesan terakhir agar tidak over-token
                 let contextMessages = chat.messages.slice(0, -1);
-                if(contextMessages.length > 12) {
-                    contextMessages = contextMessages.slice(contextMessages.length - 12);
-                }
+                if(contextMessages.length > 12) contextMessages = contextMessages.slice(contextMessages.length - 12);
                 
                 await callAIAPI_Stream(contextMessages, currentAbortController.signal, loadingMsgIndex);
                 saveChatsToStorage();
             } catch (err) {
                 if (err.name === 'AbortError') return; 
-                console.error("API Fetch Error:", err);
                 chat.messages[loadingMsgIndex].isTyping = false;
-                chat.messages[loadingMsgIndex].text = `⚠️ **Gateway Error:** \`${err.message}\`\n\n*Jika API tidak merespons, coba ganti Model, pastikan API Key benar, atau matikan ekstensi pengaman.*`;
+                chat.messages[loadingMsgIndex].text = `⚠️ **Gateway Error:** \`${err.message}\`\n\n*Jika API tidak merespons, coba ganti Model atau pastikan API Key benar.*`;
                 showToast("Gagal menerima stream data dari server.", "error");
             } finally {
                 chat.messages[loadingMsgIndex].isTyping = false;
-                saveChatsToStorage();
-                toggleInputState(false); currentAbortController = null; 
-                renderMessages(); // Final full render to attach action bar
+                saveChatsToStorage(); toggleInputState(false); currentAbortController = null; 
+                renderMessages(); 
             }
         }
 
-        // V10 STREAMING LOGIC
         async function callAIAPI_Stream(messagesHistory, signal, msgIndex) {
             const cleanBaseUrl = appState.baseUrl.replace(/\/+$/, '');
             let apiUrl = `${cleanBaseUrl}/chat/completions`;
             let chat = getCurrentChat();
             
             const formattedMessages = messagesHistory.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text || '' }));
-            if (appState.systemPersona) { formattedMessages.unshift({ role: "system", content: appState.systemPersona }); }
+            if (appState.systemPersona) formattedMessages.unshift({ role: "system", content: appState.systemPersona });
 
-            const payload = { 
-                model: appState.currentModel, 
-                messages: formattedMessages, 
-                temperature: parseFloat(appState.temperature),
-                stream: true // Enable Streaming!
-            };
-            
+            const payload = { model: appState.currentModel, messages: formattedMessages, temperature: parseFloat(appState.temperature), stream: true };
             const reqHeaders = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${appState.apiKey}` };
 
             const response = await fetch(apiUrl, { method: 'POST', headers: reqHeaders, body: JSON.stringify(payload), signal: signal });
-
             if (!response.ok) {
                 let errMsg = `HTTP Status ${response.status}`;
-                try { const errText = await response.text(); const errJson = JSON.parse(errText); errMsg = errJson.error?.message || errJson.message || errMsg; } catch(e) {}
+                try { const errJson = await response.json(); errMsg = errJson.error?.message || errJson.message || errMsg; } catch(e) {}
                 throw new Error(errMsg);
             }
 
-            // Stream Reader
             const reader = response.body.getReader();
             const decoder = new TextDecoder("utf-8");
             let aiFullResponse = "";
@@ -872,98 +703,157 @@
                         if (token) {
                             aiFullResponse += token;
                             chat.messages[msgIndex].text = aiFullResponse;
-                            
-                            // Throttle UI update using RequestAnimationFrame for buttery smooth typing
                             window.requestAnimationFrame(updateLastMessageUI);
                         }
-                    } catch (e) {
-                        // Silent ignore for non-JSON lines during stream
-                    }
+                    } catch (e) { }
                 }
             }
         }
 
-        // --- 7. EVENT HANDLERS & UTILS ---
-        function handleInputKeydown(e) { 
-            if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { 
-                e.preventDefault(); if(!isGenerating) handleChatSubmit(e); 
-            } 
+        /* ==============================================================
+           5. UTILITIES & EVENT HANDLERS
+           ============================================================== */
+        function toggleInputState(generating) {
+            isGenerating = generating;
+            const btn = document.getElementById('sendBtn'); const stopBtn = document.getElementById('stopBtn'); const input = document.getElementById('chatInput');
+            if(generating) { btn.classList.add('hidden'); stopBtn.classList.remove('hidden'); input.disabled = true; input.classList.add('opacity-50'); } 
+            else { btn.classList.remove('hidden'); stopBtn.classList.add('hidden'); input.disabled = false; input.classList.remove('opacity-50'); input.focus(); }
         }
         
-        function handleInputAutoResize(e) {
-            const el = e.target; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 200) + 'px'; 
-            const charCountEl = document.getElementById('charCount'); 
-            if (charCountEl) charCountEl.innerText = `${el.value.length} chars`;
+        function abortGeneration() {
+            if(currentAbortController) { currentAbortController.abort(); currentAbortController = null; }
+            toggleInputState(false);
+            let chat = getCurrentChat();
+            if(chat && chat.messages.length > 0 && chat.messages[chat.messages.length-1].isTyping) {
+                chat.messages[chat.messages.length-1].isTyping = false;
+                if(chat.messages[chat.messages.length-1].text.length === 0) chat.messages[chat.messages.length-1].text = "*(Proses dibatalkan)*";
+                saveChatsToStorage(); renderMessages();
+            }
         }
+
+        window.copyCodeBlock = async function(btn) {
+            try { const codeEl = btn.closest('.group\\/code').querySelector('code'); if(codeEl) { await navigator.clipboard.writeText(codeEl.innerText); const originalHTML = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Copied!</span>'; setTimeout(() => { btn.innerHTML = originalHTML; }, 2000); } } catch(e) {}
+        }
+        window.copyAiMessage = async function(msgIndex) {
+            try { let chat = getCurrentChat(); if(chat && chat.messages[msgIndex]) { await navigator.clipboard.writeText(chat.messages[msgIndex].text); showToast("Teks berhasil disalin.", "success"); } } catch(e) {}
+        }
+        window.editUserMessage = function(msgIndex) {
+            let chat = getCurrentChat(); if(!chat || !chat.messages[msgIndex] || isGenerating) return;
+            document.getElementById('chatInput').value = chat.messages[msgIndex].text;
+            chat.messages = chat.messages.slice(0, msgIndex);
+            saveChatsToStorage(); renderMessages(); document.getElementById('chatInput').focus();
+        }
+        window.regenerateResponse = function() {
+            if(isGenerating) return; let chat = getCurrentChat(); if(!chat || chat.messages.length < 2) return;
+            while(chat.messages.length > 0 && chat.messages[chat.messages.length-1].role !== 'user') { chat.messages.pop(); }
+            if(chat.messages.length > 0) handleChatSubmit(null, true);
+        }
+
+        function renderMessages() {
+            const chat = getCurrentChat(); const listContainer = document.getElementById('chatMessagesList'); const welcomeHero = document.getElementById('welcomeHero');
+            if (!listContainer) return; 
+            if (!chat || chat.messages.length === 0) { listContainer.innerHTML = ''; if (welcomeHero) welcomeHero.classList.remove('hidden'); return; }
+            if (welcomeHero) welcomeHero.classList.add('hidden');
+            
+            listContainer.innerHTML = '';
+            chat.messages.forEach((msg, index) => {
+                const isLast = index === chat.messages.length - 1;
+                listContainer.insertAdjacentHTML('beforeend', generateMessageHTML(msg, index, isLast));
+                if(msg.role !== 'user' && !msg.isTyping && typeof renderMathInElement !== 'undefined') {
+                    const node = document.getElementById(`msg-${index}`);
+                    if(node) { try { renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], throwOnError: false }); } catch(e) {} }
+                }
+            });
+            scrollToBottom();
+        }
+
+        function startNewChat() {
+            if(isGenerating) abortGeneration();
+            const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Komputasi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
+            appState.chats.unshift(newChat); appState.currentChatId = newChat.id;
+            saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
+            if(window.innerWidth < 1024) toggleSidebar(false);
+        }
+        function loadChatSession(chatId) {
+            if(isGenerating) abortGeneration();
+            appState.currentChatId = chatId; const chat = getCurrentChat();
+            if(chat && chat.model) { appState.currentModel = chat.model; const select = document.getElementById('chatModelSelect'); if(select) select.value = chat.model; }
+            renderChatHistory(); renderMessages(); updateHeaderTitle();
+            if (window.innerWidth < 1024) toggleSidebar(false);
+        }
+
+        function getCurrentChat() { return appState.chats.find(c => c.id === appState.currentChatId); }
+        function updateHeaderTitle() { const chat = getCurrentChat(); const titleEl = document.getElementById('headerChatTitle'); if(titleEl && chat) titleEl.innerText = chat.title; }
+        function handleSearchHistory(query) { renderChatHistory(query.toLowerCase()); }
+
+        function renderChatHistory(filter = '') {
+            const listEl = document.getElementById('chatHistoryList'); if (!listEl) return;
+            listEl.innerHTML = ''; const filteredChats = appState.chats.filter(c => c.title.toLowerCase().includes(filter));
+            filteredChats.forEach(chat => {
+                const isActive = chat.id === appState.currentChatId;
+                const activeClass = isActive ? 'bg-dark-input border-l-2 border-brand text-white shadow-sm' : 'hover:bg-zinc-900 border-l-2 border-transparent text-zinc-400 hover:text-zinc-200';
+                const item = document.createElement('div');
+                item.className = `p-2.5 rounded-r-lg text-[11px] font-mono transition-all flex items-center justify-between group cursor-pointer ${activeClass}`;
+                item.onclick = () => loadChatSession(chat.id);
+                item.innerHTML = `<div class="flex items-center gap-2.5 w-[85%]"><i class="fa-regular fa-message text-[10px] ${isActive ? 'text-brand' : 'text-zinc-600'} shrink-0"></i><span class="truncate">${escapeHtml(chat.title)}</span></div>
+                    <button onclick="deleteChatSession(event, '${chat.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 rounded bg-dark-bg text-zinc-500 hover:text-rose-400 hover:bg-rose-950/50 transition-colors shrink-0"><i class="fa-solid fa-trash-can text-[10px]"></i></button>`;
+                listEl.appendChild(item);
+            });
+        }
+
+        function handleScroll() {
+            const scrollArea = document.getElementById('chatScrollArea'); const scrollBtn = document.getElementById('scrollBtn');
+            if(!scrollArea || !scrollBtn) return;
+            isAutoScrolling = scrollArea.scrollHeight - scrollArea.scrollTop <= scrollArea.clientHeight + 150;
+            if(!isAutoScrolling) { scrollBtn.classList.add('visible'); } else { scrollBtn.classList.remove('visible'); }
+        }
+        
+        function forceScrollBottom() { const sa = document.getElementById('chatScrollArea'); if(sa) sa.scrollTo({ top: sa.scrollHeight, behavior: 'smooth' }); }
+        function scrollToBottom() { const sa = document.getElementById('chatScrollArea'); if (sa && isAutoScrolling) sa.scrollTo({ top: sa.scrollHeight, behavior: 'smooth' }); }
+
+        function handleInputKeydown(e) { if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { e.preventDefault(); if(!isGenerating) handleChatSubmit(e); } }
+        function handleInputAutoResize(e) { const el = e.target; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 200) + 'px'; const charCountEl = document.getElementById('charCount'); if (charCountEl) charCountEl.innerText = `${el.value.length} chars`; }
 
         function saveSettings() {
-            const elBaseUrl = document.getElementById('customBaseUrl');
-            const elApiKey = document.getElementById('customApiKey');
-            const elTempSlider = document.getElementById('tempSlider');
-            const elSystemPersona = document.getElementById('systemPersonaInput');
-
-            if (elBaseUrl) appState.baseUrl = elBaseUrl.value.trim();
-            if (elApiKey) appState.apiKey = elApiKey.value.trim();
-            if (elTempSlider) appState.temperature = parseFloat(elTempSlider.value);
-            if (elSystemPersona) appState.systemPersona = elSystemPersona.value.trim();
-
-            localStorage.setItem('akashiro_baseurl_v10', appState.baseUrl); 
-            localStorage.setItem('akashiro_apikey_v10', appState.apiKey);
-            localStorage.setItem('akashiro_temp_v10', appState.temperature); 
-            localStorage.setItem('akashiro_persona_v10', appState.systemPersona);
-            
-            closeModal('settingsModal'); 
-            showToast("Konfigurasi sistem berhasil disimpan.", "success");
+            appState.baseUrl = document.getElementById('customBaseUrl')?.value.trim(); appState.apiKey = document.getElementById('customApiKey')?.value.trim();
+            appState.temperature = parseFloat(document.getElementById('tempSlider')?.value); appState.systemPersona = document.getElementById('systemPersonaInput')?.value.trim();
+            localStorage.setItem('akashiro_baseurl_v10', appState.baseUrl); localStorage.setItem('akashiro_apikey_v10', appState.apiKey);
+            localStorage.setItem('akashiro_temp_v10', appState.temperature); localStorage.setItem('akashiro_persona_v10', appState.systemPersona);
+            closeModal('settingsModal'); showToast("Konfigurasi disimpan.", "success");
         }
-
         function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v10', JSON.stringify(appState.chats)); }
-        
-        function deleteChatSession(e, chatId) {
-            if(e) e.stopPropagation(); 
-            appState.chats = appState.chats.filter(c => c.id !== chatId);
-            if (appState.currentChatId === chatId) appState.currentChatId = appState.chats[0]?.id || null;
-            saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
-        }
-        
-        function clearAllChats() { 
-            if(confirm("Hapus PERMANEN semua riwayat komputasi dari browser ini?")) {
-                appState.chats = []; appState.currentChatId = null; 
-                saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
-                showToast("Seluruh riwayat berhasil dibersihkan.");
-            }
-        }
+        function deleteChatSession(e, chatId) { if(e) e.stopPropagation(); appState.chats = appState.chats.filter(c => c.id !== chatId); if (appState.currentChatId === chatId) appState.currentChatId = appState.chats[0]?.id || null; saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle(); }
+        function clearAllChats() { if(confirm("Hapus PERMANEN semua riwayat?")) { appState.chats = []; appState.currentChatId = null; saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle(); showToast("Riwayat dibersihkan."); } }
 
         function exportCurrentChat(format) {
-            const chat = getCurrentChat(); 
-            if (!chat || chat.messages.length === 0) {
-                showToast("Tidak ada data untuk diekspor.", "error"); return;
-            }
-            
+            const chat = getCurrentChat(); if (!chat || chat.messages.length === 0) { showToast("Tidak ada data untuk diekspor.", "error"); return; }
             if(format === 'markdown') {
                 let textData = `# AkaShiro Transkrip: ${chat.title}\nID: ${chat.id}\nTanggal: ${new Date().toLocaleString()}\nModel: ${chat.model}\n\n---\n\n`;
-                chat.messages.forEach(m => { 
-                    const roleName = m.role === 'user' ? 'USER' : 'AKASHIRO ENGINE';
-                    textData += `### ${roleName} (${new Date(m.timestamp).toLocaleTimeString()})\n${m.text}\n\n---\n\n`; 
-                });
-                
-                const blob = new Blob([textData], { type: 'text/markdown;charset=utf-8;' });
-                const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
-                a.download = `AkaShiro_${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
-                document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                showToast("Transkrip Markdown berhasil diunduh.", "success");
+                chat.messages.forEach(m => { textData += `### ${m.role === 'user' ? 'USER' : 'AKASHIRO ENGINE'} (${new Date(m.timestamp).toLocaleTimeString()})\n${m.text}\n\n---\n\n`; });
+                const blob = new Blob([textData], { type: 'text/markdown;charset=utf-8;' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
+                a.download = `AkaShiro_${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`; document.body.appendChild(a); a.click(); document.body.removeChild(a); showToast("Transkrip diunduh.", "success");
             }
         }
 
-        function openModal(id) { 
-            const el = document.getElementById(id); const content = document.getElementById(id + 'Content');
-            if (el) { el.classList.remove('hidden'); setTimeout(() => { if(content) {content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100');} }, 10); }
+        function applyQuickPersona() { const val = document.getElementById('quickPersona').value; if(PERSONAS[val]) document.getElementById('systemPersonaInput').value = PERSONAS[val]; }
+        function populateModelDropdown() {
+            const select = document.getElementById('chatModelSelect'); if(!select) return; select.innerHTML = '';
+            AVAILABLE_MODELS.forEach(m => { const opt = document.createElement('option'); opt.value = m.id; opt.textContent = m.name; if(m.id === appState.currentModel) opt.selected = true; select.appendChild(opt); });
         }
-        
-        function closeModal(id) { 
-            const el = document.getElementById(id); const content = document.getElementById(id + 'Content');
-            if(content) { content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0'); }
-            setTimeout(() => { if (el) el.classList.add('hidden'); }, 300);
+        function changeChatModel(val) { appState.currentModel = val; localStorage.setItem('akashiro_model_v10', val); let chat = getCurrentChat(); if(chat) { chat.model = val; saveChatsToStorage(); } }
+        function toggleSidebar(show) { const sidebar = document.getElementById('appSidebar'); const overlay = document.getElementById('sidebarOverlay'); if (!sidebar || !overlay) return; if (show) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); } else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); } }
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer'); if(!container) return;
+            const toast = document.createElement('div'); let iconStr = '<i class="fa-solid fa-circle-info text-blue-400"></i>'; let bgClass = 'bg-blue-950/90 border-blue-500/50';
+            if(type === 'error') { iconStr = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i>'; bgClass = 'bg-rose-950/90 border-rose-500/50'; }
+            if(type === 'success') { iconStr = '<i class="fa-solid fa-check-circle text-emerald-400"></i>'; bgClass = 'bg-emerald-950/90 border-emerald-500/50'; }
+            toast.className = `toast flex items-center gap-3 px-4 py-2.5 rounded-xl border ${bgClass} text-zinc-200 text-xs font-mono shadow-panel backdrop-blur-xl max-w-sm`;
+            toast.innerHTML = `<div class="shrink-0 text-sm">${iconStr}</div> <div class="leading-relaxed break-words">${message}</div>`;
+            container.appendChild(toast); setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => { if(toast.parentNode) toast.parentNode.removeChild(toast); }, 400); }, 4000);
         }
+        function openModal(id) { const el = document.getElementById(id); const content = document.getElementById(id + 'Content'); if (el) { el.classList.remove('hidden'); setTimeout(() => { if(content) {content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100');} }, 10); } }
+        function closeModal(id) { const el = document.getElementById(id); const content = document.getElementById(id + 'Content'); if(content) { content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0'); } setTimeout(() => { if (el) el.classList.add('hidden'); }, 300); }
     </script>
 </body>
 </html>
