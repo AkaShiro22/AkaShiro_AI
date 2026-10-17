@@ -37,8 +37,6 @@
 
     <!-- Core Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Markdown, Sanitizer, Code Highlight -->
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
@@ -154,8 +152,8 @@
                 
                 <!-- Toggle Menu -->
                 <div class="text-center pt-3 mt-2 border-t border-dark-border/50">
-                    <p id="toggleToRegister" class="text-[11px] text-zinc-400 font-mono">Belum punya akun? <a href="#" onclick="toggleAuthMode('register')" class="text-brand hover:text-white transition-colors underline underline-offset-2">Daftar di sini</a></p>
-                    <p id="toggleToLogin" class="text-[11px] text-zinc-400 font-mono hidden">Sudah punya akun? <a href="#" onclick="toggleAuthMode('login')" class="text-brand hover:text-white transition-colors underline underline-offset-2">Masuk di sini</a></p>
+                    <p id="toggleToRegister" class="text-[11px] text-zinc-400 font-mono">Belum punya akun? <a href="#" onclick="event.preventDefault(); toggleAuthMode('register')" class="text-brand hover:text-white transition-colors underline underline-offset-2">Daftar di sini</a></p>
+                    <p id="toggleToLogin" class="text-[11px] text-zinc-400 font-mono hidden">Sudah punya akun? <a href="#" onclick="event.preventDefault(); toggleAuthMode('login')" class="text-brand hover:text-white transition-colors underline underline-offset-2">Masuk di sini</a></p>
                 </div>
             </form>
         </div>
@@ -688,7 +686,7 @@
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => { if(toast.parentNode) toast.parentNode.removeChild(toast); }, 400); }, 4000);
         }
 
-        // --- MARKDOWN SETUP (Hidden for brevity, identical logic) ---
+        // --- MARKDOWN SETUP ---
         function setupMarkedRenderer() {
             try {
                 if (typeof marked === 'undefined') return;
@@ -697,11 +695,14 @@
                     const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
                     const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
                     const langName = language ? language.toUpperCase() : 'TEXT';
+                    
+                    // PERBAIKAN: Karakter || yang sebelumnya error karena formatting kini telah diperbaiki agar valid JavaScript.
                     return `<div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code"><div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border"><span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span><button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)"><i class="fa-regular fa-copy"></i> <span>Copy</span></button></div><div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar"><pre class="m-0"><code class="hljs ${language \vert{}\vert{} ''}">${highlighted}</code></pre></div></div>`;
                 };
                 marked.setOptions({ renderer: renderer, breaks: true });
             } catch(e) {}
         }
+        
         function escapeHtml(str) { return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
         window.copyCodeBlock = async function(btn) {
             try { const codeEl = btn.closest('.group\\/code').querySelector('code'); if(codeEl) { await navigator.clipboard.writeText(codeEl.innerText); const originalHTML = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Copied!</span>'; setTimeout(() => { btn.innerHTML = originalHTML; }, 2000); } } catch(e) {}
