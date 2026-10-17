@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AkaShiro AI — V10 Ultimate Pro (Tier Management)</title>
+    <title>AkaShiro AI — V10 Ultimate Pro (Fixed Auth)</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -393,8 +393,8 @@
         let authState = {
             isLoggedIn: false,
             currentUserEmail: null,
-            tier: 'free', // 'free' or 'premium'
-            mode: 'login'
+            tier: 'free',
+            mode: 'login' // 'login' or 'register'
         };
 
         let appState = {
@@ -499,12 +499,10 @@
             }
         }
 
-        // --- TOGGLE TIER SYSTEM (Free / Premium Simulation) ---
         function toggleUserTier() {
             authState.tier = authState.tier === 'free' ? 'premium' : 'free';
             localStorage.setItem('akashiro_session_v10', JSON.stringify(authState));
 
-            // Update database lokal juga
             let usersDb = JSON.parse(localStorage.getItem('akashiro_users_db_v10')) || {};
             if(usersDb[authState.currentUserEmail]) {
                 usersDb[authState.currentUserEmail].tier = authState.tier;
@@ -536,7 +534,6 @@
             populateModelDropdown();
         }
 
-        // --- WORKSPACE INITIALIZATION ---
         function initAppWorkspace() {
             document.getElementById('sidebarUserEmail').innerText = authState.currentUserEmail;
             updateTierUI();
@@ -579,7 +576,6 @@
                 const opt = document.createElement('option');
                 opt.value = m.id;
                 
-                // Batasi akses model berdasarkan Tier User
                 if (m.tier === 'premium' && authState.tier !== 'premium') {
                     opt.textContent = `${m.name} (🔒 Khusus Premium)`;
                     opt.disabled = true;
