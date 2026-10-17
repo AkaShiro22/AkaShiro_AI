@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AkaShiro AI (赤白 AI) — Enterprise Cyberpunk Engine</title>
+    <title>AkaShiro AI (赤白 AI) — Premium Enterprise Engine</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
                 extend: {
                     colors: {
                         crimson: { DEFAULT: '#FF3B5C', 50: '#fff0f3', 100: '#ffe1e6', 400: '#ff6b85', 500: '#FF3B5C', 600: '#e01e42', 700: '#b80f2f', 900: '#520412' },
-                        surface: { 50: '#0b0c10', 100: '#12141a', 200: '#1a1c24', 300: '#232630' }
+                        surface: { 50: '#07090e', 100: '#0d1017', 200: '#151923', 300: '#1e2433' }
                     },
                     fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
                     boxShadow: { 'glow-crimson': '0 0 25px rgba(255, 59, 92, 0.4)', 'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.4)' },
@@ -30,7 +30,7 @@
         }
     </script>
 
-    <!-- Plugins: FontAwesome, Marked, DOMPurify, HighlightJS -->
+    <!-- Plugins -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
@@ -38,24 +38,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
     <style>
-        :root { --glass-bg: rgba(18, 20, 26, 0.65); --glass-border: rgba(255, 255, 255, 0.08); }
+        :root { --glass-bg: rgba(13, 16, 23, 0.75); --glass-border: rgba(255, 255, 255, 0.08); }
         body {
-            background-color: #0b0c10; color: #f8fafc;
-            background-image: radial-gradient(circle at 10% 10%, rgba(255, 59, 92, 0.1), transparent 40%), radial-gradient(circle at 90% 90%, rgba(255, 59, 92, 0.05), transparent 40%);
+            background-color: #07090e; color: #f8fafc;
+            background-image: radial-gradient(circle at 15% 10%, rgba(255, 59, 92, 0.08), transparent 40%), radial-gradient(circle at 85% 90%, rgba(255, 59, 92, 0.05), transparent 40%);
             background-attachment: fixed; -webkit-tap-highlight-color: transparent;
         }
         
-        /* Premium Glassmorphism */
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); }
-        .glass-bubble { background: rgba(30, 34, 45, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        
-        /* Premium Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); }
+        .glass-bubble { background: rgba(21, 25, 35, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 4px 25px rgba(0,0,0,0.25); }
+        .glass-card-hover { transition: all 0.3s ease; }
+        .glass-card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 59, 92, 0.15); border-color: rgba(255, 59, 92, 0.3); }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #FF3B5C; }
         
-        /* Markdown Styling - Enterprise Grade */
         .markdown-body { font-size: 0.9rem; line-height: 1.7; color: #cbd5e1; }
         @media (min-width: 768px) { .markdown-body { font-size: 0.95rem; } }
         .markdown-body p { margin-bottom: 1.25rem; }
@@ -68,77 +67,85 @@
         .markdown-body blockquote { border-left: 3px solid #FF3B5C; background: rgba(255,59,92,0.05); padding: 1rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; font-style: italic; color: #94a3b8; }
         .markdown-body code:not(pre code) { background: rgba(0,0,0,0.5); padding: 0.2rem 0.4rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #ff8fa3; border: 1px solid rgba(255,255,255,0.05); }
         
-        /* Table Styling */
         .markdown-body table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.5rem 0; display: block; overflow-x: auto; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .markdown-body th, .markdown-body td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
         .markdown-body th { background: rgba(255,59,92,0.1); color: #fff; font-weight: 600; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.05em; }
         .markdown-body tr:last-child td { border-bottom: none; }
         .markdown-body tr:hover td { background: rgba(255,255,255,0.02); }
         
-        /* Media Rendering (Images, Videos, Iframes) */
         .markdown-body img { max-width: 100%; border-radius: 12px; margin: 1.5rem 0; border: 1px solid var(--glass-border); box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: transform 0.3s; }
         .markdown-body img:hover { transform: scale(1.02); }
         .markdown-body iframe, .markdown-body video { width: 100%; max-width: 600px; height: 315px; border-radius: 12px; margin: 1.5rem 0; border: 1px solid var(--glass-border); box-shadow: 0 8px 25px rgba(0,0,0,0.3); background: #000; }
         .markdown-body audio { width: 100%; max-width: 400px; margin: 1rem 0; border-radius: 30px; }
         
-        /* Animated Typing Dots */
         .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #FF3B5C; border-radius: 50%; margin: 0 3px; animation: bounce 1.4s infinite ease-in-out both; }
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; box-shadow: 0 0 10px #FF3B5C; } }
 
-        /* Custom Textarea */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="h-[100dvh] flex flex-col overflow-hidden selection:bg-crimson-500 selection:text-white">
 
-    <!-- HEADER / NAVBAR -->
-    <header class="h-16 glass-panel border-b border-white/10 px-4 lg:px-6 flex items-center justify-between z-40 shrink-0 shadow-md relative">
-        <!-- Glow Line at the bottom of header -->
+    <!-- HEADER NAVIGATION -->
+    <header class="h-16 glass-panel border-b border-white/10 px-3 lg:px-6 flex items-center justify-between z-40 shrink-0 relative">
         <div class="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-crimson-500/50 to-transparent"></div>
         
-        <div class="flex items-center gap-4">
-            <button id="mobileMenuBtn" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+        <!-- Left: Logo & Sidebar Toggle -->
+        <div class="flex items-center gap-3">
+            <button id="mobileMenuBtn" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
                 <i class="fa-solid fa-bars-staggered text-lg"></i>
             </button>
             <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('chat')">
                 <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-crimson-600 to-surface-200 border border-crimson-400/50 shadow-glow-crimson group-hover:scale-105 transition-transform duration-300">
                     <span class="font-orbitron font-bold text-white text-lg tracking-wider drop-shadow-md">赤</span>
-                    <span class="absolute -bottom-1 -right-1 flex h-3.5 w-3.5">
+                    <span class="absolute -bottom-1 -right-1 flex h-3 w-3">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-crimson-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-crimson-500 border-2 border-surface-50"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-crimson-500 border-2 border-surface-50"></span>
                     </span>
                 </div>
                 <div class="hidden sm:flex flex-col justify-center">
                     <div class="flex items-center gap-2">
                         <span class="font-orbitron font-bold text-lg text-white tracking-wide">AkaShiro<span class="text-crimson-500">.AI</span></span>
-                        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded flex items-center justify-center bg-crimson-500/20 text-crimson-400 border border-crimson-500/30 font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(255,59,92,0.2)]">v5.0</span>
+                        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded flex items-center justify-center bg-crimson-500/20 text-crimson-400 border border-crimson-500/30 font-bold uppercase tracking-widest">v6.0</span>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Center: Desktop Tabs -->
+        <div class="hidden md:flex bg-surface-200/50 p-1 rounded-xl border border-white/10 backdrop-blur-md">
+            <button onclick="switchTab('chat')" class="tab-chat-btn px-5 py-1.5 rounded-lg text-xs font-bold transition-all bg-white/10 text-white shadow-sm border border-white/5">
+                <i class="fa-solid fa-message mr-1.5"></i> Chat Hub
+            </button>
+            <button onclick="switchTab('catalog')" class="tab-catalog-btn px-5 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white border border-transparent">
+                <i class="fa-solid fa-cube mr-1.5"></i> Model Hub
+            </button>
+        </div>
+
+        <!-- Right: Actions -->
         <div class="flex items-center gap-2 md:gap-3">
-            <!-- Model Selector Desktop -->
-            <div class="hidden md:flex items-center bg-surface-200/60 border border-white/10 rounded-xl px-3 py-1.5 h-10 hover:border-crimson-500/30 transition-colors">
-                <i class="fa-solid fa-microchip text-crimson-400 text-xs mr-2"></i>
-                <select id="headerModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-slate-200 text-xs font-mono focus:outline-none focus:ring-0 cursor-pointer w-44 appearance-none">
-                    <!-- Dynamic Options -->
-                </select>
-                <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 ml-2 pointer-events-none"></i>
-            </div>
-            
-            <button onclick="openModal('settingsModal')" class="w-10 h-10 rounded-xl flex items-center justify-center bg-surface-200/60 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-crimson-400 transition-all shadow-sm group" title="Konfigurasi API">
+            <button onclick="openModal('settingsModal')" class="w-10 h-10 rounded-xl flex items-center justify-center bg-surface-200/60 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-crimson-400 transition-all shadow-sm group" title="Pengaturan">
                 <i class="fa-solid fa-sliders group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
-            <button onclick="startNewChat(); switchTab('chat');" class="h-10 px-4 md:px-5 flex items-center gap-2 rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white font-semibold text-xs font-mono shadow-glow-crimson transition-all active:scale-95 group">
+            <button onclick="startNewChat(); switchTab('chat');" class="h-10 px-4 flex items-center gap-2 rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white font-semibold text-xs font-mono shadow-glow-crimson transition-all active:scale-95 group">
                 <i class="fa-solid fa-plus group-hover:rotate-180 transition-transform duration-300"></i>
-                <span class="hidden sm:inline tracking-wider">NEW CHAT</span>
+                <span class="hidden md:inline tracking-wider">NEW CHAT</span>
             </button>
         </div>
     </header>
+
+    <!-- Mobile Tabs (Visible only on small screens) -->
+    <nav class="md:hidden flex bg-surface-100 border-b border-white/5 shrink-0 z-30">
+        <button onclick="switchTab('chat')" class="tab-chat-btn flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-crimson-500 text-crimson-400 bg-crimson-900/10">
+            <i class="fa-solid fa-message mr-2"></i> Chat
+        </button>
+        <button onclick="switchTab('catalog')" class="tab-catalog-btn flex-1 py-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+            <i class="fa-solid fa-cube mr-2"></i> Model Hub
+        </button>
+    </nav>
 
     <!-- MAIN APP LAYOUT -->
     <main class="flex-1 relative flex overflow-hidden bg-surface-50/50">
@@ -150,15 +157,11 @@
                     <i class="fa-regular fa-folder-open text-sm text-crimson-400"></i>
                     <span class="text-xs font-mono font-bold uppercase tracking-widest text-slate-200">Riwayat Sesi</span>
                 </div>
-                <button onclick="if(window.innerWidth < 1024) toggleSidebar(false);" class="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+                <button onclick="if(window.innerWidth < 1024) toggleSidebar(false);" class="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center bg-white/5 text-slate-400 hover:text-white transition-colors">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                 </button>
             </div>
-            
-            <div id="chatHistoryList" class="flex-1 overflow-y-auto p-3 space-y-1.5 scroll-smooth">
-                <!-- Chat history items injected here -->
-            </div>
-            
+            <div id="chatHistoryList" class="flex-1 overflow-y-auto p-3 space-y-1.5 scroll-smooth"></div>
             <div class="p-4 border-t border-white/5 bg-surface-200/50">
                 <button onclick="clearAllChats()" class="w-full h-11 rounded-xl flex items-center justify-center gap-2 bg-surface-300/30 hover:bg-rose-500/20 text-rose-400 text-xs font-mono font-bold border border-transparent hover:border-rose-500/30 transition-all">
                     <i class="fa-regular fa-trash-can"></i> BERSIHKAN RIWAYAT
@@ -168,21 +171,15 @@
 
         <div id="sidebarOverlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden lg:hidden transition-opacity" onclick="toggleSidebar(false)"></div>
 
-        <!-- CORE: CHAT WORKSPACE -->
+        <!-- ========================================== -->
+        <!-- TAB 1: CHAT WORKSPACE -->
+        <!-- ========================================== -->
         <section id="view-chat" class="tab-view flex-1 flex flex-col h-full relative overflow-hidden">
             
-            <!-- MOBILE MODEL SELECTOR -->
-            <div class="md:hidden p-3 border-b border-white/5 bg-surface-100/80 backdrop-blur-md flex items-center justify-between z-10 shrink-0">
-                <div class="flex items-center bg-surface-200/80 border border-white/10 rounded-lg px-3 py-1.5 flex-1 relative">
-                    <i class="fa-solid fa-microchip text-crimson-400 text-[10px] mr-2"></i>
-                    <select id="mobileModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-slate-200 text-[11px] font-mono focus:outline-none focus:ring-0 cursor-pointer w-full appearance-none pr-6">
-                        <!-- Options populated by JS -->
-                    </select>
-                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-500 absolute right-3 pointer-events-none"></i>
-                </div>
-                <button onclick="exportCurrentChat()" class="ml-2 w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-emerald-400 hover:bg-emerald-500/20 transition-colors">
-                    <i class="fa-solid fa-download text-xs"></i>
-                </button>
+            <!-- Floating Top Info Bar -->
+            <div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 glass-panel px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg border-white/10 backdrop-blur-md opacity-80 hover:opacity-100 transition-opacity">
+                <i class="fa-solid fa-microchip text-crimson-400 text-[10px] animate-pulse"></i>
+                <span id="floatingModelName" class="text-[10px] font-mono text-slate-300 font-bold tracking-widest uppercase">Qwen 3.8 27B</span>
             </div>
 
             <!-- CHAT SCROLL AREA -->
@@ -193,63 +190,57 @@
                     <div class="relative inline-flex items-center justify-center mb-4">
                         <div class="absolute inset-0 bg-crimson-500/20 blur-[50px] rounded-full"></div>
                         <div class="relative p-6 rounded-[2.5rem] bg-gradient-to-b from-surface-200 to-surface-100 border border-white/10 shadow-glass">
-                            <i class="fa-solid fa-vr-cardboard text-5xl text-transparent bg-clip-text bg-gradient-to-r from-crimson-400 to-rose-200 mb-3 block"></i>
+                            <i class="fa-solid fa-layer-group text-5xl text-transparent bg-clip-text bg-gradient-to-r from-crimson-400 to-rose-200 mb-3 block"></i>
                             <h2 class="text-3xl md:text-4xl font-orbitron font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 tracking-tight">AkaShiro Engine</h2>
                         </div>
                     </div>
                     
                     <div class="space-y-3">
-                        <h3 class="text-lg font-semibold text-white tracking-wide">Enterprise Media Workspace</h3>
-                        <p class="text-slate-400 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">Sistem cerdas dengan dukungan Markdown penuh. Memiliki kemampuan merender <b>Gambar, Video (YouTube/MP4), dan Audio</b> jika AI menyediakan link yang valid. Ketik instruksi Anda di bawah.</p>
+                        <h3 class="text-lg font-semibold text-white tracking-wide">Enterprise Media Workspace v6</h3>
+                        <p class="text-slate-400 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">Pilih model melalui <b>Model Hub</b>. Mendukung rendering visual penuh untuk gambar, video player (YouTube/MP4), tabel, dan syntax kode presisi.</p>
                     </div>
                     
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-8 max-w-2xl mx-auto">
-                        <button onclick="sendQuickPrompt('Tampilkan gambar pemandangan alam yang indah beserta penjelasannya.')" class="p-4 rounded-2xl bg-surface-200/50 hover:bg-surface-200 border border-white/5 hover:border-crimson-500/50 transition-all text-left group shadow-glass">
-                            <i class="fa-regular fa-image text-emerald-400 mb-2 text-lg group-hover:scale-110 transition-transform"></i>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-8 max-w-3xl mx-auto">
+                        <button onclick="sendQuickPrompt('Tampilkan gambar pemandangan alam cyberpunk beserta penjelasannya.')" class="p-4 rounded-2xl bg-surface-200/50 border border-white/5 glass-card-hover text-left group">
+                            <i class="fa-regular fa-image text-emerald-400 mb-2 text-lg"></i>
                             <h4 class="text-slate-200 text-xs font-bold mb-1">Render Gambar</h4>
-                            <p class="text-slate-500 text-[10px]">Minta AI menampilkan gambar.</p>
+                            <p class="text-slate-500 text-[10px]">Tampilkan visual via AI.</p>
                         </button>
-                        <button onclick="sendQuickPrompt('Carikan video YouTube tentang tutorial belajar pemrograman Python pemula.')" class="p-4 rounded-2xl bg-surface-200/50 hover:bg-surface-200 border border-white/5 hover:border-crimson-500/50 transition-all text-left group shadow-glass">
-                            <i class="fa-brands fa-youtube text-rose-500 mb-2 text-lg group-hover:scale-110 transition-transform"></i>
-                            <h4 class="text-slate-200 text-xs font-bold mb-1">Cari Video & Lagu</h4>
-                            <p class="text-slate-500 text-[10px]">AI akan memberikan embed player.</p>
+                        <button onclick="sendQuickPrompt('Carikan lagu atau video musik Synthwave di YouTube.')" class="p-4 rounded-2xl bg-surface-200/50 border border-white/5 glass-card-hover text-left group">
+                            <i class="fa-brands fa-youtube text-rose-500 mb-2 text-lg"></i>
+                            <h4 class="text-slate-200 text-xs font-bold mb-1">Media Player</h4>
+                            <p class="text-slate-500 text-[10px]">Putar video/audio in-app.</p>
                         </button>
-                        <button onclick="sendQuickPrompt('Tuliskan script HTML dan CSS untuk membuat card profile yang modern.')" class="p-4 rounded-2xl bg-surface-200/50 hover:bg-surface-200 border border-white/5 hover:border-crimson-500/50 transition-all text-left group shadow-glass sm:col-span-2 md:col-span-1">
-                            <i class="fa-solid fa-code text-cyan-400 mb-2 text-lg group-hover:scale-110 transition-transform"></i>
+                        <button onclick="sendQuickPrompt('Tulis script Python untuk membuat machine learning dasar.')" class="p-4 rounded-2xl bg-surface-200/50 border border-white/5 glass-card-hover text-left group">
+                            <i class="fa-solid fa-code text-cyan-400 mb-2 text-lg"></i>
                             <h4 class="text-slate-200 text-xs font-bold mb-1">Code Generator</h4>
-                            <p class="text-slate-500 text-[10px]">Tulis kode dengan syntax highlight.</p>
+                            <p class="text-slate-500 text-[10px]">Blok kode dengan syntax highlight.</p>
                         </button>
                     </div>
                 </div>
 
                 <!-- MESSAGES CONTAINER -->
-                <div id="chatMessagesList" class="flex flex-col space-y-8 w-full max-w-4xl mx-auto pb-4">
-                    <!-- Messages dynamically appended here -->
-                </div>
+                <div id="chatMessagesList" class="flex flex-col space-y-8 w-full max-w-4xl mx-auto pb-4"></div>
             </div>
 
             <!-- FLOATING INPUT COMPONENT -->
             <div class="p-4 md:p-6 bg-gradient-to-t from-surface-50 via-surface-50/90 to-transparent shrink-0 z-20 absolute bottom-0 left-0 right-0 pointer-events-none">
                 <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex flex-col max-w-4xl mx-auto relative pointer-events-auto">
                     
-                    <!-- Error Toast Layer -->
                     <div id="errorToast" class="absolute -top-16 left-0 right-0 mx-auto w-max max-w-full px-5 py-3 rounded-2xl bg-rose-950/90 border border-rose-500/50 text-rose-200 text-[11px] font-mono shadow-[0_10px_30px_rgba(225,29,72,0.3)] backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4 flex items-center gap-3 z-50">
                         <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i> 
                         <span id="errorToastText" class="leading-relaxed">Error Message</span>
                     </div>
 
                     <div class="relative flex items-end glass-panel rounded-[1.5rem] border border-white/10 focus-within:border-crimson-500/80 focus-within:shadow-glow-crimson transition-all p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
-                        <textarea id="chatInput" rows="1" placeholder="Ketik perintah Anda di sini... (Shift + Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-0 resize-none max-h-48 min-h-[48px] px-5 py-3.5 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
+                        <textarea id="chatInput" rows="1" placeholder="Ketik instruksi Anda di sini... (Shift + Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-0 resize-none max-h-48 min-h-[48px] px-5 py-3.5 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                         
                         <div class="flex items-center p-1.5 gap-2">
-                            <!-- STOP BUTTON (Hidden by default) -->
-                            <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 md:h-11 md:w-11 rounded-xl bg-surface-200 hover:bg-rose-500/20 text-rose-400 border border-white/5 hover:border-rose-500/50 transition-all items-center justify-center shadow-inner" title="Hentikan Generasi">
+                            <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 md:h-11 md:w-11 rounded-xl bg-surface-200 hover:bg-rose-500/20 text-rose-400 border border-white/5 hover:border-rose-500/50 transition-all items-center justify-center shadow-inner" title="Hentikan">
                                 <i class="fa-solid fa-stop text-sm"></i>
                             </button>
-                            
-                            <!-- SEND BUTTON -->
                             <button type="submit" id="sendBtn" class="h-10 w-10 md:h-11 md:w-11 flex items-center justify-center rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white shadow-glow-crimson transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <i class="fa-solid fa-arrow-up text-base"></i>
+                                <i class="fa-solid fa-paper-plane text-sm"></i>
                             </button>
                         </div>
                     </div>
@@ -257,19 +248,33 @@
                     <div class="flex justify-between items-center px-4 mt-3">
                         <div class="text-[10px] font-mono text-slate-500 flex items-center gap-2.5">
                             <span id="charCount" class="font-semibold text-slate-400">0 char</span>
-                            <span class="opacity-30">|</span>
-                            <span>AkaShiro Engine v5.0</span>
                         </div>
-                        <div class="hidden md:flex items-center text-[10px] font-mono text-slate-500 bg-surface-200/50 px-3 py-1 rounded-full border border-white/5">
-                            <i class="fa-solid fa-circle-dot text-emerald-400 text-[8px] mr-1.5 animate-pulse"></i>
-                            <span id="footerModelName" class="text-slate-300">Nemotron 3 Ultra</span>
+                        <div class="flex items-center gap-3">
+                            <button type="button" onclick="exportCurrentChat()" class="text-[10px] font-mono text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-1.5 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                                <i class="fa-solid fa-download"></i> Ekspor MD
+                            </button>
                         </div>
                     </div>
                 </form>
             </div>
-            
-            <!-- Padding spacer for scroll area so messages don't hide behind floating input -->
-            <div class="h-32 shrink-0"></div>
+            <div class="h-32 shrink-0"></div> <!-- Spacer -->
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: CATALOG MODEL HUB -->
+        <!-- ========================================== -->
+        <section id="view-catalog" class="tab-view hidden flex-1 h-full overflow-y-auto p-4 md:p-8 relative w-full scroll-smooth">
+            <div class="max-w-6xl mx-auto space-y-6 pb-20">
+                <div class="border-b border-white/10 pb-5 mb-8">
+                    <h2 class="font-orbitron text-2xl md:text-3xl font-bold text-white mb-2"><i class="fa-solid fa-cubes text-crimson-500 mr-2"></i> Model Hub</h2>
+                    <p class="text-xs md:text-sm text-slate-400 font-mono">Direktori Mesin Komputasi AI. Pilih model yang sesuai dengan kompleksitas tugas Anda.</p>
+                </div>
+                
+                <!-- Grid Model -->
+                <div id="modelCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
+                    <!-- Dinamis dari JS -->
+                </div>
+            </div>
         </section>
     </main>
 
@@ -284,7 +289,7 @@
                     </div>
                     <div>
                         <h3 class="font-orbitron font-bold text-lg text-white">Parameter Sistem</h3>
-                        <p class="text-[10px] font-mono text-slate-400 tracking-wide mt-0.5">Konfigurasi Gateway API & Logika AI</p>
+                        <p class="text-[10px] font-mono text-slate-400 tracking-wide mt-0.5">Konfigurasi URL & API Key (Default sudah tertanam)</p>
                     </div>
                 </div>
                 <button onclick="closeModal('settingsModal')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-200 text-slate-400 hover:text-white hover:bg-rose-500/80 transition-colors">
@@ -293,34 +298,24 @@
             </div>
 
             <div class="space-y-6 text-xs font-mono max-h-[60vh] overflow-y-auto pr-2 no-scrollbar">
-                
                 <div class="bg-gradient-to-r from-emerald-900/40 to-surface-200 border border-emerald-500/30 text-emerald-100 p-4 rounded-2xl text-[11px] leading-relaxed flex gap-3 shadow-inner">
                     <i class="fa-solid fa-shield-check text-emerald-400 mt-0.5 text-base"></i> 
-                    <div>
-                        <b class="text-emerald-300 block mb-1">Direct Connection Active.</b> 
-                        Sistem terhubung langsung ke API. Jika error, nonaktifkan AdBlocker/Brave Shields.
-                    </div>
+                    <div><b class="text-emerald-300 block mb-1">Kredensial API telah diperbarui.</b> Sistem terhubung ke `intern-ai.org.cn`. URL dan API Key baru sudah ditanamkan di script ini secara default.</div>
                 </div>
                 
                 <div class="space-y-2">
-                    <label class="text-slate-300 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-server text-crimson-400"></i><span>API Endpoint URL</span>
-                    </label>
+                    <label class="text-slate-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-server text-crimson-400"></i><span>API Endpoint URL</span></label>
                     <input type="text" id="customBaseUrl" class="w-full bg-surface-100 border border-white/10 rounded-xl px-4 py-3.5 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all text-[11px] font-sans">
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-slate-300 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-key text-amber-400"></i><span>Bearer Token (API Key)</span>
-                    </label>
+                    <label class="text-slate-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-key text-amber-400"></i><span>Bearer Token (API Key)</span></label>
                     <input type="password" id="customApiKey" class="w-full bg-surface-100 border border-white/10 rounded-xl px-4 py-3.5 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all text-[11px] font-sans tracking-widest">
                 </div>
 
                 <div class="space-y-3 bg-surface-200/50 p-5 rounded-2xl border border-white/5 shadow-inner">
                     <div class="flex justify-between items-center">
-                        <label class="text-slate-300 font-semibold flex items-center gap-2">
-                            <i class="fa-solid fa-temperature-half text-cyan-400"></i><span>Creativity (Temperature)</span>
-                        </label>
+                        <label class="text-slate-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-temperature-half text-cyan-400"></i><span>Creativity (Temperature)</span></label>
                         <span id="tempVal" class="text-white font-bold bg-surface-300 px-3 py-1 rounded-lg border border-white/10 text-xs">0.7</span>
                     </div>
                     <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText = this.value" class="w-full h-2 bg-surface-300 rounded-lg appearance-none cursor-pointer accent-crimson-500 mt-2">
@@ -328,46 +323,49 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-slate-300 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-robot text-purple-400"></i><span>System Prompt (Persona AI)</span>
-                    </label>
+                    <label class="text-slate-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-user-astronaut text-purple-400"></i><span>System Prompt (Persona AI)</span></label>
                     <textarea id="systemPersonaInput" rows="4" class="w-full bg-surface-100 border border-white/10 rounded-xl p-4 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all resize-none text-[11px] leading-relaxed no-scrollbar font-sans"></textarea>
                 </div>
             </div>
 
             <div class="pt-2">
-                <button onclick="saveSettings()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white text-xs font-mono font-bold shadow-glow-crimson transition-all active:scale-[0.98]">
-                    SIMPAN KONFIGURASI
-                </button>
+                <button onclick="saveSettings()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white text-xs font-mono font-bold shadow-glow-crimson transition-all active:scale-[0.98]">SIMPAN KONFIGURASI</button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN ENGINE SCRIPT -->
+    <!-- SCRIPT LOGIKA UTAMA -->
     <script>
-        const DEFAULT_API_BASE_URL = "https://bansos.wahyu-hidayat.my.id/v1";
-        const DEFAULT_API_KEY = "sk-7e55a8f3c7fb044f-qoce3o-317c6884";
-        
-        // Ditingkatkan agar mendukung output media
-        const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI, asisten cerdas berformat Markdown. Gunakan bahasa Indonesia. Jika user meminta gambar, berikan dalam format Markdown: ![alt](url). Jika user meminta video atau lagu (seperti YouTube), berikan URL lengkapnya secara langsung atau gunakan iframe HTML (<iframe src='...'></iframe>). Untuk file mp4/mp3, gunakan tag <video src='...'> atau <audio src='...'>.";
+        // ==========================================
+        // 1. DEFAULT API SETTINGS & MODELS
+        // ==========================================
+        const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
+        const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
+        const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI, asisten cerdas berformat Markdown. Gunakan bahasa Indonesia. Jika user meminta gambar, berikan format Markdown: ![alt](url). Jika meminta video atau lagu (seperti YouTube), berikan URL lengkapnya secara langsung atau gunakan iframe HTML (<iframe src='...'></iframe>). Untuk file mp4/mp3, gunakan tag <video src='...'> atau <audio src='...'>.";
         
         const AVAILABLE_MODELS = [
-            { id: 'nemotron-3-ultra', name: '🌟 Nemotron 3 Ultra', category: 'Standard', desc: 'Paling stabil.' },
-            { id: 'nemotron-3-super', name: '⚠️ Nemotron 3 Super', category: 'Heavy', desc: 'Flaky (Kadang 503).' },
-            { id: 'nemotron-3-nano', name: '⚡ Nemotron 3 Nano', category: 'Fast', desc: 'Sangat stabil & ringan.' },
-            { id: 'gpt-oss120b', name: '🧠 GPT OSS 120B', category: 'Reasoning', desc: 'Logika kuat & stabil.' },
-            { id: 'laguna-s-2.1', name: '💧 Laguna S 2.1', category: 'Free', desc: 'Stabil dan gratis ($0).' },
-            { id: 'free', name: '🆓 Free Router', category: 'Router', desc: 'Routing otomatis.' }
+            { id: 'qwen3.8-27b', name: '🌟 Qwen 3.8 27B', category: 'General', desc: 'Performa tinggi untuk berbagai tugas umum.' },
+            { id: 'minimax-m3', name: '⚡ Minimax M3', category: 'Fast Engine', desc: 'Sangat cepat dan responsif.' },
+            { id: 'kimi-k2.6', name: '🔥 Kimi K2.6', category: 'Advanced', desc: 'Unggul dalam konteks teks panjang.' },
+            { id: 'intern-s2', name: '🚀 Intern S2', category: 'Standard', desc: 'Kestabilan tinggi.' },
+            { id: 'intern-decision-4b', name: '⚙️ Intern Decision 4B', category: 'Logic', desc: 'Cepat untuk pengambilan keputusan.' },
+            { id: 'glm-5.3', name: '🧠 GLM 5.3', category: 'Reasoning', desc: 'Handal untuk pemecahan masalah logika.' },
+            { id: 'deepseek-v4-pro-0813', name: '💎 DeepSeek V4 Pro', category: 'Flagship', desc: 'Sangat pintar memecahkan masalah koding.' },
+            { id: 'deepseek-v4-flash-vision', name: '👁️ DeepSeek V4 Vision', category: 'Vision', desc: 'Mendukung pemrosesan visual (jika ada input gambar).' },
+            { id: 'deepseek-v4-flash-0731', name: '⚡ DeepSeek V4 Flash', category: 'Fast Engine', desc: 'Versi ringan dan kilat dari DeepSeek.' },
+            { id: 'Atria-Dawn-Preview', name: '🌅 Atria Dawn Prev', category: 'Experimental', desc: 'Model preview terbaru dari Atria.' },
+            { id: 'Atria-Dawn', name: '☀️ Atria Dawn', category: 'Advanced', desc: 'Model canggih dengan penalaran tinggi.' },
+            { id: 'Agents-A1', name: '🤖 Agents A1', category: 'Agentic', desc: 'Dioptimalkan untuk task agen mandiri.' }
         ];
 
         let appState = {
             activeTab: 'chat',
-            baseUrl: localStorage.getItem('akashiro_baseurl_v5') || DEFAULT_API_BASE_URL,
-            apiKey: localStorage.getItem('akashiro_apikey_v5') || DEFAULT_API_KEY,
-            temperature: parseFloat(localStorage.getItem('akashiro_temp_v5')) || 0.7,
-            systemPersona: localStorage.getItem('akashiro_persona_v5') || DEFAULT_SYSTEM_PERSONA,
-            currentModel: localStorage.getItem('akashiro_model_v5') || 'nemotron-3-ultra',
-            chats: JSON.parse(localStorage.getItem('akashiro_chats_v5')) || [],
+            baseUrl: localStorage.getItem('akashiro_baseurl_v6') || DEFAULT_API_BASE_URL,
+            apiKey: localStorage.getItem('akashiro_apikey_v6') || DEFAULT_API_KEY,
+            temperature: parseFloat(localStorage.getItem('akashiro_temp_v6')) || 0.7,
+            systemPersona: localStorage.getItem('akashiro_persona_v6') || DEFAULT_SYSTEM_PERSONA,
+            currentModel: localStorage.getItem('akashiro_model_v6') || 'qwen3.8-27b',
+            chats: JSON.parse(localStorage.getItem('akashiro_chats_v6')) || [],
             currentChatId: null
         };
 
@@ -377,14 +375,102 @@
         window.addEventListener('DOMContentLoaded', () => {
             setupDOMBindings();
             setupMarkedRenderer();
-            populateModelSelectors();
+            renderCatalogModels();
             
             if (appState.chats.length > 0) { loadChatSession(appState.chats[0].id); } 
             else { startNewChat(); }
             
             updateModelUI();
+            switchTab('chat'); // Pastikan tab chat aktif saat awal
         });
 
+        // ==========================================
+        // 2. TAB & UI NAVIGATION LOGIC (BUG FIX)
+        // ==========================================
+        function switchTab(tabId) {
+            appState.activeTab = tabId;
+            
+            // Sembunyikan semua section
+            document.querySelectorAll('.tab-view').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+            
+            // Tampilkan section yang dipilih
+            const activeView = document.getElementById(`view-${tabId}`);
+            if(activeView) {
+                activeView.classList.remove('hidden');
+                if(tabId === 'chat') activeView.classList.add('flex'); // Chat butuh flex flex-col
+            }
+            
+            // Ubah style tombol navigasi
+            document.querySelectorAll('.tab-chat-btn, .tab-catalog-btn').forEach(el => {
+                if(window.innerWidth >= 768) {
+                    // Desktop Style
+                    el.classList.remove('bg-white/10', 'text-white', 'border-white/5');
+                    el.classList.add('text-slate-400', 'border-transparent');
+                } else {
+                    // Mobile Style
+                    el.classList.remove('border-crimson-500', 'text-crimson-400', 'bg-crimson-900/10');
+                    el.classList.add('border-transparent', 'text-slate-400');
+                }
+            });
+            
+            // Highlight tombol aktif
+            document.querySelectorAll(`.tab-${tabId}-btn`).forEach(el => {
+                if(window.innerWidth >= 768) {
+                    el.classList.remove('text-slate-400', 'border-transparent');
+                    el.classList.add('bg-white/10', 'text-white', 'border-white/5');
+                } else {
+                    el.classList.remove('border-transparent', 'text-slate-400');
+                    el.classList.add('border-crimson-500', 'text-crimson-400', 'bg-crimson-900/10');
+                }
+            });
+
+            if (window.innerWidth < 1024) toggleSidebar(false);
+        }
+
+        function renderCatalogModels() {
+            const gridEl = document.getElementById('modelCatalogGrid');
+            if(!gridEl) return;
+            gridEl.innerHTML = '';
+            
+            AVAILABLE_MODELS.forEach(m => {
+                const isActive = appState.currentModel === m.id;
+                const card = document.createElement('div');
+                card.className = `glass-panel glass-card-hover p-5 rounded-2xl flex flex-col justify-between space-y-4 border ${isActive ? 'border-crimson-500 shadow-[0_0_15px_rgba(255,59,92,0.3)]' : 'border-white/10'}`;
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-surface-300 text-slate-300 border border-white/5">${m.category}</span>${isActive ? '<span class="flex w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>' : ''}
+                        </div>
+                        <h3 class="font-orbitron font-bold text-sm text-white">${m.name}</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">${m.desc}</p>
+                    </div>
+                    <button onclick="changeChatModel('${m.id}')" class="w-full py-2.5 mt-2 rounded-xl text-[11px] font-mono font-bold transition-all ${isActive ? 'bg-crimson-600 text-white shadow-glow-crimson' : 'bg-surface-200 hover:bg-white/10 text-slate-300 hover:text-white border border-white/5'}">
+                        ${isActive ? '<i class="fa-solid fa-check mr-1.5"></i> DIPILIH' : 'PILIH MODEL'}
+                    </button>
+                `;
+                gridEl.appendChild(card);
+            });
+        }
+
+        function changeChatModel(val) {
+            appState.currentModel = val; 
+            localStorage.setItem('akashiro_model_v6', val);
+            let chat = getCurrentChat(); 
+            if(chat) { chat.model = val; saveChatsToStorage(); }
+            updateModelUI();
+            renderCatalogModels(); // Re-render grid to update active styling
+            switchTab('chat'); // Langsung pindah ke chat setelah memilih
+        }
+
+        function updateModelUI() {
+            const modelData = AVAILABLE_MODELS.find(m => m.id === appState.currentModel);
+            const floatingTxt = document.getElementById('floatingModelName');
+            if(floatingTxt && modelData) floatingTxt.innerText = modelData.name;
+        }
+
+        // ==========================================
+        // 3. CORE LOGIC (MARKDOWN, CHAT, API)
+        // ==========================================
         function setupDOMBindings() {
             document.getElementById('customBaseUrl').value = appState.baseUrl;
             document.getElementById('customApiKey').value = appState.apiKey;
@@ -393,26 +479,10 @@
             document.getElementById('systemPersonaInput').value = appState.systemPersona;
         }
 
-        function populateModelSelectors() {
-            const selects = [document.getElementById('headerModelSelect'), document.getElementById('mobileModelSelect')];
-            selects.forEach(select => {
-                if(!select) return;
-                select.innerHTML = '';
-                AVAILABLE_MODELS.forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.id;
-                    opt.textContent = m.name;
-                    if(m.id === appState.currentModel) opt.selected = true;
-                    select.appendChild(opt);
-                });
-            });
-        }
-
         function toggleSidebar(show) {
             const sidebar = document.getElementById('chatSidebar');
             const overlay = document.getElementById('sidebarOverlay');
             if (!sidebar || !overlay) return;
-            
             if (show) { 
                 sidebar.classList.remove('-translate-x-full'); 
                 overlay.classList.remove('hidden'); 
@@ -422,31 +492,6 @@
                 overlay.classList.add('opacity-0');
                 setTimeout(() => overlay.classList.add('hidden'), 300);
             }
-        }
-
-        function switchTab(tabId) {
-            appState.activeTab = tabId;
-            document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`view-${tabId}`)?.classList.remove('hidden');
-            if (window.innerWidth < 1024) toggleSidebar(false);
-        }
-
-        function changeChatModel(val) {
-            appState.currentModel = val; 
-            localStorage.setItem('akashiro_model_v5', val);
-            let chat = getCurrentChat(); 
-            if(chat) { chat.model = val; saveChatsToStorage(); }
-            updateModelUI();
-        }
-
-        function updateModelUI() {
-            ['headerModelSelect', 'mobileModelSelect'].forEach(id => {
-                const el = document.getElementById(id);
-                if(el && el.value !== appState.currentModel) el.value = appState.currentModel;
-            });
-            const modelData = AVAILABLE_MODELS.find(m => m.id === appState.currentModel);
-            const footerTxt = document.getElementById('footerModelName');
-            if(footerTxt && modelData) footerTxt.innerText = modelData.name;
         }
 
         function setupMarkedRenderer() {
@@ -476,12 +521,11 @@
                     </div>`;
                 };
 
-                // Link parser khusus untuk merender auto-embed YouTube jika ada
                 renderer.link = function(href, title, text) {
                     if(href.includes('youtube.com/watch') || href.includes('youtu.be/')) {
                         let videoId = href.split('v=')[1] || href.split('youtu.be/')[1];
                         if(videoId) videoId = videoId.split('&')[0];
-                        return `<iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br><a href="${href}" target="_blank" class="text-xs opacity-50"><i class="fa-brands fa-youtube"></i> Buka di YouTube</a>`;
+                        return `<iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br><a href="${href}" target="_blank" class="text-xs opacity-50 text-crimson-400"><i class="fa-brands fa-youtube"></i> Buka di YouTube</a>`;
                     }
                     return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title \vert{}\vert{} ''}">${text}</a>`;
                 };
@@ -508,7 +552,7 @@
 
         function startNewChat() {
             if(isGenerating) abortGeneration();
-            const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Komputasi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
+            const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
             appState.chats.unshift(newChat); 
             appState.currentChatId = newChat.id;
             saveChatsToStorage(); renderChatHistory(); renderMessages();
@@ -590,7 +634,6 @@
                     let safeHtml = rawHtml;
                     try { 
                         if(typeof DOMPurify !== 'undefined') {
-                            // DOMPURIFY: Izinkan Media (Gambar, Video, Audio, Iframe)
                             safeHtml = DOMPurify.sanitize(rawHtml, { 
                                 ADD_TAGS: ['img', 'iframe', 'video', 'audio', 'source'], 
                                 ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls'] 
@@ -798,28 +841,15 @@
             if (elTempSlider) appState.temperature = parseFloat(elTempSlider.value);
             if (elSystemPersona) appState.systemPersona = elSystemPersona.value.trim();
 
-            localStorage.setItem('akashiro_baseurl_v5', appState.baseUrl); 
-            localStorage.setItem('akashiro_apikey_v5', appState.apiKey);
-            localStorage.setItem('akashiro_temp_v5', appState.temperature); 
-            localStorage.setItem('akashiro_persona_v5', appState.systemPersona);
+            localStorage.setItem('akashiro_baseurl_v6', appState.baseUrl); 
+            localStorage.setItem('akashiro_apikey_v6', appState.apiKey);
+            localStorage.setItem('akashiro_temp_v6', appState.temperature); 
+            localStorage.setItem('akashiro_persona_v6', appState.systemPersona);
             
             closeModal('settingsModal'); 
-            
-            const btn = document.getElementById('sendBtn');
-            if (btn) {
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-check text-white"></i>';
-                btn.classList.add('from-emerald-600', 'to-emerald-500');
-                btn.classList.remove('from-crimson-600', 'to-crimson-500');
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.classList.remove('from-emerald-600', 'to-emerald-500');
-                    btn.classList.add('from-crimson-600', 'to-crimson-500');
-                }, 2000);
-            }
         }
 
-        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v5', JSON.stringify(appState.chats)); }
+        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v6', JSON.stringify(appState.chats)); }
         
         function deleteChatSession(e, chatId) {
             if(e) e.stopPropagation(); 
@@ -858,21 +888,14 @@
         function openModal(id) { 
             const el = document.getElementById(id); 
             const content = document.getElementById(id + 'Content');
-            if (el) {
-                el.classList.remove('hidden');
-                setTimeout(() => {
-                    if(content) content.classList.remove('scale-95', 'opacity-0');
-                }, 10);
-            }
+            if (el) { el.classList.remove('hidden'); setTimeout(() => { if(content) content.classList.remove('scale-95', 'opacity-0'); }, 10); }
         }
         
         function closeModal(id) { 
             const el = document.getElementById(id); 
             const content = document.getElementById(id + 'Content');
             if(content) content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                if (el) el.classList.add('hidden');
-            }, 200);
+            setTimeout(() => { if (el) el.classList.add('hidden'); }, 200);
         }
         
         let toastTimeout;
