@@ -117,7 +117,7 @@
     <div id="toastContainer"></div>
 
     <!-- ==========================================
-         LOGIN PANEL (MOCK AUTHENTICATION)
+         AUTH PANEL (LOGIN & REGISTER)
          ========================================== -->
     <div id="loginOverlay" class="fixed inset-0 bg-black/90 backdrop-blur-xl z-[90] flex items-center justify-center p-4 transition-opacity duration-500">
         <div class="w-full max-w-sm bg-dark-panel rounded-3xl border border-dark-border shadow-[0_0_50px_rgba(225,29,72,0.15)] p-8 animate-slide-up relative overflow-hidden">
@@ -127,31 +127,36 @@
                 <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/30 shadow-neon mb-4">
                     <span class="font-orbitron font-bold text-white text-2xl">赤</span>
                 </div>
-                <h1 class="font-orbitron font-bold text-xl text-white">AkaShiro<span class="text-brand">.AI</span></h1>
-                <p class="text-[11px] font-mono text-zinc-400 mt-1">Enterprise Workspace System</p>
+                <h1 id="authTitle" class="font-orbitron font-bold text-xl text-white">Masuk ke Workspace</h1>
+                <p id="authSubtitle" class="text-[11px] font-mono text-zinc-400 mt-1">Gunakan kredensial Anda</p>
             </div>
 
-            <form id="loginForm" onsubmit="processLogin(event)" class="space-y-5 relative z-10">
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4 relative z-10">
                 <div class="space-y-1.5">
                     <label class="text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-wider pl-1">Username / ID</label>
                     <div class="relative">
                         <i class="fa-solid fa-user absolute left-3.5 top-1/2 transform -translate-y-1/2 text-zinc-500 text-xs"></i>
-                        <input type="text" id="loginUsername" required placeholder="Masukkan nama Anda..." class="w-full bg-dark-input border border-dark-border rounded-xl pl-10 pr-4 py-3 text-[13px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all placeholder-zinc-600">
+                        <input type="text" id="authUsername" required placeholder="Contoh: akashiro_dev" class="w-full bg-dark-input border border-dark-border rounded-xl pl-10 pr-4 py-3 text-[13px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all placeholder-zinc-600">
                     </div>
                 </div>
                 
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-wider pl-1">Kata Sandi (Opsional)</label>
+                    <label class="text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-wider pl-1">Kata Sandi</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-3.5 top-1/2 transform -translate-y-1/2 text-zinc-500 text-xs"></i>
-                        <input type="password" placeholder="••••••••" class="w-full bg-dark-input border border-dark-border rounded-xl pl-10 pr-4 py-3 text-[13px] text-zinc-200 focus:outline-none focus:border-brand transition-all placeholder-zinc-600">
+                        <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-dark-input border border-dark-border rounded-xl pl-10 pr-4 py-3 text-[13px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all placeholder-zinc-600">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full mt-2 py-3 rounded-xl bg-white text-black hover:bg-zinc-200 text-sm font-semibold tracking-wide transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] active:scale-[0.98]">
-                    MASUK KE WORKSPACE <i class="fa-solid fa-arrow-right ml-1"></i>
+                <button type="submit" id="authSubmitBtn" class="w-full mt-4 py-3 rounded-xl bg-white text-black hover:bg-zinc-200 text-sm font-semibold tracking-wide transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] active:scale-[0.98]">
+                    MASUK <i class="fa-solid fa-arrow-right ml-1"></i>
                 </button>
-                <p class="text-[10px] text-center text-zinc-500 font-mono mt-4">Demo: Akun baru otomatis masuk ke versi Free (Limit 5x/Hari).</p>
+                
+                <!-- Toggle Menu -->
+                <div class="text-center pt-3 mt-2 border-t border-dark-border/50">
+                    <p id="toggleToRegister" class="text-[11px] text-zinc-400 font-mono">Belum punya akun? <a href="#" onclick="toggleAuthMode('register')" class="text-brand hover:text-white transition-colors underline underline-offset-2">Daftar di sini</a></p>
+                    <p id="toggleToLogin" class="text-[11px] text-zinc-400 font-mono hidden">Sudah punya akun? <a href="#" onclick="toggleAuthMode('login')" class="text-brand hover:text-white transition-colors underline underline-offset-2">Masuk di sini</a></p>
+                </div>
             </form>
         </div>
     </div>
@@ -179,7 +184,7 @@
             </div>
             
             <!-- Usage Tracking (Free Version Only) -->
-            <div id="usageContainer" class="space-y-1.5">
+            <div id="usageContainer" class="space-y-1.5 hidden">
                 <div class="flex justify-between text-[10px] font-mono text-zinc-400">
                     <span>Limit Harian</span>
                     <span id="usageText" class="font-bold text-zinc-200">0 / 5</span>
@@ -187,7 +192,7 @@
                 <div class="w-full bg-dark-input rounded-full h-1.5 border border-dark-border overflow-hidden">
                     <div id="usageProgressBar" class="bg-brand h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
                 </div>
-                <button id="upgradeBtnSidebar" onclick="openModal('upgradeModal')" class="w-full mt-2 py-1.5 rounded bg-gradient-to-r from-amber-600 to-amber-400 hover:from-amber-500 hover:to-amber-300 text-black text-[10px] font-bold tracking-wider transition-all shadow-gold active:scale-[0.98]">
+                <button onclick="openModal('upgradeModal')" class="w-full mt-2 py-1.5 rounded bg-gradient-to-r from-amber-600 to-amber-400 hover:from-amber-500 hover:to-amber-300 text-black text-[10px] font-bold tracking-wider transition-all shadow-gold active:scale-[0.98]">
                     <i class="fa-solid fa-crown mr-1"></i> UPGRADE PREMIUM
                 </button>
             </div>
@@ -424,7 +429,7 @@
          ENGINE SCRIPT (V10 ULTIMATE TIERED)
          ========================================== -->
     <script>
-        // --- 1. CONFIGURATION & STATE ---
+        // --- 1. CONFIGURATION & MOCK DATABASE ---
         const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
         const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
         const FREE_DAILY_LIMIT = 5;
@@ -441,70 +446,112 @@
             { id: 'Atria-Dawn', name: 'Atria Dawn' }
         ];
 
-        // System State
+        // Simulated Database for multiple users
+        let usersDB = JSON.parse(localStorage.getItem('akashiro_users_db_v10')) || {};
+        
+        let authState = JSON.parse(localStorage.getItem('akashiro_auth_v10')) || {
+            isLoggedIn: false,
+            username: ''
+        };
+
+        // System Settings
         let appState = {
             baseUrl: localStorage.getItem('akashiro_baseurl_v10') || DEFAULT_API_BASE_URL,
             apiKey: localStorage.getItem('akashiro_apikey_v10') || DEFAULT_API_KEY,
             temperature: parseFloat(localStorage.getItem('akashiro_temp_v10')) || 0.7,
             currentModel: localStorage.getItem('akashiro_model_v10') || 'qwen3.8-27b',
-            chats: JSON.parse(localStorage.getItem('akashiro_chats_v10')) || [],
+            chats: [], // Loaded per user dynamically
             currentChatId: null
-        };
-
-        // User Auth State
-        let authState = JSON.parse(localStorage.getItem('akashiro_auth_v10')) || {
-            isLoggedIn: false,
-            username: '',
-            plan: 'free', // 'free' or 'premium'
-            usageCount: 0,
-            lastUsageDate: new Date().toLocaleDateString()
         };
 
         let currentAbortController = null;
         let isGenerating = false;
         let isAutoScrolling = true;
+        let isLoginMode = true; // Toggle variable for Auth Modal
 
-        // --- 2. INITIALIZATION & AUTH ---
+        // --- 2. AUTHENTICATION LOGIC ---
         window.addEventListener('DOMContentLoaded', () => {
             if (!authState.isLoggedIn) {
                 document.getElementById('loginOverlay').classList.remove('hidden');
-                return; // Stop initialization until logged in
             } else {
                 document.getElementById('loginOverlay').classList.add('hidden');
                 initApp();
             }
         });
 
-        function processLogin(e) {
+        // Switch between Login and Register UI
+        function toggleAuthMode(mode) {
+            isLoginMode = mode === 'login';
+            document.getElementById('authTitle').innerText = isLoginMode ? "Masuk ke Workspace" : "Buat Akun Baru";
+            document.getElementById('authSubtitle').innerText = isLoginMode ? "Gunakan kredensial Anda" : "Daftar untuk akses Free Plan 5x/Hari";
+            document.getElementById('authSubmitBtn').innerHTML = isLoginMode ? 'MASUK <i class="fa-solid fa-arrow-right ml-1"></i>' : 'DAFTAR SEKARANG <i class="fa-solid fa-user-plus ml-1"></i>';
+            document.getElementById('toggleToRegister').classList.toggle('hidden', !isLoginMode);
+            document.getElementById('toggleToLogin').classList.toggle('hidden', isLoginMode);
+        }
+
+        // Process Register or Login
+        function handleAuthSubmit(e) {
             e.preventDefault();
-            const uname = document.getElementById('loginUsername').value.trim();
-            if(!uname) return;
-            
+            const uname = document.getElementById('authUsername').value.trim();
+            const pass = document.getElementById('authPassword').value.trim();
+            if(!uname || !pass) return showToast("Username dan Password wajib diisi", "error");
+
+            if (!isLoginMode) {
+                // REGISTRASI
+                if(usersDB[uname]) return showToast("Username sudah terdaftar! Gunakan nama lain.", "error");
+                
+                usersDB[uname] = {
+                    password: pass,
+                    plan: 'free',
+                    usageCount: 0,
+                    lastUsageDate: new Date().toLocaleDateString()
+                };
+                saveUsersDB();
+                showToast("Registrasi berhasil! Mengalihkan ke Dashboard...", "success");
+                
+                // Auto login after register
+                proceedToLogin(uname);
+            } else {
+                // LOGIN
+                if(!usersDB[uname] || usersDB[uname].password !== pass) {
+                    return showToast("Username atau Password salah!", "error");
+                }
+                proceedToLogin(uname);
+            }
+        }
+
+        function proceedToLogin(uname) {
             authState.isLoggedIn = true;
             authState.username = uname;
-            // Always default new logins to 'free' (unless previously premium in localStorage)
-            if(!authState.plan) authState.plan = 'free';
-            saveAuth();
+            localStorage.setItem('akashiro_auth_v10', JSON.stringify(authState));
             
             document.getElementById('loginOverlay').classList.add('opacity-0');
             setTimeout(() => {
                 document.getElementById('loginOverlay').classList.add('hidden');
                 initApp();
             }, 500);
-            showToast(`Selamat datang di Workspace, ${uname}!`, "success");
+            showToast(`Selamat datang, ${uname}!`, "success");
         }
 
         function processLogout() {
             authState.isLoggedIn = false;
-            saveAuth();
-            window.location.reload(); // Reload to show login screen safely
-        }
-
-        function saveAuth() {
+            authState.username = '';
             localStorage.setItem('akashiro_auth_v10', JSON.stringify(authState));
+            window.location.reload(); 
         }
 
+        function saveUsersDB() {
+            localStorage.setItem('akashiro_users_db_v10', JSON.stringify(usersDB));
+        }
+
+        function getCurrentUser() {
+            if(!authState.isLoggedIn || !authState.username) return null;
+            return usersDB[authState.username];
+        }
+
+        // --- 3. INITIALIZATION & UI UPDATES ---
         function initApp() {
+            loadUserChats();
             updateUserUI();
             setupDOMBindings();
             setupMarkedRenderer();
@@ -514,32 +561,43 @@
             else { startNewChat(); }
         }
 
-        // --- 3. UI & TIER UPDATES ---
+        // Each user has isolated chat histories in localStorage
+        function getChatsStorageKey() { return `akashiro_chats_v10_${authState.username}`; }
+        
+        function loadUserChats() {
+            appState.chats = JSON.parse(localStorage.getItem(getChatsStorageKey())) || [];
+        }
+        function saveChatsToStorage() { 
+            localStorage.setItem(getChatsStorageKey(), JSON.stringify(appState.chats)); 
+        }
+
         function updateUserUI() {
+            const user = getCurrentUser();
+            if(!user) return;
+
             document.getElementById('uiUsername').innerText = authState.username;
             const badge = document.getElementById('uiPlanBadge');
             const usageContainer = document.getElementById('usageContainer');
             
-            // Check Daily Reset
+            // Check Daily Reset for Limit
             const today = new Date().toLocaleDateString();
-            if (authState.lastUsageDate !== today) {
-                authState.usageCount = 0;
-                authState.lastUsageDate = today;
-                saveAuth();
+            if (user.lastUsageDate !== today) {
+                user.usageCount = 0;
+                user.lastUsageDate = today;
+                saveUsersDB();
             }
             
-            if(authState.plan === 'premium') {
+            if(user.plan === 'premium') {
                 badge.innerText = 'PREMIUM';
                 badge.className = 'text-[9px] font-mono font-bold text-black uppercase tracking-widest bg-amber-400 px-2 py-0.5 rounded w-max mt-0.5 shadow-gold';
-                usageContainer.classList.add('hidden'); // Hide usage bar for premium
+                usageContainer.classList.add('hidden'); 
             } else {
                 badge.innerText = 'FREE PLAN';
                 badge.className = 'text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700';
                 usageContainer.classList.remove('hidden');
                 
-                // Update Progress Bar
-                document.getElementById('usageText').innerText = `${authState.usageCount} /${FREE_DAILY_LIMIT}`;
-                const percentage = Math.min((authState.usageCount / FREE_DAILY_LIMIT) * 100, 100);
+                document.getElementById('usageText').innerText = `${user.usageCount} / ${FREE_DAILY_LIMIT}`;
+                const percentage = Math.min((user.usageCount / FREE_DAILY_LIMIT) * 100, 100);
                 const bar = document.getElementById('usageProgressBar');
                 bar.style.width = `${percentage}%`;
                 
@@ -549,12 +607,14 @@
         }
 
         function checkUsageLimit() {
-            if(authState.plan === 'premium') return true;
+            const user = getCurrentUser();
+            if(!user) return false;
+            if(user.plan === 'premium') return true;
             
             const today = new Date().toLocaleDateString();
-            if (authState.lastUsageDate !== today) { authState.usageCount = 0; authState.lastUsageDate = today; saveAuth(); }
+            if (user.lastUsageDate !== today) { user.usageCount = 0; user.lastUsageDate = today; saveUsersDB(); }
             
-            if (authState.usageCount >= FREE_DAILY_LIMIT) {
+            if (user.usageCount >= FREE_DAILY_LIMIT) {
                 openModal('upgradeModal');
                 showToast("Limit Harian (5x) versi Free telah habis.", "error");
                 return false;
@@ -563,12 +623,15 @@
         }
 
         function executeUpgrade() {
-            authState.plan = 'premium';
-            saveAuth();
-            updateUserUI();
-            populateModelDropdown(); // Refresh models (unlock premium)
-            closeModal('upgradeModal');
-            showToast("Sukses! Anda sekarang menggunakan AkaShiro Premium.", "success");
+            const user = getCurrentUser();
+            if(user) {
+                user.plan = 'premium';
+                saveUsersDB();
+                updateUserUI();
+                populateModelDropdown(); // Unlock premium models
+                closeModal('upgradeModal');
+                showToast("Sukses! Anda sekarang menggunakan AkaShiro Premium.", "success");
+            }
         }
 
         // --- 4. CORE BINDINGS ---
@@ -581,16 +644,20 @@
 
         function populateModelDropdown() {
             const select = document.getElementById('chatModelSelect');
-            if(!select) return; select.innerHTML = '';
+            const user = getCurrentUser();
+            if(!select || !user) return; select.innerHTML = '';
             
             AVAILABLE_MODELS.forEach(m => {
-                if(m.premiumOnly && authState.plan !== 'premium') return; // Skip premium models if free
+                // Sembunyikan model Premium dari Free User
+                if(m.premiumOnly && user.plan !== 'premium') return; 
+                
                 const opt = document.createElement('option');
                 opt.value = m.id; opt.textContent = m.name;
                 if(m.id === appState.currentModel) opt.selected = true;
                 select.appendChild(opt);
             });
-            // If current model became unavailable (downgrade scenario), switch to default
+            
+            // Downgrade protection if model became unavailable
             if(!Array.from(select.options).some(opt => opt.value === appState.currentModel)) {
                 changeChatModel('qwen3.8-27b');
             }
@@ -630,7 +697,7 @@
                     const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
                     const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
                     const langName = language ? language.toUpperCase() : 'TEXT';
-                    return `<div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code"><div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border"><span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span><button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)"><i class="fa-regular fa-copy"></i> <span>Copy</span></button></div><div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar"><pre class="m-0"><code class="hljs ${language \vert{}\vert{} ''}">${highlighted}</code></pre></div></div>`;
+                    return `<div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code"><div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border"><span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span><button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)"><i class="fa-regular fa-copy"></i> <span>Copy</span></button></div><div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar"><pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre></div></div>`;
                 };
                 marked.setOptions({ renderer: renderer, breaks: true });
             } catch(e) {}
@@ -731,174 +798,4 @@
             const chat = getCurrentChat(); if(!chat || chat.messages.length === 0) return;
             const index = chat.messages.length - 1; const msg = chat.messages[index]; const node = document.getElementById(`msg-${index}`);
             if(node) {
-                const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream-cursor' : '';
-                let safeHtml = escapeHtml(msg.text || '');
-                try { if(typeof marked !== 'undefined') { let raw = marked.parse(msg.text || ''); if(typeof DOMPurify !== 'undefined') safeHtml = DOMPurify.sanitize(raw); else safeHtml = raw; } } catch(e){}
-                
-                const markdownBody = node.querySelector('.markdown-body');
-                if(markdownBody) {
-                    markdownBody.innerHTML = (msg.isTyping && msg.text.length === 0) ? `<div class="typing-dots"><span></span><span></span><span></span></div>` : safeHtml;
-                    if(msg.isTyping && msg.text.length > 0) markdownBody.classList.add('stream-cursor'); else markdownBody.classList.remove('stream-cursor');
-                }
-                if(!msg.isTyping && typeof renderMathInElement !== 'undefined') {
-                    try { renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false }); } catch(e) {}
-                }
-            }
-            scrollToBottom();
-        }
-
-        // --- 6. NETWORK & SUBMIT ---
-        function sendQuickPrompt(promptText) {
-            const inputEl = document.getElementById('chatInput');
-            if (inputEl) { inputEl.value = promptText; handleInputAutoResize({target: inputEl}); }
-            handleChatSubmit(new Event('submit'));
-        }
-
-        function abortGeneration() {
-            if(currentAbortController) { currentAbortController.abort(); currentAbortController = null; }
-            toggleInputState(false);
-            let chat = getCurrentChat();
-            if(chat && chat.messages.length > 0) {
-                const lastMsg = chat.messages[chat.messages.length-1];
-                if(lastMsg.isTyping) {
-                    lastMsg.isTyping = false; if(lastMsg.text.length === 0) lastMsg.text = "*(Proses dibatalkan)*";
-                    saveChatsToStorage(); updateLastMessageUI(); renderMessages();
-                }
-            }
-        }
-
-        function toggleInputState(generating) {
-            isGenerating = generating;
-            const btn = document.getElementById('sendBtn'); const stopBtn = document.getElementById('stopBtn'); const input = document.getElementById('chatInput');
-            if(!btn || !stopBtn || !input) return;
-            if(generating) { btn.classList.add('hidden'); stopBtn.classList.remove('hidden'); input.disabled = true; input.classList.add('opacity-50'); } 
-            else { btn.classList.remove('hidden'); stopBtn.classList.add('hidden'); input.disabled = false; input.classList.remove('opacity-50'); input.focus(); }
-        }
-
-        async function handleChatSubmit(e, isRegenerate = false) {
-            if (e) e.preventDefault();
-            if (isGenerating) return;
-
-            // 1. CEK LIMIT SEBELUM MEMPROSES (PENTING!)
-            if(!checkUsageLimit()) return;
-
-            const inputEl = document.getElementById('chatInput');
-            const charCountEl = document.getElementById('charCount');
-            if (!inputEl) return;
-            
-            let prompt = "";
-            if(!isRegenerate) { prompt = inputEl.value.trim(); if (!prompt) return; }
-
-            if (!appState.baseUrl || !appState.apiKey) { showToast("Konfigurasi API belum diatur!", "error"); openModal('settingsModal'); return; }
-
-            let chat = getCurrentChat();
-            if (!chat) { startNewChat(); chat = getCurrentChat(); }
-            
-            if (!isRegenerate) {
-                if (chat.messages.length === 0) {
-                    chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
-                    updateHeaderTitle(); renderChatHistory();
-                }
-                chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
-            }
-            
-            inputEl.value = ''; inputEl.style.height = 'auto'; if (charCountEl) charCountEl.innerText = '0 chars'; 
-            
-            const loadingMsgIndex = chat.messages.length;
-            chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
-            renderMessages(); forceScrollBottom();
-            
-            toggleInputState(true);
-            currentAbortController = new AbortController();
-
-            try {
-                let contextMessages = chat.messages.slice(0, -1);
-                if(contextMessages.length > 12) contextMessages = contextMessages.slice(contextMessages.length - 12);
-                
-                await callAIAPI_Stream(contextMessages, currentAbortController.signal, loadingMsgIndex);
-                
-                // 2. JIKA BERHASIL MENDAPATKAN RESPONS, TAMBAH USAGE (TIER FREE)
-                if(authState.plan === 'free') {
-                    authState.usageCount += 1;
-                    saveAuth();
-                    updateUserUI();
-                }
-                
-                saveChatsToStorage();
-            } catch (err) {
-                if (err.name === 'AbortError') return; 
-                chat.messages[loadingMsgIndex].isTyping = false;
-                chat.messages[loadingMsgIndex].text = `⚠️ **Error:** \`${err.message}\``;
-                showToast("Gagal menerima respons.", "error");
-            } finally {
-                chat.messages[loadingMsgIndex].isTyping = false;
-                saveChatsToStorage(); toggleInputState(false); currentAbortController = null; renderMessages();
-            }
-        }
-
-        async function callAIAPI_Stream(messagesHistory, signal, msgIndex) {
-            const cleanBaseUrl = appState.baseUrl.replace(/\/+$/, '');
-            let apiUrl = `${cleanBaseUrl}/chat/completions`;
-            let chat = getCurrentChat();
-            
-            const formattedMessages = messagesHistory.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text || '' }));
-            formattedMessages.unshift({ role: "system", content: "Anda AkaShiro v10 Enterprise AI. Jawab dalam bahasa Indonesia rapi menggunakan Markdown." });
-
-            const payload = { model: appState.currentModel, messages: formattedMessages, temperature: parseFloat(appState.temperature), stream: true };
-            const reqHeaders = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${appState.apiKey}` };
-            const response = await fetch(apiUrl, { method: 'POST', headers: reqHeaders, body: JSON.stringify(payload), signal: signal });
-
-            if (!response.ok) {
-                let errMsg = `HTTP Status ${response.status}`;
-                try { const errText = await response.text(); const errJson = JSON.parse(errText); errMsg = errJson.error?.message || errJson.message || errMsg; } catch(e) {}
-                throw new Error(errMsg);
-            }
-
-            const reader = response.body.getReader(); const decoder = new TextDecoder("utf-8"); let aiFullResponse = "";
-
-            while (true) {
-                const { done, value } = await reader.read(); if (done) break;
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split("\n").filter(line => line.trim() !== "");
-                
-                for (const line of lines) {
-                    const message = line.replace(/^data: /, ""); if (message === "[DONE]") return;
-                    try {
-                        const parsed = JSON.parse(message);
-                        const token = parsed.choices?.[0]?.delta?.content || "";
-                        if (token) {
-                            aiFullResponse += token; chat.messages[msgIndex].text = aiFullResponse;
-                            window.requestAnimationFrame(updateLastMessageUI);
-                        }
-                    } catch (e) {}
-                }
-            }
-        }
-
-        // --- 7. UTILS & MODALS ---
-        function handleInputKeydown(e) { if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { e.preventDefault(); if(!isGenerating) handleChatSubmit(e); } }
-        function handleInputAutoResize(e) { const el = e.target; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 200) + 'px'; const charCountEl = document.getElementById('charCount'); if (charCountEl) charCountEl.innerText = `${el.value.length} chars`; }
-        function saveSettings() {
-            appState.baseUrl = document.getElementById('customBaseUrl').value.trim();
-            appState.apiKey = document.getElementById('customApiKey').value.trim();
-            appState.temperature = parseFloat(document.getElementById('tempSlider').value);
-            localStorage.setItem('akashiro_baseurl_v10', appState.baseUrl); localStorage.setItem('akashiro_apikey_v10', appState.apiKey); localStorage.setItem('akashiro_temp_v10', appState.temperature);
-            closeModal('settingsModal'); showToast("Konfigurasi sistem berhasil disimpan.", "success");
-        }
-        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v10', JSON.stringify(appState.chats)); }
-        function deleteChatSession(e, chatId) { if(e) e.stopPropagation(); appState.chats = appState.chats.filter(c => c.id !== chatId); if (appState.currentChatId === chatId) appState.currentChatId = appState.chats[0]?.id || null; saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle(); }
-        function clearAllChats() { if(confirm("Hapus PERMANEN semua riwayat komputasi?")) { appState.chats = []; appState.currentChatId = null; saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle(); showToast("Riwayat dibersihkan."); } }
-        function exportCurrentChat(format) {
-            const chat = getCurrentChat(); if (!chat || chat.messages.length === 0) { showToast("Tidak ada data.", "error"); return; }
-            if(format === 'markdown') {
-                let textData = `# AkaShiro Transkrip: ${chat.title}\nID: ${chat.id}\nTanggal: ${new Date().toLocaleString()}\nModel: ${chat.model}\n\n---\n\n`;
-                chat.messages.forEach(m => { const roleName = m.role === 'user' ? 'USER' : 'AKASHIRO ENGINE'; textData += `### ${roleName} (${new Date(m.timestamp).toLocaleTimeString()})\n${m.text}\n\n---\n\n`; });
-                const blob = new Blob([textData], { type: 'text/markdown;charset=utf-8;' });
-                const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `AkaShiro_${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`; document.body.appendChild(a); a.click(); document.body.removeChild(a); showToast("Transkrip diunduh.", "success");
-            }
-        }
-        function openModal(id) { const el = document.getElementById(id); const content = document.getElementById(id + 'Content'); if (el) { el.classList.remove('hidden'); setTimeout(() => { if(content) {content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100');} }, 10); } }
-        function closeModal(id) { const el = document.getElementById(id); const content = document.getElementById(id + 'Content'); if(content) { content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0'); } setTimeout(() => { if (el) el.classList.add('hidden'); }, 300); }
-    </script>
-</body>
-</html>
+                const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream
