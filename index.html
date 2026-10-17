@@ -8,7 +8,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,12 +19,12 @@
                 extend: {
                     colors: {
                         crimson: { DEFAULT: '#FF3B5C', 50: '#fff0f3', 100: '#ffe1e6', 400: '#ff6b85', 500: '#FF3B5C', 600: '#e01e42', 700: '#b80f2f', 900: '#520412' },
-                        surface: { 50: '#12141c', 100: '#171923', 200: '#1e212b', 300: '#252936' }
+                        surface: { 50: '#0b0c10', 100: '#12141a', 200: '#1a1c24', 300: '#232630' }
                     },
                     fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
-                    boxShadow: { 'glow-crimson': '0 0 20px rgba(255, 59, 92, 0.4)', 'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.3)' },
-                    animation: { 'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards', 'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite' },
-                    keyframes: { slideUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+                    boxShadow: { 'glow-crimson': '0 0 25px rgba(255, 59, 92, 0.4)', 'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.4)' },
+                    animation: { 'fade-in-up': 'fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
+                    keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
                 }
             }
         }
@@ -38,91 +38,104 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
     <style>
+        :root { --glass-bg: rgba(18, 20, 26, 0.65); --glass-border: rgba(255, 255, 255, 0.08); }
         body {
-            background-color: #090a0f; color: #f8fafc;
-            background-image: radial-gradient(circle at top right, rgba(255, 59, 92, 0.1), transparent 40%), radial-gradient(circle at bottom left, rgba(255, 59, 92, 0.05), transparent 40%);
+            background-color: #0b0c10; color: #f8fafc;
+            background-image: radial-gradient(circle at 10% 10%, rgba(255, 59, 92, 0.1), transparent 40%), radial-gradient(circle at 90% 90%, rgba(255, 59, 92, 0.05), transparent 40%);
             background-attachment: fixed; -webkit-tap-highlight-color: transparent;
         }
         
         /* Premium Glassmorphism */
-        .glass-panel { background: rgba(23, 25, 35, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .glass-chat { background: rgba(30, 33, 43, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); }
+        .glass-bubble { background: rgba(30, 34, 45, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
         
-        /* Scrollbar Premium */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        /* Premium Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #FF3B5C; }
         
         /* Markdown Styling - Enterprise Grade */
-        .markdown-body { font-size: 0.875rem; leading-trim: both; text-edge: cap; }
-        @media (min-width: 768px) { .markdown-body { font-size: 0.925rem; } }
-        .markdown-body p { margin-bottom: 1rem; line-height: 1.7; color: #e2e8f0; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Orbitron', sans-serif; font-weight: 700; color: #fff; margin-top: 1.5rem; margin-bottom: 0.75rem; letter-spacing: 0.025em; }
-        .markdown-body ul, .markdown-body ol { margin-left: 1.5rem; margin-bottom: 1rem; list-style-type: decimal; color: #cbd5e1; }
+        .markdown-body { font-size: 0.9rem; line-height: 1.7; color: #cbd5e1; }
+        @media (min-width: 768px) { .markdown-body { font-size: 0.95rem; } }
+        .markdown-body p { margin-bottom: 1.25rem; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Orbitron', sans-serif; font-weight: 700; color: #fff; margin-top: 2rem; margin-bottom: 1rem; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.5rem; margin-bottom: 1.25rem; }
         .markdown-body ul { list-style-type: disc; }
-        .markdown-body li { margin-bottom: 0.5rem; padding-left: 0.25rem; }
-        .markdown-body a { color: #FF3B5C; text-decoration: none; border-bottom: 1px dashed #FF3B5C; transition: all 0.2s; }
-        .markdown-body a:hover { color: #ff6b85; border-bottom-style: solid; }
+        .markdown-body a { color: #FF3B5C; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s; }
+        .markdown-body a:hover { border-bottom-color: #FF3B5C; text-shadow: 0 0 8px rgba(255,59,92,0.5); }
         .markdown-body strong { color: #fff; font-weight: 600; }
-        .markdown-body blockquote { border-left: 3px solid #FF3B5C; background: rgba(255,59,92,0.05); padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; font-style: italic; color: #94a3b8; }
-        .markdown-body code:not(pre code) { background: rgba(0,0,0,0.4); padding: 0.2rem 0.4rem; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.8em; color: #ff8fa3; border: 1px solid rgba(255,255,255,0.1); }
-        .markdown-body table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; overflow-x: auto; display: block; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .markdown-body th, .markdown-body td { border: 1px solid rgba(255,255,255,0.1); padding: 0.75rem 1rem; text-align: left; }
-        .markdown-body th { background-color: rgba(255,59,92,0.1); color: #fff; font-weight: 600; }
-        .markdown-body tr:nth-child(even) { background-color: rgba(255,255,255,0.02); }
-        .markdown-body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .markdown-body blockquote { border-left: 3px solid #FF3B5C; background: rgba(255,59,92,0.05); padding: 1rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; font-style: italic; color: #94a3b8; }
+        .markdown-body code:not(pre code) { background: rgba(0,0,0,0.5); padding: 0.2rem 0.4rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #ff8fa3; border: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Table Styling */
+        .markdown-body table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.5rem 0; display: block; overflow-x: auto; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .markdown-body th, .markdown-body td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--glass-border); }
+        .markdown-body th { background: rgba(255,59,92,0.1); color: #fff; font-weight: 600; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.05em; }
+        .markdown-body tr:last-child td { border-bottom: none; }
+        .markdown-body tr:hover td { background: rgba(255,255,255,0.02); }
+        
+        /* Media Rendering (Images, Videos, Iframes) */
+        .markdown-body img { max-width: 100%; border-radius: 12px; margin: 1.5rem 0; border: 1px solid var(--glass-border); box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: transform 0.3s; }
+        .markdown-body img:hover { transform: scale(1.02); }
+        .markdown-body iframe, .markdown-body video { width: 100%; max-width: 600px; height: 315px; border-radius: 12px; margin: 1.5rem 0; border: 1px solid var(--glass-border); box-shadow: 0 8px 25px rgba(0,0,0,0.3); background: #000; }
+        .markdown-body audio { width: 100%; max-width: 400px; margin: 1rem 0; border-radius: 30px; }
         
         /* Animated Typing Dots */
-        .typing-indicator span { display: inline-block; width: 5px; height: 5px; background-color: #FF3B5C; border-radius: 50%; margin: 0 2px; animation: typing 1.4s infinite ease-in-out both; }
+        .typing-indicator span { display: inline-block; width: 6px; height: 6px; background-color: #FF3B5C; border-radius: 50%; margin: 0 3px; animation: bounce 1.4s infinite ease-in-out both; }
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes typing { 0%, 80%, 100% { transform: scale(0); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; box-shadow: 0 0 8px #FF3B5C; } }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; box-shadow: 0 0 10px #FF3B5C; } }
 
-        /* Custom Auto-Resize Textarea Scrollbar Hider */
+        /* Custom Textarea */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="h-[100dvh] flex flex-col overflow-hidden selection:bg-crimson-500 selection:text-white">
 
-    <!-- HEADER NAVIGATION -->
-    <header class="h-16 glass-panel border-b border-white/5 px-4 lg:px-6 flex items-center justify-between z-40 shrink-0 shadow-sm">
-        <div class="flex items-center gap-3">
-            <button id="mobileMenuBtn" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+    <!-- HEADER / NAVBAR -->
+    <header class="h-16 glass-panel border-b border-white/10 px-4 lg:px-6 flex items-center justify-between z-40 shrink-0 shadow-md relative">
+        <!-- Glow Line at the bottom of header -->
+        <div class="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-crimson-500/50 to-transparent"></div>
+        
+        <div class="flex items-center gap-4">
+            <button id="mobileMenuBtn" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
                 <i class="fa-solid fa-bars-staggered text-lg"></i>
             </button>
             <div class="flex items-center gap-3 cursor-pointer group" onclick="switchTab('chat')">
-                <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-crimson-600 to-surface-200 border border-crimson-500/40 shadow-glow-crimson group-hover:scale-105 transition-transform duration-300">
-                    <span class="font-orbitron font-bold text-white text-lg tracking-wider">赤</span>
-                    <span class="absolute -bottom-1 -right-1 flex h-3 w-3">
+                <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-crimson-600 to-surface-200 border border-crimson-400/50 shadow-glow-crimson group-hover:scale-105 transition-transform duration-300">
+                    <span class="font-orbitron font-bold text-white text-lg tracking-wider drop-shadow-md">赤</span>
+                    <span class="absolute -bottom-1 -right-1 flex h-3.5 w-3.5">
                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-crimson-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-crimson-500 border-2 border-surface-50"></span>
+                      <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-crimson-500 border-2 border-surface-50"></span>
                     </span>
                 </div>
                 <div class="hidden sm:flex flex-col justify-center">
                     <div class="flex items-center gap-2">
                         <span class="font-orbitron font-bold text-lg text-white tracking-wide">AkaShiro<span class="text-crimson-500">.AI</span></span>
-                        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded flex items-center justify-center bg-crimson-500/20 text-crimson-400 border border-crimson-500/30 font-bold uppercase tracking-wider">v4.0</span>
+                        <span class="text-[9px] font-mono px-1.5 py-0.5 rounded flex items-center justify-center bg-crimson-500/20 text-crimson-400 border border-crimson-500/30 font-bold uppercase tracking-widest shadow-[0_0_10px_rgba(255,59,92,0.2)]">v5.0</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="flex items-center gap-2 sm:gap-3">
-            <div class="hidden md:flex items-center bg-surface-200/50 border border-white/10 rounded-xl px-3 py-1.5 h-10">
-                <i class="fa-solid fa-microchip text-crimson-500 text-xs mr-2"></i>
-                <select id="headerModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-slate-200 text-xs font-mono focus:outline-none focus:ring-0 cursor-pointer w-40">
-                    <!-- Options populated by JS -->
+        <div class="flex items-center gap-2 md:gap-3">
+            <!-- Model Selector Desktop -->
+            <div class="hidden md:flex items-center bg-surface-200/60 border border-white/10 rounded-xl px-3 py-1.5 h-10 hover:border-crimson-500/30 transition-colors">
+                <i class="fa-solid fa-microchip text-crimson-400 text-xs mr-2"></i>
+                <select id="headerModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-slate-200 text-xs font-mono focus:outline-none focus:ring-0 cursor-pointer w-44 appearance-none">
+                    <!-- Dynamic Options -->
                 </select>
+                <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 ml-2 pointer-events-none"></i>
             </div>
             
-            <button onclick="openModal('settingsModal')" class="w-10 h-10 rounded-xl flex items-center justify-center bg-surface-200/50 hover:bg-white/10 border border-white/5 text-slate-300 hover:text-white transition-all shadow-sm" title="Konfigurasi API">
-                <i class="fa-solid fa-sliders"></i>
+            <button onclick="openModal('settingsModal')" class="w-10 h-10 rounded-xl flex items-center justify-center bg-surface-200/60 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-crimson-400 transition-all shadow-sm group" title="Konfigurasi API">
+                <i class="fa-solid fa-sliders group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
-            <button onclick="startNewChat(); switchTab('chat');" class="h-10 px-4 flex items-center gap-2 rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white font-semibold text-xs font-mono shadow-glow-crimson transition-all active:scale-95">
-                <i class="fa-solid fa-pen-to-square"></i>
-                <span class="hidden sm:inline">CHAT BARU</span>
+            <button onclick="startNewChat(); switchTab('chat');" class="h-10 px-4 md:px-5 flex items-center gap-2 rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white font-semibold text-xs font-mono shadow-glow-crimson transition-all active:scale-95 group">
+                <i class="fa-solid fa-plus group-hover:rotate-180 transition-transform duration-300"></i>
+                <span class="hidden sm:inline tracking-wider">NEW CHAT</span>
             </button>
         </div>
     </header>
@@ -131,24 +144,24 @@
     <main class="flex-1 relative flex overflow-hidden bg-surface-50/50">
 
         <!-- SIDEBAR: CHAT HISTORY -->
-        <aside id="chatSidebar" class="w-72 glass-panel border-r border-white/5 flex flex-col shrink-0 transition-transform duration-300 ease-out absolute lg:relative z-40 h-full -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
-            <div class="p-4 border-b border-white/5 flex items-center justify-between">
-                <div class="flex items-center gap-2 text-slate-300">
-                    <i class="fa-regular fa-folder-open text-sm"></i>
-                    <span class="text-xs font-mono font-bold uppercase tracking-wider">Riwayat Sesi</span>
+        <aside id="chatSidebar" class="w-72 glass-panel border-r border-white/5 flex flex-col shrink-0 transition-transform duration-300 ease-out absolute lg:relative z-40 h-full -translate-x-full lg:translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.5)] lg:shadow-none bg-surface-100/90">
+            <div class="p-5 border-b border-white/5 flex items-center justify-between">
+                <div class="flex items-center gap-3 text-slate-300">
+                    <i class="fa-regular fa-folder-open text-sm text-crimson-400"></i>
+                    <span class="text-xs font-mono font-bold uppercase tracking-widest text-slate-200">Riwayat Sesi</span>
                 </div>
                 <button onclick="if(window.innerWidth < 1024) toggleSidebar(false);" class="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
                     <i class="fa-solid fa-chevron-left text-xs"></i>
                 </button>
             </div>
             
-            <div id="chatHistoryList" class="flex-1 overflow-y-auto p-3 space-y-2 scroll-smooth">
+            <div id="chatHistoryList" class="flex-1 overflow-y-auto p-3 space-y-1.5 scroll-smooth">
                 <!-- Chat history items injected here -->
             </div>
             
-            <div class="p-4 border-t border-white/5 bg-surface-100/50">
-                <button onclick="clearAllChats()" class="w-full h-10 rounded-xl flex items-center justify-center gap-2 bg-surface-300/30 hover:bg-rose-500/20 text-rose-400 text-xs font-mono font-semibold border border-transparent hover:border-rose-500/30 transition-all">
-                    <i class="fa-regular fa-trash-can"></i> Bersihkan Riwayat
+            <div class="p-4 border-t border-white/5 bg-surface-200/50">
+                <button onclick="clearAllChats()" class="w-full h-11 rounded-xl flex items-center justify-center gap-2 bg-surface-300/30 hover:bg-rose-500/20 text-rose-400 text-xs font-mono font-bold border border-transparent hover:border-rose-500/30 transition-all">
+                    <i class="fa-regular fa-trash-can"></i> BERSIHKAN RIWAYAT
                 </button>
             </div>
         </aside>
@@ -158,13 +171,14 @@
         <!-- CORE: CHAT WORKSPACE -->
         <section id="view-chat" class="tab-view flex-1 flex flex-col h-full relative overflow-hidden">
             
-            <!-- MOBILE MODEL SELECTOR (Visible only on small screens) -->
+            <!-- MOBILE MODEL SELECTOR -->
             <div class="md:hidden p-3 border-b border-white/5 bg-surface-100/80 backdrop-blur-md flex items-center justify-between z-10 shrink-0">
-                <div class="flex items-center bg-surface-200/80 border border-white/10 rounded-lg px-3 py-1.5 flex-1">
+                <div class="flex items-center bg-surface-200/80 border border-white/10 rounded-lg px-3 py-1.5 flex-1 relative">
                     <i class="fa-solid fa-microchip text-crimson-400 text-[10px] mr-2"></i>
-                    <select id="mobileModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-slate-200 text-[11px] font-mono focus:outline-none focus:ring-0 cursor-pointer w-full appearance-none">
+                    <select id="mobileModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-slate-200 text-[11px] font-mono focus:outline-none focus:ring-0 cursor-pointer w-full appearance-none pr-6">
                         <!-- Options populated by JS -->
                     </select>
+                    <i class="fa-solid fa-chevron-down text-[9px] text-slate-500 absolute right-3 pointer-events-none"></i>
                 </div>
                 <button onclick="exportCurrentChat()" class="ml-2 w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-emerald-400 hover:bg-emerald-500/20 transition-colors">
                     <i class="fa-solid fa-download text-xs"></i>
@@ -175,143 +189,154 @@
             <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex flex-col scroll-smooth">
                 
                 <!-- WELCOME HERO STATE -->
-                <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-10 px-4 text-center space-y-6 w-full animate-slide-up">
-                    <div class="relative inline-flex items-center justify-center">
-                        <div class="absolute inset-0 bg-crimson-500/20 blur-3xl rounded-full"></div>
-                        <div class="relative p-5 rounded-[2rem] bg-gradient-to-b from-surface-200 to-surface-100 border border-white/10 shadow-glass">
-                            <i class="fa-solid fa-satellite-dish text-4xl text-transparent bg-clip-text bg-gradient-to-r from-crimson-400 to-rose-200 mb-2"></i>
-                            <h2 class="text-2xl md:text-3xl font-orbitron font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-500 tracking-tight mt-2">AkaShiro Engine</h2>
+                <div id="welcomeHero" class="max-w-3xl mx-auto my-auto py-10 px-4 text-center space-y-6 w-full animate-fade-in-up">
+                    <div class="relative inline-flex items-center justify-center mb-4">
+                        <div class="absolute inset-0 bg-crimson-500/20 blur-[50px] rounded-full"></div>
+                        <div class="relative p-6 rounded-[2.5rem] bg-gradient-to-b from-surface-200 to-surface-100 border border-white/10 shadow-glass">
+                            <i class="fa-solid fa-vr-cardboard text-5xl text-transparent bg-clip-text bg-gradient-to-r from-crimson-400 to-rose-200 mb-3 block"></i>
+                            <h2 class="text-3xl md:text-4xl font-orbitron font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-200 to-slate-500 tracking-tight">AkaShiro Engine</h2>
                         </div>
                     </div>
                     
-                    <div class="space-y-2">
-                        <h3 class="text-lg font-semibold text-white">Sistem AI Siap Digunakan</h3>
-                        <p class="text-slate-400 text-xs md:text-sm max-w-md mx-auto leading-relaxed">Pilih model komputasi di menu atas, lalu ketikkan instruksi Anda. Sistem mendukung Markdown, render tabel, dan block kode.</p>
+                    <div class="space-y-3">
+                        <h3 class="text-lg font-semibold text-white tracking-wide">Enterprise Media Workspace</h3>
+                        <p class="text-slate-400 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">Sistem cerdas dengan dukungan Markdown penuh. Memiliki kemampuan merender <b>Gambar, Video (YouTube/MP4), dan Audio</b> jika AI menyediakan link yang valid. Ketik instruksi Anda di bawah.</p>
                     </div>
                     
-                    <div class="flex flex-wrap justify-center gap-3 pt-6">
-                        <button onclick="sendQuickPrompt('Jelaskan apa itu teknologi Artificial General Intelligence (AGI) secara terstruktur.')" class="px-4 py-2.5 rounded-xl bg-surface-200 hover:bg-surface-300 border border-white/5 hover:border-crimson-500/50 text-[11px] md:text-xs font-mono text-slate-300 hover:text-white transition-all shadow-sm flex items-center gap-2">
-                            <i class="fa-solid fa-bolt text-amber-400"></i> Apa itu AGI?
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-8 max-w-2xl mx-auto">
+                        <button onclick="sendQuickPrompt('Tampilkan gambar pemandangan alam yang indah beserta penjelasannya.')" class="p-4 rounded-2xl bg-surface-200/50 hover:bg-surface-200 border border-white/5 hover:border-crimson-500/50 transition-all text-left group shadow-glass">
+                            <i class="fa-regular fa-image text-emerald-400 mb-2 text-lg group-hover:scale-110 transition-transform"></i>
+                            <h4 class="text-slate-200 text-xs font-bold mb-1">Render Gambar</h4>
+                            <p class="text-slate-500 text-[10px]">Minta AI menampilkan gambar.</p>
                         </button>
-                        <button onclick="sendQuickPrompt('Tuliskan script Python untuk membuat API sederhana menggunakan FastAPI.')" class="px-4 py-2.5 rounded-xl bg-surface-200 hover:bg-surface-300 border border-white/5 hover:border-crimson-500/50 text-[11px] md:text-xs font-mono text-slate-300 hover:text-white transition-all shadow-sm flex items-center gap-2">
-                            <i class="fa-solid fa-code text-cyan-400"></i> Code Python
+                        <button onclick="sendQuickPrompt('Carikan video YouTube tentang tutorial belajar pemrograman Python pemula.')" class="p-4 rounded-2xl bg-surface-200/50 hover:bg-surface-200 border border-white/5 hover:border-crimson-500/50 transition-all text-left group shadow-glass">
+                            <i class="fa-brands fa-youtube text-rose-500 mb-2 text-lg group-hover:scale-110 transition-transform"></i>
+                            <h4 class="text-slate-200 text-xs font-bold mb-1">Cari Video & Lagu</h4>
+                            <p class="text-slate-500 text-[10px]">AI akan memberikan embed player.</p>
                         </button>
-                        <button onclick="sendQuickPrompt('Buat tabel perbandingan antara prosesor Intel Core i9 dan AMD Ryzen 9.')" class="px-4 py-2.5 rounded-xl bg-surface-200 hover:bg-surface-300 border border-white/5 hover:border-crimson-500/50 text-[11px] md:text-xs font-mono text-slate-300 hover:text-white transition-all shadow-sm flex items-center gap-2">
-                            <i class="fa-solid fa-table text-emerald-400"></i> Buat Tabel
+                        <button onclick="sendQuickPrompt('Tuliskan script HTML dan CSS untuk membuat card profile yang modern.')" class="p-4 rounded-2xl bg-surface-200/50 hover:bg-surface-200 border border-white/5 hover:border-crimson-500/50 transition-all text-left group shadow-glass sm:col-span-2 md:col-span-1">
+                            <i class="fa-solid fa-code text-cyan-400 mb-2 text-lg group-hover:scale-110 transition-transform"></i>
+                            <h4 class="text-slate-200 text-xs font-bold mb-1">Code Generator</h4>
+                            <p class="text-slate-500 text-[10px]">Tulis kode dengan syntax highlight.</p>
                         </button>
                     </div>
                 </div>
 
                 <!-- MESSAGES CONTAINER -->
-                <div id="chatMessagesList" class="flex flex-col space-y-6 w-full max-w-4xl mx-auto pb-4">
+                <div id="chatMessagesList" class="flex flex-col space-y-8 w-full max-w-4xl mx-auto pb-4">
                     <!-- Messages dynamically appended here -->
                 </div>
             </div>
 
-            <!-- INPUT COMPONENT -->
-            <div class="p-3 md:p-5 border-t border-white/5 glass-panel shrink-0 z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
-                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex flex-col max-w-4xl mx-auto relative">
+            <!-- FLOATING INPUT COMPONENT -->
+            <div class="p-4 md:p-6 bg-gradient-to-t from-surface-50 via-surface-50/90 to-transparent shrink-0 z-20 absolute bottom-0 left-0 right-0 pointer-events-none">
+                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex flex-col max-w-4xl mx-auto relative pointer-events-auto">
                     
-                    <!-- Error Toast Layer (Floating inside input area) -->
-                    <div id="errorToast" class="absolute -top-14 left-0 right-0 mx-auto w-max max-w-full px-4 py-2 rounded-xl bg-rose-950/90 border border-rose-500/50 text-rose-200 text-[11px] font-mono shadow-lg backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 transform translate-y-2 flex items-center gap-2 z-50">
-                        <i class="fa-solid fa-triangle-exclamation"></i> <span id="errorToastText">Error Message</span>
+                    <!-- Error Toast Layer -->
+                    <div id="errorToast" class="absolute -top-16 left-0 right-0 mx-auto w-max max-w-full px-5 py-3 rounded-2xl bg-rose-950/90 border border-rose-500/50 text-rose-200 text-[11px] font-mono shadow-[0_10px_30px_rgba(225,29,72,0.3)] backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4 flex items-center gap-3 z-50">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i> 
+                        <span id="errorToastText" class="leading-relaxed">Error Message</span>
                     </div>
 
-                    <div class="relative flex items-end bg-surface-100 rounded-2xl border border-white/10 focus-within:border-crimson-500/80 focus-within:shadow-glow-crimson transition-all p-1 shadow-inner">
-                        <textarea id="chatInput" rows="1" placeholder="Kirim instruksi... (Shift + Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-0 resize-none max-h-40 min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
+                    <div class="relative flex items-end glass-panel rounded-[1.5rem] border border-white/10 focus-within:border-crimson-500/80 focus-within:shadow-glow-crimson transition-all p-1.5 shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+                        <textarea id="chatInput" rows="1" placeholder="Ketik perintah Anda di sini... (Shift + Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-0 resize-none max-h-48 min-h-[48px] px-5 py-3.5 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                         
-                        <div class="flex items-center p-1 gap-1">
+                        <div class="flex items-center p-1.5 gap-2">
                             <!-- STOP BUTTON (Hidden by default) -->
-                            <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-9 w-9 md:h-10 md:w-10 rounded-xl bg-surface-200 hover:bg-rose-500/20 text-rose-400 border border-white/5 hover:border-rose-500/50 transition-all items-center justify-center" title="Hentikan Generasi">
-                                <i class="fa-solid fa-stop text-xs"></i>
+                            <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 md:h-11 md:w-11 rounded-xl bg-surface-200 hover:bg-rose-500/20 text-rose-400 border border-white/5 hover:border-rose-500/50 transition-all items-center justify-center shadow-inner" title="Hentikan Generasi">
+                                <i class="fa-solid fa-stop text-sm"></i>
                             </button>
                             
                             <!-- SEND BUTTON -->
-                            <button type="submit" id="sendBtn" class="h-9 w-9 md:h-10 md:w-10 flex items-center justify-center rounded-xl bg-crimson-600 hover:bg-crimson-500 text-white shadow-glow-crimson transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                                <i class="fa-solid fa-arrow-up text-sm"></i>
+                            <button type="submit" id="sendBtn" class="h-10 w-10 md:h-11 md:w-11 flex items-center justify-center rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white shadow-glow-crimson transition-all active:scale-90 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i class="fa-solid fa-arrow-up text-base"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <div class="flex justify-between items-center px-2 mt-2">
-                        <div class="text-[9px] font-mono text-slate-500 flex items-center gap-2">
-                            <span id="charCount">0 karakter</span>
-                            <span class="hidden sm:inline opacity-30">|</span>
-                            <span class="hidden sm:inline">AkaShiro Engine v4.0</span>
+                    <div class="flex justify-between items-center px-4 mt-3">
+                        <div class="text-[10px] font-mono text-slate-500 flex items-center gap-2.5">
+                            <span id="charCount" class="font-semibold text-slate-400">0 char</span>
+                            <span class="opacity-30">|</span>
+                            <span>AkaShiro Engine v5.0</span>
                         </div>
-                        <div class="hidden md:block text-[9px] font-mono text-slate-500">
-                            Model aktif: <span id="footerModelName" class="text-crimson-400 font-bold">Nemotron 3 Ultra</span>
+                        <div class="hidden md:flex items-center text-[10px] font-mono text-slate-500 bg-surface-200/50 px-3 py-1 rounded-full border border-white/5">
+                            <i class="fa-solid fa-circle-dot text-emerald-400 text-[8px] mr-1.5 animate-pulse"></i>
+                            <span id="footerModelName" class="text-slate-300">Nemotron 3 Ultra</span>
                         </div>
                     </div>
                 </form>
             </div>
+            
+            <!-- Padding spacer for scroll area so messages don't hide behind floating input -->
+            <div class="h-32 shrink-0"></div>
         </section>
     </main>
 
     <!-- MODAL: SETTINGS -->
-    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto transition-opacity">
-        <div class="w-full max-w-lg glass-panel rounded-2xl md:rounded-[2rem] p-6 md:p-8 space-y-6 border border-white/10 shadow-2xl my-auto transform transition-transform scale-95" id="settingsModalContent">
+    <div id="settingsModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto transition-opacity">
+        <div class="w-full max-w-xl glass-panel rounded-[2rem] p-6 md:p-8 space-y-6 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] my-auto transform transition-transform scale-95" id="settingsModalContent">
             
-            <div class="flex items-center justify-between border-b border-white/10 pb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-surface-200 to-surface-300 border border-white/5 flex items-center justify-center text-white shadow-inner">
-                        <i class="fa-solid fa-gears"></i>
+            <div class="flex items-center justify-between border-b border-white/10 pb-5">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-surface-200 to-surface-300 border border-white/5 flex items-center justify-center text-white shadow-inner">
+                        <i class="fa-solid fa-sliders text-xl text-crimson-400"></i>
                     </div>
                     <div>
-                        <h3 class="font-orbitron font-bold text-base text-white">Parameter Sistem</h3>
-                        <p class="text-[9px] font-mono text-slate-400">Konfigurasi Gateway API & Logika AI</p>
+                        <h3 class="font-orbitron font-bold text-lg text-white">Parameter Sistem</h3>
+                        <p class="text-[10px] font-mono text-slate-400 tracking-wide mt-0.5">Konfigurasi Gateway API & Logika AI</p>
                     </div>
                 </div>
-                <button onclick="closeModal('settingsModal')" class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-200 text-slate-400 hover:text-white hover:bg-rose-500/80 transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
+                <button onclick="closeModal('settingsModal')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-surface-200 text-slate-400 hover:text-white hover:bg-rose-500/80 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <div class="space-y-5 text-xs font-mono max-h-[60vh] overflow-y-auto pr-2 no-scrollbar">
+            <div class="space-y-6 text-xs font-mono max-h-[60vh] overflow-y-auto pr-2 no-scrollbar">
                 
-                <!-- Info Box -->
-                <div class="bg-gradient-to-r from-emerald-900/30 to-surface-200 border border-emerald-500/30 text-emerald-100 p-3.5 rounded-xl text-[10px] leading-relaxed flex gap-3 shadow-inner">
-                    <i class="fa-solid fa-shield-check text-emerald-400 mt-0.5 text-sm"></i> 
+                <div class="bg-gradient-to-r from-emerald-900/40 to-surface-200 border border-emerald-500/30 text-emerald-100 p-4 rounded-2xl text-[11px] leading-relaxed flex gap-3 shadow-inner">
+                    <i class="fa-solid fa-shield-check text-emerald-400 mt-0.5 text-base"></i> 
                     <div>
-                        <b class="text-emerald-300">Direct Connection Active.</b> Sistem kini menembak langsung ke server (Tanpa Proxy). Jika terjadi error jaringan, matikan ekstensi AdBlocker atau <b>Brave Shields</b> di browser Anda. API Key lama tetap tersimpan aman.
+                        <b class="text-emerald-300 block mb-1">Direct Connection Active.</b> 
+                        Sistem terhubung langsung ke API. Jika error, nonaktifkan AdBlocker/Brave Shields.
                     </div>
                 </div>
                 
-                <div class="space-y-1.5">
-                    <label class="text-slate-300 font-semibold flex items-center gap-1.5">
-                        <i class="fa-solid fa-server text-crimson-400 text-[10px]"></i><span>API Endpoint URL</span>
+                <div class="space-y-2">
+                    <label class="text-slate-300 font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-server text-crimson-400"></i><span>API Endpoint URL</span>
                     </label>
-                    <input type="text" id="customBaseUrl" class="w-full bg-surface-100 border border-white/10 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all text-[11px]">
+                    <input type="text" id="customBaseUrl" class="w-full bg-surface-100 border border-white/10 rounded-xl px-4 py-3.5 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all text-[11px] font-sans">
                 </div>
 
-                <div class="space-y-1.5">
-                    <label class="text-slate-300 font-semibold flex items-center gap-1.5">
-                        <i class="fa-solid fa-key text-amber-400 text-[10px]"></i><span>Bearer Token (API Key)</span>
+                <div class="space-y-2">
+                    <label class="text-slate-300 font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-key text-amber-400"></i><span>Bearer Token (API Key)</span>
                     </label>
-                    <input type="password" id="customApiKey" class="w-full bg-surface-100 border border-white/10 rounded-xl px-4 py-3 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all text-[11px] font-sans tracking-widest">
+                    <input type="password" id="customApiKey" class="w-full bg-surface-100 border border-white/10 rounded-xl px-4 py-3.5 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all text-[11px] font-sans tracking-widest">
                 </div>
 
-                <div class="space-y-2 bg-surface-200/50 p-4 rounded-xl border border-white/5">
+                <div class="space-y-3 bg-surface-200/50 p-5 rounded-2xl border border-white/5 shadow-inner">
                     <div class="flex justify-between items-center">
-                        <label class="text-slate-300 font-semibold flex items-center gap-1.5">
-                            <i class="fa-solid fa-temperature-half text-cyan-400 text-[10px]"></i><span>Creativity (Temperature)</span>
+                        <label class="text-slate-300 font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-temperature-half text-cyan-400"></i><span>Creativity (Temperature)</span>
                         </label>
-                        <span id="tempVal" class="text-white font-bold bg-surface-300 px-2.5 py-1 rounded-lg border border-white/10 text-[10px]">0.7</span>
+                        <span id="tempVal" class="text-white font-bold bg-surface-300 px-3 py-1 rounded-lg border border-white/10 text-xs">0.7</span>
                     </div>
-                    <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText = this.value" class="w-full h-1.5 bg-surface-300 rounded-lg appearance-none cursor-pointer accent-crimson-500 mt-2">
-                    <div class="flex justify-between text-[8px] text-slate-500 mt-1"><span>Presisi (0.0)</span><span>Kreatif (1.0)</span></div>
+                    <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText = this.value" class="w-full h-2 bg-surface-300 rounded-lg appearance-none cursor-pointer accent-crimson-500 mt-2">
+                    <div class="flex justify-between text-[9px] text-slate-500 mt-1"><span>Presisi (0.0)</span><span>Kreatif (1.0)</span></div>
                 </div>
 
-                <div class="space-y-1.5">
-                    <label class="text-slate-300 font-semibold flex items-center gap-1.5">
-                        <i class="fa-solid fa-robot text-purple-400 text-[10px]"></i><span>System Prompt (Persona)</span>
+                <div class="space-y-2">
+                    <label class="text-slate-300 font-semibold flex items-center gap-2">
+                        <i class="fa-solid fa-robot text-purple-400"></i><span>System Prompt (Persona AI)</span>
                     </label>
-                    <textarea id="systemPersonaInput" rows="3" class="w-full bg-surface-100 border border-white/10 rounded-xl p-4 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all resize-none text-[11px] leading-relaxed no-scrollbar"></textarea>
+                    <textarea id="systemPersonaInput" rows="4" class="w-full bg-surface-100 border border-white/10 rounded-xl p-4 text-slate-100 focus:outline-none focus:border-crimson-500 focus:ring-1 focus:ring-crimson-500/50 transition-all resize-none text-[11px] leading-relaxed no-scrollbar font-sans"></textarea>
                 </div>
             </div>
 
-            <div class="pt-4 border-t border-white/10">
-                <button onclick="saveSettings()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white text-[11px] md:text-xs font-mono font-bold shadow-glow-crimson transition-all active:scale-[0.98]">
+            <div class="pt-2">
+                <button onclick="saveSettings()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-crimson-600 to-crimson-500 hover:from-crimson-500 hover:to-crimson-400 text-white text-xs font-mono font-bold shadow-glow-crimson transition-all active:scale-[0.98]">
                     SIMPAN KONFIGURASI
                 </button>
             </div>
@@ -320,28 +345,21 @@
 
     <!-- MAIN ENGINE SCRIPT -->
     <script>
-        // ==========================================
-        // KONFIGURASI DEFAULT & API KEY BARU
-        // ==========================================
         const DEFAULT_API_BASE_URL = "https://bansos.wahyu-hidayat.my.id/v1";
         const DEFAULT_API_KEY = "sk-7e55a8f3c7fb044f-qoce3o-317c6884";
         
-        // BACKUP API KEY LAMA (Hanya Dokumentasi, tidak dipakai)
-        // URL: https://discovery-api.intern-ai.org.cn/v1
-        // KEY: sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a
-
-        const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI, asisten virtual pintar dan profesional. Gunakan bahasa Indonesia yang baik, rapi, dan terstruktur. Selalu format jawaban dengan Markdown, gunakan tabel jika membandingkan data, dan berikan blok kode (*code block*) yang rapi jika diminta membuat program.";
+        // Ditingkatkan agar mendukung output media
+        const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI, asisten cerdas berformat Markdown. Gunakan bahasa Indonesia. Jika user meminta gambar, berikan dalam format Markdown: ![alt](url). Jika user meminta video atau lagu (seperti YouTube), berikan URL lengkapnya secara langsung atau gunakan iframe HTML (<iframe src='...'></iframe>). Untuk file mp4/mp3, gunakan tag <video src='...'> atau <audio src='...'>.";
         
         const AVAILABLE_MODELS = [
-            { id: 'nemotron-3-ultra', name: '🌟 Nemotron 3 Ultra', category: 'Standard', desc: 'Paling stabil & direkomendasikan.' },
-            { id: 'nemotron-3-super', name: '⚠️ Nemotron 3 Super', category: 'Heavy', desc: 'Flaky (Kadang 503 / kuota terbatas).' },
+            { id: 'nemotron-3-ultra', name: '🌟 Nemotron 3 Ultra', category: 'Standard', desc: 'Paling stabil.' },
+            { id: 'nemotron-3-super', name: '⚠️ Nemotron 3 Super', category: 'Heavy', desc: 'Flaky (Kadang 503).' },
             { id: 'nemotron-3-nano', name: '⚡ Nemotron 3 Nano', category: 'Fast', desc: 'Sangat stabil & ringan.' },
             { id: 'gpt-oss120b', name: '🧠 GPT OSS 120B', category: 'Reasoning', desc: 'Logika kuat & stabil.' },
             { id: 'laguna-s-2.1', name: '💧 Laguna S 2.1', category: 'Free', desc: 'Stabil dan gratis ($0).' },
-            { id: 'free', name: '🆓 Free Router', category: 'Router', desc: 'Routing otomatis ke model gratis.' }
+            { id: 'free', name: '🆓 Free Router', category: 'Router', desc: 'Routing otomatis.' }
         ];
 
-        // STATE MANAGER (Menggunakan key v5 untuk reset bersih state jika sebelumnya error)
         let appState = {
             activeTab: 'chat',
             baseUrl: localStorage.getItem('akashiro_baseurl_v5') || DEFAULT_API_BASE_URL,
@@ -356,9 +374,6 @@
         let currentAbortController = null;
         let isGenerating = false;
 
-        // ==========================================
-        // INITIALIZATION
-        // ==========================================
         window.addEventListener('DOMContentLoaded', () => {
             setupDOMBindings();
             setupMarkedRenderer();
@@ -393,9 +408,6 @@
             });
         }
 
-        // ==========================================
-        // UI & INTERACTION LOGIC
-        // ==========================================
         function toggleSidebar(show) {
             const sidebar = document.getElementById('chatSidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -422,28 +434,21 @@
         function changeChatModel(val) {
             appState.currentModel = val; 
             localStorage.setItem('akashiro_model_v5', val);
-            
             let chat = getCurrentChat(); 
             if(chat) { chat.model = val; saveChatsToStorage(); }
-            
             updateModelUI();
         }
 
         function updateModelUI() {
-            // Update selects
             ['headerModelSelect', 'mobileModelSelect'].forEach(id => {
                 const el = document.getElementById(id);
                 if(el && el.value !== appState.currentModel) el.value = appState.currentModel;
             });
-            // Update footer text
             const modelData = AVAILABLE_MODELS.find(m => m.id === appState.currentModel);
             const footerTxt = document.getElementById('footerModelName');
-            if(footerTxt && modelData) footerTxt.innerText = modelData.name.replace(/[^a-zA-Z0-9.\- ]/g, '');
+            if(footerTxt && modelData) footerTxt.innerText = modelData.name;
         }
 
-        // ==========================================
-        // MARKDOWN & HIGHLIGHTING
-        // ==========================================
         function setupMarkedRenderer() {
             try {
                 if (typeof marked === 'undefined') return;
@@ -455,23 +460,29 @@
                     const langName = language ? language.toUpperCase() : 'TEXT';
                     
                     return `
-                    <div class="relative my-5 rounded-xl border border-white/10 bg-surface-100 overflow-hidden shadow-glass group">
-                        <div class="flex justify-between items-center px-4 py-2.5 bg-surface-200 border-b border-white/5">
+                    <div class="relative my-6 rounded-2xl border border-white/10 bg-[#1e222d] overflow-hidden shadow-glass group">
+                        <div class="flex justify-between items-center px-4 py-3 bg-[#161922] border-b border-white/5">
                             <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-code text-[10px] text-crimson-500"></i>
-                                <span class="text-[10px] text-slate-400 font-mono tracking-wider">${langName}</span>
+                                <i class="fa-solid fa-code text-[11px] text-crimson-500"></i>
+                                <span class="text-[11px] text-slate-300 font-mono font-bold tracking-widest">${langName}</span>
                             </div>
-                            <button class="text-[10px] text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded border border-white/5" onclick="copyCodeBlock(this)">
-                                <i class="fa-regular fa-copy"></i> <span>Salin Kode</span>
+                            <button class="text-[10px] text-slate-400 hover:text-white transition-all flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5" onclick="copyCodeBlock(this)">
+                                <i class="fa-regular fa-copy"></i> <span>Copy Code</span>
                             </button>
                         </div>
-                        <div class="overflow-x-auto p-4 text-[13px] font-mono no-scrollbar bg-[#282c34]">
+                        <div class="overflow-x-auto p-5 text-[13px] font-mono no-scrollbar bg-[#1e222d]">
                             <pre class="m-0"><code class="hljs ${language \vert{}\vert{} ''}">${highlighted}</code></pre>
                         </div>
                     </div>`;
                 };
-                
+
+                // Link parser khusus untuk merender auto-embed YouTube jika ada
                 renderer.link = function(href, title, text) {
+                    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')) {
+                        let videoId = href.split('v=')[1] || href.split('youtu.be/')[1];
+                        if(videoId) videoId = videoId.split('&')[0];
+                        return `<iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br><a href="${href}" target="_blank" class="text-xs opacity-50"><i class="fa-brands fa-youtube"></i> Buka di YouTube</a>`;
+                    }
                     return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title \vert{}\vert{} ''}">${text}</a>`;
                 };
 
@@ -495,9 +506,6 @@
             } catch(e) {}
         }
 
-        // ==========================================
-        // CHAT STATE MANAGEMENT
-        // ==========================================
         function startNewChat() {
             if(isGenerating) abortGeneration();
             const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Komputasi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
@@ -532,11 +540,11 @@
                 item.className = `p-3 rounded-r-xl text-[11px] md:text-xs font-mono transition-all flex items-center justify-between group cursor-pointer ${activeClass}`;
                 item.onclick = () => loadChatSession(chat.id);
                 item.innerHTML = `
-                    <div class="flex items-center gap-2.5 w-[85%]">
-                        <i class="fa-solid fa-microchip text-[10px] ${isActive ? 'text-crimson-400' : 'text-slate-500'} shrink-0"></i>
+                    <div class="flex items-center gap-3 w-[85%]">
+                        <i class="fa-solid fa-microchip text-[11px] ${isActive ? 'text-crimson-400 drop-shadow-[0_0_5px_rgba(255,59,92,0.8)]' : 'text-slate-600'} shrink-0"></i>
                         <span class="truncate">${escapeHtml(chat.title)}</span>
                     </div>
-                    <button onclick="deleteChatSession(event, '${chat.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 rounded bg-white/5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/20 transition-all shrink-0">
+                    <button onclick="deleteChatSession(event, '${chat.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/20 transition-all shrink-0">
                         <i class="fa-solid fa-xmark text-xs"></i>
                     </button>
                 `;
@@ -544,9 +552,6 @@
             });
         }
 
-        // ==========================================
-        // MESSAGE RENDERING
-        // ==========================================
         function renderMessages() {
             const chat = getCurrentChat();
             const listContainer = document.getElementById('chatMessagesList');
@@ -569,14 +574,14 @@
             chat.messages.forEach(msg => {
                 const msgNode = document.createElement('div');
                 const isUser = msg.role === 'user';
-                msgNode.className = `flex ${isUser ? 'justify-end' : 'justify-start'} w-full animate-slide-up opacity-0`;
-                msgNode.style.animationFillMode = 'forwards'; // Ensure stays visible
+                msgNode.className = `flex ${isUser ? 'justify-end' : 'justify-start'} w-full animate-fade-in-up opacity-0`;
+                msgNode.style.animationFillMode = 'forwards'; 
 
                 let bodyHtml = '';
                 if (isUser) {
                     bodyHtml = `
-                    <div class="max-w-[90%] sm:max-w-[75%] rounded-[1.25rem] rounded-tr-sm bg-gradient-to-br from-crimson-600 to-crimson-800 text-white p-4 shadow-glow-crimson text-[13px] md:text-sm leading-relaxed border border-crimson-400/30 relative">
-                        <p class="whitespace-pre-wrap">${escapeHtml(msg.text)}</p>
+                    <div class="max-w-[90%] sm:max-w-[75%] rounded-[1.5rem] rounded-tr-sm bg-gradient-to-br from-crimson-600 to-crimson-800 text-white p-5 shadow-[0_10px_25px_rgba(255,59,92,0.2)] text-[13px] md:text-sm leading-relaxed border border-crimson-400/40 relative">
+                        <p class="whitespace-pre-wrap font-sans">${escapeHtml(msg.text)}</p>
                     </div>`;
                 } else {
                     let rawHtml = escapeHtml(msg.text || '');
@@ -585,20 +590,24 @@
                     let safeHtml = rawHtml;
                     try { 
                         if(typeof DOMPurify !== 'undefined') {
-                            safeHtml = DOMPurify.sanitize(rawHtml, { ADD_TAGS: ['img'], ADD_ATTR: ['target', 'src', 'alt'] }); 
+                            // DOMPURIFY: Izinkan Media (Gambar, Video, Audio, Iframe)
+                            safeHtml = DOMPurify.sanitize(rawHtml, { 
+                                ADD_TAGS: ['img', 'iframe', 'video', 'audio', 'source'], 
+                                ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls'] 
+                            }); 
                         }
                     } catch(e){}
                     
                     const isError = (msg.text || '').includes('⚠️');
                     
                     bodyHtml = `
-                    <div class="flex gap-3 md:gap-4 w-full max-w-[100%] sm:max-w-[95%]">
-                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-surface-200 to-surface-100 border border-white/10 flex items-center justify-center text-white text-xs md:text-sm font-orbitron font-bold shrink-0 shadow-glass mt-1 relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-crimson-500/20 translate-y-full group-hover:translate-y-0 transition-transform"></div>
-                            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">赤</span>
+                    <div class="flex gap-4 w-full max-w-[100%] sm:max-w-[95%]">
+                        <div class="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gradient-to-br from-surface-200 to-surface-100 border border-white/10 flex items-center justify-center text-white text-sm md:text-base font-orbitron font-bold shrink-0 shadow-glass mt-1 relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-crimson-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                            <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 drop-shadow-md">赤</span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <div class="glass-chat rounded-[1.25rem] rounded-tl-sm p-4 md:p-5 text-[13px] md:text-sm text-slate-100 markdown-body ${isError ? 'border-rose-500/50 bg-rose-950/30' : ''}">
+                            <div class="glass-bubble rounded-[1.5rem] rounded-tl-sm p-5 md:p-6 text-[13px] md:text-sm text-slate-100 markdown-body ${isError ? 'border-rose-500/50 bg-rose-950/30 shadow-[0_0_20px_rgba(225,29,72,0.1)]' : ''}">
                                 ${msg.isTyping ? `<div class="typing-indicator flex items-center h-6"><span></span><span></span><span></span></div>` : safeHtml}
                             </div>
                         </div>
@@ -608,15 +617,11 @@
                 listContainer.appendChild(msgNode);
             });
 
-            // Auto-scroll
             if (isAtBottom || chat.messages.length <= 2) {
                 setTimeout(() => scrollArea.scrollTop = scrollArea.scrollHeight, 15);
             }
         }
 
-        // ==========================================
-        // AI COMMUNICATION LOGIC
-        // ==========================================
         function sendQuickPrompt(promptText) {
             const inputEl = document.getElementById('chatInput');
             if (inputEl) {
@@ -633,13 +638,12 @@
             }
             toggleInputState(false);
             
-            // Hapus pesan "typing" jika dihentikan
             let chat = getCurrentChat();
             if(chat && chat.messages.length > 0) {
                 const lastMsg = chat.messages[chat.messages.length-1];
                 if(lastMsg.isTyping) {
                     lastMsg.isTyping = false;
-                    lastMsg.text = "*(Sistem dihentikan oleh pengguna)*";
+                    lastMsg.text = "*(Proses dihentikan oleh pengguna)*";
                     saveChatsToStorage();
                     renderMessages();
                 }
@@ -688,54 +692,40 @@
             let chat = getCurrentChat();
             if (!chat) { startNewChat(); chat = getCurrentChat(); }
             
-            // Buat Judul Otomatis
-            if (chat.messages.length === 0) {
-                chat.title = prompt.length > 30 ? prompt.substring(0, 30) + '...' : prompt;
-            }
+            if (chat.messages.length === 0) chat.title = prompt.length > 30 ? prompt.substring(0, 30) + '...' : prompt;
 
-            // 1. Simpan Pesan User
             chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
             
-            // 2. Reset Input Area
             inputEl.value = ''; 
             inputEl.style.height = 'auto'; 
-            if (charCountEl) charCountEl.innerText = '0 karakter'; 
+            if (charCountEl) charCountEl.innerText = '0 char'; 
             
-            // 3. Render State "Typing"
             const loadingMsgIndex = chat.messages.length;
             chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
             renderMessages();
             
-            // 4. Ubah State UI ke Generating
             toggleInputState(true);
             currentAbortController = new AbortController();
 
             try {
-                // 5. Eksekusi Panggilan API Direct
                 const responseData = await callAIAPI(chat.messages.slice(0, -1), currentAbortController.signal);
-                
-                // 6. Update Sukses
                 chat.messages[loadingMsgIndex] = { role: 'model', text: responseData.text, timestamp: new Date().toISOString() };
                 saveChatsToStorage();
             } catch (err) {
-                // Jangan tampilkan error jika dibatalkan user
                 if (err.name === 'AbortError') return; 
 
                 console.error("Engine Error:", err);
-                
-                // 7. Update Gagal dengan Teks yang Rapih
                 const errMsg = err.message || "Unknown Error";
                 const isCors = errMsg.toLowerCase().includes('fetch');
                 
                 let userFriendlyError = `⚠️ **System Failure:** \`${errMsg}\``;
                 if(isCors) {
-                    userFriendlyError += `\n\n> **Diagnosa Jaringan:** Koneksi langsung ke server API ditolak. \n> \n> **Solusi:** Jika Anda menggunakan *Brave Browser*, pastikan fitur **Brave Shields (Ikon Singa)** dimatikan untuk situs ini, atau nonaktifkan ekstensi AdBlocker Anda.`;
+                    userFriendlyError += `\n\n> **Diagnosa Jaringan:** Koneksi ditolak oleh browser/server. \n> \n> **Solusi:** Matikan **Brave Shields** (Ikon Singa) atau ekstensi **AdBlocker** Anda untuk situs ini.`;
                 }
 
                 chat.messages[loadingMsgIndex] = { role: 'model', text: userFriendlyError, timestamp: new Date().toISOString() };
                 showErrorToast("Koneksi ke Gateway API Gagal.");
             } finally {
-                // 8. Kembalikan State UI
                 toggleInputState(false);
                 currentAbortController = null;
                 renderMessages(); 
@@ -758,7 +748,6 @@
             const payload = { model: appState.currentModel, messages: formattedMessages, temperature: parseFloat(appState.temperature) };
             const reqHeaders = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${appState.apiKey}` };
 
-            // STRICT DIRECT FETCH (TIDAK ADA PROXY FALLBACK)
             const response = await fetch(apiUrl, { 
                 method: 'POST', 
                 headers: reqHeaders, 
@@ -783,9 +772,6 @@
             return { text: generatedText };
         }
 
-        // ==========================================
-        // UTILITIES & HELPERS
-        // ==========================================
         function handleInputKeydown(e) { 
             if (e.key === 'Enter' && !e.shiftKey) { 
                 e.preventDefault(); 
@@ -796,9 +782,9 @@
         function handleInputAutoResize(e) {
             const el = e.target; 
             el.style.height = 'auto'; 
-            el.style.height = Math.min(el.scrollHeight, 160) + 'px'; // Max height limit
+            el.style.height = Math.min(el.scrollHeight, 192) + 'px'; 
             const charCountEl = document.getElementById('charCount'); 
-            if (charCountEl) charCountEl.innerText = `${el.value.length} karakter`;
+            if (charCountEl) charCountEl.innerText = `${el.value.length} char`;
         }
 
         function saveSettings() {
@@ -819,17 +805,18 @@
             
             closeModal('settingsModal'); 
             
-            // Tampilkan toast kustom cantik
             const btn = document.getElementById('sendBtn');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-check text-white"></i>';
-            btn.classList.add('bg-emerald-500');
-            btn.classList.remove('bg-crimson-600');
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.remove('bg-emerald-500');
-                btn.classList.add('bg-crimson-600');
-            }, 2000);
+            if (btn) {
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check text-white"></i>';
+                btn.classList.add('from-emerald-600', 'to-emerald-500');
+                btn.classList.remove('from-crimson-600', 'to-crimson-500');
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.classList.remove('from-emerald-600', 'to-emerald-500');
+                    btn.classList.add('from-crimson-600', 'to-crimson-500');
+                }, 2000);
+            }
         }
 
         function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v5', JSON.stringify(appState.chats)); }
@@ -888,7 +875,6 @@
             }, 200);
         }
         
-        // Floating Error Toast
         let toastTimeout;
         function showErrorToast(msg) {
             const toast = document.getElementById('errorToast');
@@ -897,12 +883,12 @@
             
             clearTimeout(toastTimeout);
             toastTxt.innerText = msg;
-            toast.classList.remove('opacity-0', 'translate-y-2');
+            toast.classList.remove('opacity-0', 'translate-y-4');
             toast.classList.add('opacity-100', 'translate-y-0');
             
             toastTimeout = setTimeout(() => {
                 toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'translate-y-2');
+                toast.classList.add('opacity-0', 'translate-y-4');
             }, 4000);
         }
 
