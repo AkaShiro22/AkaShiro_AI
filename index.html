@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AkaShiro AI — V10 Ultimate Pro (Fixed Auth)</title>
+    <title>AkaShiro AI — V10 Ultimate Pro (Auth System)</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,7 +113,7 @@
     <div id="toastContainer"></div>
 
     <!-- ==========================================
-         AUTH OVERLAY (LOGIN & REGISTRASI)
+         AUTH OVERLAY (GMAIL / EMAIL REG & LOGIN)
          ========================================== -->
     <div id="authOverlay" class="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[100] flex items-center justify-center p-4">
         <div class="w-full max-w-md bg-dark-panel rounded-3xl border border-dark-border shadow-[0_0_50px_rgba(225,29,72,0.2)] p-8 relative overflow-hidden animate-slide-up">
@@ -124,15 +124,15 @@
                     <span class="font-orbitron font-bold text-white text-2xl">赤</span>
                 </div>
                 <h1 id="authTitle" class="font-orbitron font-bold text-xl text-white">Masuk ke AkaShiro</h1>
-                <p id="authSubtitle" class="text-[11px] font-mono text-zinc-400 mt-1">Masukkan kredensial akun Anda</p>
+                <p id="authSubtitle" class="text-[11px] font-mono text-zinc-400 mt-1">Gunakan Gmail atau Email terdaftar Anda</p>
             </div>
 
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4 relative z-10">
                 <div class="space-y-1.5">
-                    <label class="text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-wider pl-1">Username</label>
+                    <label class="text-[10px] font-mono text-zinc-400 font-bold uppercase tracking-wider pl-1">Alamat Email / Gmail</label>
                     <div class="relative">
-                        <i class="fa-solid fa-user absolute left-3.5 top-1/2 transform -translate-y-1/2 text-zinc-500 text-xs"></i>
-                        <input type="text" id="authUsernameInput" required placeholder="Contoh: akashiro_user" class="w-full bg-dark-input border border-dark-border rounded-xl pl-10 pr-4 py-3 text-[13px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all">
+                        <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 transform -translate-y-1/2 text-zinc-500 text-xs"></i>
+                        <input type="email" id="authEmailInput" required placeholder="nama@gmail.com / email.anda@domain.com" class="w-full bg-dark-input border border-dark-border rounded-xl pl-10 pr-4 py-3 text-[13px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all">
                     </div>
                 </div>
 
@@ -150,7 +150,7 @@
 
                 <div class="text-center pt-4 border-t border-dark-border/60 mt-4">
                     <p id="authToggleText" class="text-[11px] font-mono text-zinc-400">
-                        Belum punya akun? <button type="button" onclick="switchAuthMode('register')" class="text-brand hover:underline font-bold ml-1">Daftar di sini</button>
+                        Belum punya akun? <button type="button" onclick="switchAuthMode('register')" class="text-brand hover:underline font-bold ml-1">Daftar dengan Email</button>
                     </p>
                 </div>
             </form>
@@ -168,9 +168,9 @@
                 <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/30 shadow-neon">
                     <span class="font-orbitron font-bold text-white text-sm">赤</span>
                 </div>
-                <div class="flex flex-col">
+                <div class="flex flex-col min-w-0">
                     <span class="font-orbitron font-bold text-sm tracking-wide text-white">AkaShiro<span class="text-brand">.AI</span></span>
-                    <span id="sidebarUsername" class="text-[10px] font-mono text-zinc-400 truncate max-w-[100px]">User</span>
+                    <span id="sidebarUserEmail" class="text-[10px] font-mono text-zinc-400 truncate max-w-[130px]">email@domain.com</span>
                 </div>
             </div>
             <div class="flex items-center gap-1.5">
@@ -392,7 +392,7 @@
 
         let authState = {
             isLoggedIn: false,
-            currentUser: null,
+            currentUserEmail: null,
             mode: 'login' // 'login' or 'register'
         };
 
@@ -430,49 +430,64 @@
 
             if (mode === 'register') {
                 title.innerText = "Daftar Akun Baru";
-                subtitle.innerText = "Buat akun untuk mulai menggunakan workspace";
+                subtitle.innerText = "Gunakan Gmail atau email valid Anda untuk mendaftar";
                 btn.innerText = "DAFTAR SEKARANG";
                 toggleText.innerHTML = `Sudah punya akun? <button type="button" onclick="switchAuthMode('login')" class="text-brand hover:underline font-bold ml-1">Masuk di sini</button>`;
             } else {
                 title.innerText = "Masuk ke AkaShiro";
-                subtitle.innerText = "Masukkan kredensial akun Anda";
+                subtitle.innerText = "Gunakan Gmail atau Email terdaftar Anda";
                 btn.innerText = "MASUK SEKARANG";
-                toggleText.innerHTML = `Belum punya akun? <button type="button" onclick="switchAuthMode('register')" class="text-brand hover:underline font-bold ml-1">Daftar di sini</button>`;
+                toggleText.innerHTML = `Belum punya akun? <button type="button" onclick="switchAuthMode('register')" class="text-brand hover:underline font-bold ml-1">Daftar dengan Email</button>`;
             }
         }
 
         function handleAuthSubmit(e) {
             e.preventDefault();
-            const usernameInput = document.getElementById('authUsernameInput').value.trim();
+            const emailInput = document.getElementById('authEmailInput').value.trim().toLowerCase();
             const passwordInput = document.getElementById('authPasswordInput').value.trim();
 
-            if (!usernameInput || !passwordInput) {
-                showToast("Username dan password wajib diisi!", "error");
+            if (!emailInput || !passwordInput) {
+                showToast("Email dan password wajib diisi!", "error");
+                return;
+            }
+
+            // Validasi format email standar termasuk Gmail
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(emailInput)) {
+                showToast("Format alamat email atau Gmail tidak valid!", "error");
                 return;
             }
 
             let usersDb = JSON.parse(localStorage.getItem('akashiro_users_db_v10')) || {};
 
             if (authState.mode === 'register') {
-                if (usersDb[usernameInput]) {
-                    showToast("Username sudah terdaftar! Gunakan nama lain.", "error");
+                if (usersDb[emailInput]) {
+                    showToast("Email ini sudah terdaftar! Silakan langsung Masuk.", "error");
                     return;
                 }
-                usersDb[usernameInput] = { password: passwordInput };
+                // Simpan user baru ke database lokal
+                usersDb[emailInput] = { password: passwordInput, createdAt: new Date().toISOString() };
                 localStorage.setItem('akashiro_users_db_v10', JSON.stringify(usersDb));
-                showToast("Registrasi berhasil! Berhasil masuk otomatis.", "success");
+                showToast("Registrasi berhasil! Berhasil masuk ke workspace.", "success");
             } else {
-                if (!usersDb[usernameInput] || usersDb[usernameInput].password !== passwordInput) {
-                    showToast("Username atau password salah!", "error");
+                // Mode Login
+                if (!usersDb[emailInput]) {
+                    showToast("Email belum terdaftar. Silakan daftar terlebih dahulu!", "error");
                     return;
                 }
-                showToast("Login berhasil!", "success");
+                if (usersDb[emailInput].password !== passwordInput) {
+                    showToast("Password yang Anda masukkan salah!", "error");
+                    return;
+                }
+                showToast("Login berhasil! Selamat datang kembali.", "success");
             }
 
+            // Set Sesi Aktif
             authState.isLoggedIn = true;
-            authState.currentUser = usernameInput;
+            authState.currentUserEmail = emailInput;
             localStorage.setItem('akashiro_session_v10', JSON.stringify(authState));
 
+            // Sembunyikan Overlay Auth dan Inisialisasi Workspace
             document.getElementById('authOverlay').classList.add('opacity-0', 'transition-opacity', 'duration-300');
             setTimeout(() => {
                 document.getElementById('authOverlay').classList.add('hidden');
@@ -489,7 +504,7 @@
 
         // --- WORKSPACE INITIALIZATION ---
         function initAppWorkspace() {
-            document.getElementById('sidebarUsername').innerText = authState.currentUser;
+            document.getElementById('sidebarUserEmail').innerText = authState.currentUserEmail;
             loadUserChats();
             setupDOMBindings();
             setupMarkedRenderer();
@@ -503,7 +518,7 @@
         }
 
         function getChatStorageKey() {
-            return `akashiro_chats_${authState.currentUser}_v10`;
+            return `akashiro_chats_${authState.currentUserEmail}_v10`;
         }
 
         function loadUserChats() {
