@@ -596,7 +596,7 @@
                 badge.className = 'text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700';
                 usageContainer.classList.remove('hidden');
                 
-                document.getElementById('usageText').innerText = `${user.usageCount} / ${FREE_DAILY_LIMIT}`;
+                document.getElementById('usageText').innerText = `${user.usageCount} /${FREE_DAILY_LIMIT}`;
                 const percentage = Math.min((user.usageCount / FREE_DAILY_LIMIT) * 100, 100);
                 const bar = document.getElementById('usageProgressBar');
                 bar.style.width = `${percentage}%`;
@@ -697,7 +697,7 @@
                     const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
                     const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
                     const langName = language ? language.toUpperCase() : 'TEXT';
-                    return `<div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code"><div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border"><span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span><button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)"><i class="fa-regular fa-copy"></i> <span>Copy</span></button></div><div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar"><pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre></div></div>`;
+                    return `<div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code"><div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border"><span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span><button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)"><i class="fa-regular fa-copy"></i> <span>Copy</span></button></div><div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar"><pre class="m-0"><code class="hljs ${language \vert{}\vert{} ''}">${highlighted}</code></pre></div></div>`;
                 };
                 marked.setOptions({ renderer: renderer, breaks: true });
             } catch(e) {}
@@ -798,4 +798,174 @@
             const chat = getCurrentChat(); if(!chat || chat.messages.length === 0) return;
             const index = chat.messages.length - 1; const msg = chat.messages[index]; const node = document.getElementById(`msg-${index}`);
             if(node) {
-                const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream
+                const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream-cursor' : '';
+                let safeHtml = escapeHtml(msg.text || '');
+                try { if(typeof marked !== 'undefined') { let raw = marked.parse(msg.text || ''); if(typeof DOMPurify !== 'undefined') safeHtml = DOMPurify.sanitize(raw); else safeHtml = raw; } } catch(e){}
+                
+                const markdownBody = node.querySelector('.markdown-body');
+                if(markdownBody) {
+                    markdownBody.innerHTML = (msg.isTyping && msg.text.length === 0) ? `<div class="typing-dots"><span></span><span></span><span></span></div>` : safeHtml;
+                    if(msg.isTyping && msg.text.length > 0) markdownBody.classList.add('stream-cursor'); else markdownBody.classList.remove('stream-cursor');
+                }
+                if(!msg.isTyping && typeof renderMathInElement !== 'undefined') {
+                    try { renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false }); } catch(e) {}
+                }
+            }
+            scrollToBottom();
+        }
+
+        // --- 6. NETWORK & SUBMIT ---
+        function sendQuickPrompt(promptText) {
+            const inputEl = document.getElementById('chatInput');
+            if (inputEl) { inputEl.value = promptText; handleInputAutoResize({target: inputEl}); }
+            handleChatSubmit(new Event('submit'));
+        }
+
+        function abortGeneration() {
+            if(currentAbortController) { currentAbortController.abort(); currentAbortController = null; }
+            toggleInputState(false);
+            let chat = getCurrentChat();
+            if(chat && chat.messages.length > 0) {
+                const lastMsg = chat.messages[chat.messages.length-1];
+                if(lastMsg.isTyping) {
+                    lastMsg.isTyping = false; if(lastMsg.text.length === 0) lastMsg.text = "*(Proses dibatalkan)*";
+                    saveChatsToStorage(); updateLastMessageUI(); renderMessages();
+                }
+            }
+        }
+
+        function toggleInputState(generating) {
+            isGenerating = generating;
+            const btn = document.getElementById('sendBtn'); const stopBtn = document.getElementById('stopBtn'); const input = document.getElementById('chatInput');
+            if(!btn || !stopBtn || !input) return;
+            if(generating) { btn.classList.add('hidden'); stopBtn.classList.remove('hidden'); input.disabled = true; input.classList.add('opacity-50'); } 
+            else { btn.classList.remove('hidden'); stopBtn.classList.add('hidden'); input.disabled = false; input.classList.remove('opacity-50'); input.focus(); }
+        }
+
+        async function handleChatSubmit(e, isRegenerate = false) {
+            if (e) e.preventDefault();
+            if (isGenerating) return;
+
+            // 1. CEK LIMIT SEBELUM MEMPROSES (PENTING!)
+            if(!checkUsageLimit()) return;
+
+            const inputEl = document.getElementById('chatInput');
+            const charCountEl = document.getElementById('charCount');
+            if (!inputEl) return;
+            
+            let prompt = "";
+            if(!isRegenerate) { prompt = inputEl.value.trim(); if (!prompt) return; }
+
+            if (!appState.baseUrl || !appState.apiKey) { showToast("Konfigurasi API belum diatur!", "error"); openModal('settingsModal'); return; }
+
+            let chat = getCurrentChat();
+            if (!chat) { startNewChat(); chat = getCurrentChat(); }
+            
+            if (!isRegenerate) {
+                if (chat.messages.length === 0) {
+                    chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
+                    updateHeaderTitle(); renderChatHistory();
+                }
+                chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
+            }
+            
+            inputEl.value = ''; inputEl.style.height = 'auto'; if (charCountEl) charCountEl.innerText = '0 chars'; 
+            
+            const loadingMsgIndex = chat.messages.length;
+            chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
+            renderMessages(); forceScrollBottom();
+            
+            toggleInputState(true);
+            currentAbortController = new AbortController();
+
+            try {
+                let contextMessages = chat.messages.slice(0, -1);
+                if(contextMessages.length > 12) contextMessages = contextMessages.slice(contextMessages.length - 12);
+                
+                await callAIAPI_Stream(contextMessages, currentAbortController.signal, loadingMsgIndex);
+                
+                // 2. JIKA BERHASIL MENDAPATKAN RESPONS, TAMBAH USAGE (TIER FREE)
+                const user = getCurrentUser();
+                if(user && user.plan === 'free') {
+                    user.usageCount += 1;
+                    saveUsersDB();
+                    updateUserUI();
+                }
+                
+                saveChatsToStorage();
+            } catch (err) {
+                if (err.name === 'AbortError') return; 
+                chat.messages[loadingMsgIndex].isTyping = false;
+                chat.messages[loadingMsgIndex].text = `⚠️ **Error:** \`${err.message}\``;
+                showToast("Gagal menerima respons.", "error");
+            } finally {
+                chat.messages[loadingMsgIndex].isTyping = false;
+                saveChatsToStorage(); toggleInputState(false); currentAbortController = null; renderMessages();
+            }
+        }
+
+        async function callAIAPI_Stream(messagesHistory, signal, msgIndex) {
+            const cleanBaseUrl = appState.baseUrl.replace(/\/+$/, '');
+            let apiUrl = `${cleanBaseUrl}/chat/completions`;
+            let chat = getCurrentChat();
+            
+            const formattedMessages = messagesHistory.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text || '' }));
+            formattedMessages.unshift({ role: "system", content: "Anda AkaShiro v10 Enterprise AI. Jawab dalam bahasa Indonesia rapi menggunakan Markdown." });
+
+            const payload = { model: appState.currentModel, messages: formattedMessages, temperature: parseFloat(appState.temperature), stream: true };
+            const reqHeaders = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${appState.apiKey}` };
+            const response = await fetch(apiUrl, { method: 'POST', headers: reqHeaders, body: JSON.stringify(payload), signal: signal });
+
+            if (!response.ok) {
+                let errMsg = `HTTP Status ${response.status}`;
+                try { const errText = await response.text(); const errJson = JSON.parse(errText); errMsg = errJson.error?.message || errJson.message || errMsg; } catch(e) {}
+                throw new Error(errMsg);
+            }
+
+            const reader = response.body.getReader(); const decoder = new TextDecoder("utf-8"); let aiFullResponse = "";
+
+            while (true) {
+                const { done, value } = await reader.read(); if (done) break;
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split("\n").filter(line => line.trim() !== "");
+                
+                for (const line of lines) {
+                    const message = line.replace(/^data: /, ""); if (message === "[DONE]") return;
+                    try {
+                        const parsed = JSON.parse(message);
+                        const token = parsed.choices?.[0]?.delta?.content || "";
+                        if (token) {
+                            aiFullResponse += token; chat.messages[msgIndex].text = aiFullResponse;
+                            window.requestAnimationFrame(updateLastMessageUI);
+                        }
+                    } catch (e) {}
+                }
+            }
+        }
+
+        // --- 7. UTILS & MODALS ---
+        function handleInputKeydown(e) { if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { e.preventDefault(); if(!isGenerating) handleChatSubmit(e); } }
+        function handleInputAutoResize(e) { const el = e.target; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 200) + 'px'; const charCountEl = document.getElementById('charCount'); if (charCountEl) charCountEl.innerText = `${el.value.length} chars`; }
+        function saveSettings() {
+            appState.baseUrl = document.getElementById('customBaseUrl').value.trim();
+            appState.apiKey = document.getElementById('customApiKey').value.trim();
+            appState.temperature = parseFloat(document.getElementById('tempSlider').value);
+            localStorage.setItem('akashiro_baseurl_v10', appState.baseUrl); localStorage.setItem('akashiro_apikey_v10', appState.apiKey); localStorage.setItem('akashiro_temp_v10', appState.temperature);
+            closeModal('settingsModal'); showToast("Konfigurasi sistem berhasil disimpan.", "success");
+        }
+        function deleteChatSession(e, chatId) { if(e) e.stopPropagation(); appState.chats = appState.chats.filter(c => c.id !== chatId); if (appState.currentChatId === chatId) appState.currentChatId = appState.chats[0]?.id || null; saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle(); }
+        function clearAllChats() { if(confirm("Hapus PERMANEN semua riwayat komputasi?")) { appState.chats = []; appState.currentChatId = null; saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle(); showToast("Riwayat dibersihkan."); } }
+        function exportCurrentChat(format) {
+            const chat = getCurrentChat(); if (!chat || chat.messages.length === 0) { showToast("Tidak ada data.", "error"); return; }
+            if(format === 'markdown') {
+                let textData = `# AkaShiro Transkrip: ${chat.title}\nID: ${chat.id}\nTanggal: ${new Date().toLocaleString()}\nModel: ${chat.model}\n\n---\n\n`;
+                chat.messages.forEach(m => { const roleName = m.role === 'user' ? 'USER' : 'AKASHIRO ENGINE'; textData += `### ${roleName} (${new Date(m.timestamp).toLocaleTimeString()})\n${m.text}\n\n---\n\n`; });
+                const blob = new Blob([textData], { type: 'text/markdown;charset=utf-8;' });
+                const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `AkaShiro_${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`; document.body.appendChild(a); a.click(); document.body.removeChild(a); showToast("Transkrip diunduh.", "success");
+            }
+        }
+        function openModal(id) { const el = document.getElementById(id); const content = document.getElementById(id + 'Content'); if (el) { el.classList.remove('hidden'); setTimeout(() => { if(content) {content.classList.remove('scale-95', 'opacity-0'); content.classList.add('scale-100', 'opacity-100');} }, 10); } }
+        function closeModal(id) { const el = document.getElementById(id); const content = document.getElementById(id + 'Content'); if(content) { content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0'); } setTimeout(() => { if (el) el.classList.add('hidden'); }, 300); }
+    </script>
+</body>
+</html>
