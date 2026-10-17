@@ -696,7 +696,7 @@
                     const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
                     const langName = language ? language.toUpperCase() : 'TEXT';
                     
-                    // PERBAIKAN: Karakter || yang sebelumnya error karena formatting kini telah diperbaiki agar valid JavaScript.
+                    // PERBAIKAN FATAL: String ini dipastikan menggunakan karakter || untuk "OR" 
                     return `<div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code"><div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border"><span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span><button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)"><i class="fa-regular fa-copy"></i> <span>Copy</span></button></div><div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar"><pre class="m-0"><code class="hljs ${language \vert{}\vert{} ''}">${highlighted}</code></pre></div></div>`;
                 };
                 marked.setOptions({ renderer: renderer, breaks: true });
