@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AkaShiro AI — V10 Ultimate Pro (Auth System)</title>
+    <title>AkaShiro AI — V10 Ultimate Pro (Fixed Auth)</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,7 +67,7 @@
         .glass-header { background: rgba(18, 18, 20, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .glass-input { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.06); }
         
-        /* Markdown Styling (V10 Ergonomics) */
+        /* Markdown Styling */
         .markdown-body { font-size: 0.95rem; line-height: 1.65; color: #d4d4d8; word-wrap: break-word; }
         @media (max-width: 768px) { .markdown-body { font-size: 0.9rem; } }
         .markdown-body p { margin-bottom: 1rem; }
@@ -90,7 +90,6 @@
         .markdown-body th, .markdown-body td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #27272a; white-space: nowrap; }
         .markdown-body th { background: rgba(255,255,255,0.02); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; }
         .markdown-body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; border: 1px solid #27272a; }
-        .markdown-body iframe, .markdown-body video { width: 100%; max-width: 600px; aspect-ratio: 16/9; border-radius: 8px; margin: 1rem 0; border: 1px solid #27272a; background: #000; }
         
         /* Stream Cursor */
         .stream-cursor::after { content: '▋'; display: inline-block; animation: blink 1s step-end infinite; color: #E11D48; margin-left: 4px; vertical-align: baseline; font-size: 1em; }
@@ -100,12 +99,10 @@
         .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes pulseDots { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
 
-        /* Floating Utilities */
         #scrollBtn { opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px); }
         #scrollBtn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
         
-        /* Toast Container */
-        #toastContainer { position: fixed; top: 1rem; right: 1rem; z-index: 100; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
+        #toastContainer { position: fixed; top: 1rem; right: 1rem; z-index: 120; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
         .toast { pointer-events: auto; transform: translateX(120%); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .toast.show { transform: translateX(0); }
     </style>
@@ -461,12 +458,10 @@
                     showToast("Username sudah terdaftar! Gunakan nama lain.", "error");
                     return;
                 }
-                // Simpan user baru
                 usersDb[usernameInput] = { password: passwordInput };
                 localStorage.setItem('akashiro_users_db_v10', JSON.stringify(usersDb));
                 showToast("Registrasi berhasil! Berhasil masuk otomatis.", "success");
             } else {
-                // Mode Login
                 if (!usersDb[usernameInput] || usersDb[usernameInput].password !== passwordInput) {
                     showToast("Username atau password salah!", "error");
                     return;
@@ -474,12 +469,10 @@
                 showToast("Login berhasil!", "success");
             }
 
-            // Set Sesi Aktif
             authState.isLoggedIn = true;
             authState.currentUser = usernameInput;
             localStorage.setItem('akashiro_session_v10', JSON.stringify(authState));
 
-            // Sembunyikan Overlay Auth dan Masuk Workspace
             document.getElementById('authOverlay').classList.add('opacity-0', 'transition-opacity', 'duration-300');
             setTimeout(() => {
                 document.getElementById('authOverlay').classList.add('hidden');
