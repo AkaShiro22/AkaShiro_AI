@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AkaShiro AI — Ultimate Enterprise Workspace</title>
+    <title>AkaShiro AI — V10 Ultimate Pro</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,28 +19,27 @@
                 extend: {
                     colors: {
                         brand: { DEFAULT: '#E11D48', hover: '#BE123C', glow: '#FF3B5C', dim: 'rgba(225, 29, 72, 0.1)' },
-                        dark: { bg: '#09090b', panel: '#18181b', border: '#27272a', input: '#141417', hover: '#1f1f22' }
+                        dark: { bg: '#09090b', panel: '#121214', border: '#27272a', input: '#18181b', hover: '#1f1f22' }
                     },
-                    fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
-                    boxShadow: { 'neon': '0 0 25px rgba(225, 29, 72, 0.4)', 'panel': '0 8px 30px rgba(0,0,0,0.6)', 'float': '0 10px 40px rgba(0,0,0,0.8)' },
-                    animation: { 'fade-in': 'fadeIn 0.3s ease-out forwards', 'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards' },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+                    boxShadow: { 'neon': '0 0 20px rgba(225, 29, 72, 0.3)', 'panel': '0 8px 32px rgba(0,0,0,0.5)', 'float': '0 10px 40px rgba(0,0,0,0.8)' },
+                    animation: { 'fade-in': 'fadeIn 0.2s ease-out forwards', 'slide-up': 'slideUp 0.3s cubic-bezier(0.2, 1, 0.3, 1) forwards', 'blink': 'blink 1s step-end infinite' },
                     keyframes: { 
                         fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        slideUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        blink: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0' } }
                     }
                 }
             }
         }
     </script>
 
-    <!-- Core Libraries (Locked Versions for Ultimate Stability) -->
+    <!-- Core Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Markdown & Sanitizer -->
+    <!-- Markdown, Sanitizer, Code Highlight -->
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-    
-    <!-- Code Highlight -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
@@ -52,77 +51,84 @@
     <style>
         body {
             background-color: #09090b; color: #f4f4f5;
-            background-image: radial-gradient(circle at 15% 15%, rgba(225, 29, 72, 0.04), transparent 40%), radial-gradient(circle at 85% 85%, rgba(225, 29, 72, 0.03), transparent 40%);
+            background-image: radial-gradient(circle at 10% 20%, rgba(225, 29, 72, 0.03), transparent 30%), radial-gradient(circle at 90% 80%, rgba(225, 29, 72, 0.03), transparent 30%);
             -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
         }
         
         /* Premium Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #E11D48; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Glassmorphism Classes */
-        .glass-header { background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.06); }
-        .glass-input { background: rgba(20, 20, 23, 0.95); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); }
+        /* UI Adjustments */
+        .glass-header { background: rgba(18, 18, 20, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-input { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.06); }
         
-        /* Markdown Pro Styling (Pixel Perfect & Responsive) */
-        .markdown-body { font-size: 0.9rem; line-height: 1.7; color: #d4d4d8; word-wrap: break-word; overflow-wrap: break-word; }
-        @media (min-width: 768px) { .markdown-body { font-size: 0.95rem; } }
-        .markdown-body p { margin-bottom: 1.1rem; }
+        /* Markdown Styling (V10 Ergonomics) */
+        .markdown-body { font-size: 0.95rem; line-height: 1.65; color: #d4d4d8; word-wrap: break-word; }
+        @media (max-width: 768px) { .markdown-body { font-size: 0.9rem; } }
+        .markdown-body p { margin-bottom: 1rem; }
         .markdown-body p:last-child { margin-bottom: 0; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Inter', sans-serif; font-weight: 700; color: #fff; margin-top: 1.75rem; margin-bottom: 0.85rem; letter-spacing: -0.02em; }
-        .markdown-body h1 { font-size: 1.5rem; border-bottom: 1px solid #27272a; padding-bottom: 0.4rem; }
-        .markdown-body h2 { font-size: 1.25rem; }
-        .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 1.1rem; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Inter', sans-serif; font-weight: 700; color: #fff; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-body h1 { font-size: 1.4rem; border-bottom: 1px solid #27272a; padding-bottom: 0.3rem; }
+        .markdown-body h2 { font-size: 1.2rem; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 1rem; }
         .markdown-body ul { list-style-type: disc; }
         .markdown-body ol { list-style-type: decimal; }
-        .markdown-body li { margin-bottom: 0.3rem; }
-        .markdown-body a { color: #E11D48; text-decoration: none; border-bottom: 1px dashed rgba(225, 29, 72, 0.5); transition: all 0.2s ease; }
-        .markdown-body a:hover { color: #FF3B5C; border-bottom-style: solid; border-bottom-color: #FF3B5C; }
+        .markdown-body li { margin-bottom: 0.25rem; }
+        .markdown-body a { color: #E11D48; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s ease; }
+        .markdown-body a:hover { color: #FF3B5C; border-bottom-color: #FF3B5C; }
         .markdown-body strong { color: #f4f4f5; font-weight: 600; }
-        .markdown-body blockquote { border-left: 3px solid #E11D48; background: var(--brand-dim, rgba(225,29,72,0.05)); padding: 0.85rem 1.1rem; margin: 1.25rem 0; border-radius: 0 8px 8px 0; color: #a1a1aa; font-style: italic; }
-        .markdown-body code:not(pre code) { background: rgba(255,255,255,0.08); padding: 0.2rem 0.4rem; border-radius: 6px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #ff8fa3; border: 1px solid rgba(255,255,255,0.05); }
+        .markdown-body blockquote { border-left: 3px solid #E11D48; background: rgba(225,29,72,0.05); padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 6px 6px 0; color: #a1a1aa; font-style: italic; }
+        .markdown-body code:not(pre code) { background: rgba(255,255,255,0.08); padding: 0.15rem 0.35rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff8fa3; }
         
-        /* Table & Media Optimizations */
-        .markdown-body table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 1.25rem 0; border-radius: 10px; display: block; overflow-x: auto; border: 1px solid #27272a; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .markdown-body th, .markdown-body td { padding: 0.85rem 1.1rem; text-align: left; border-bottom: 1px solid #27272a; white-space: nowrap; }
-        .markdown-body th { background: rgba(255,255,255,0.03); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; }
-        .markdown-body tr:last-child td { border-bottom: none; }
-        .markdown-body img { max-width: 100%; border-radius: 12px; margin: 1.25rem 0; border: 1px solid #27272a; box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: transform 0.3s; }
-        .markdown-body img:hover { transform: scale(1.01); }
-        .markdown-body iframe, .markdown-body video { width: 100%; max-width: 650px; height: 360px; border-radius: 12px; margin: 1.25rem 0; border: 1px solid #27272a; background: #000; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        /* Table & Media */
+        .markdown-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; border-radius: 8px; overflow: hidden; border: 1px solid #27272a; display: block; overflow-x: auto; }
+        .markdown-body th, .markdown-body td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #27272a; white-space: nowrap; }
+        .markdown-body th { background: rgba(255,255,255,0.02); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; }
+        .markdown-body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; border: 1px solid #27272a; }
+        .markdown-body iframe, .markdown-body video { width: 100%; max-width: 600px; aspect-ratio: 16/9; border-radius: 8px; margin: 1rem 0; border: 1px solid #27272a; background: #000; }
         
-        /* Smooth Typing Dots */
+        /* Stream Cursor */
+        .stream-cursor::after { content: '▋'; display: inline-block; animation: blink 1s step-end infinite; color: #E11D48; margin-left: 4px; vertical-align: baseline; font-size: 1em; }
         .typing-dots { display: inline-flex; align-items: center; height: 20px; gap: 4px; }
         .typing-dots span { width: 6px; height: 6px; background-color: #E11D48; border-radius: 50%; animation: pulseDots 1.4s infinite ease-in-out both; }
         .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
         .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes pulseDots { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; box-shadow: 0 0 8px #E11D48; } }
+        @keyframes pulseDots { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
 
-        /* Floating Scroll to Bottom Button */
-        #scrollBtn { opacity: 0; pointer-events: none; transition: all 0.3s ease; transform: translateY(20px); }
+        /* Floating Utilities */
+        #scrollBtn { opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px); }
         #scrollBtn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        
+        /* Toast Container */
+        #toastContainer { position: fixed; top: 1rem; right: 1rem; z-index: 100; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
+        .toast { pointer-events: auto; transform: translateX(120%); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast.show { transform: translateX(0); }
     </style>
 </head>
 <body class="h-[100dvh] flex overflow-hidden text-zinc-100 selection:bg-brand selection:text-white font-sans antialiased">
 
+    <!-- Toast Notifications (V10 System) -->
+    <div id="toastContainer"></div>
+
     <!-- ==========================================
          LEFT SIDEBAR: NAVIGATION & HISTORY
          ========================================== -->
-    <aside id="appSidebar" class="w-72 bg-dark-panel/95 backdrop-blur-xl border-r border-dark-border flex flex-col shrink-0 transition-transform duration-300 ease-in-out absolute lg:relative z-50 h-full -translate-x-full lg:translate-x-0 shadow-[15px_0_30px_rgba(0,0,0,0.5)] lg:shadow-none">
+    <aside id="appSidebar" class="w-72 bg-dark-panel border-r border-dark-border flex flex-col shrink-0 transition-transform duration-300 ease-in-out absolute lg:relative z-50 h-full -translate-x-full lg:translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.5)] lg:shadow-none">
         
         <!-- Sidebar Header -->
-        <div class="h-16 flex items-center justify-between px-5 border-b border-dark-border shrink-0 bg-dark-bg/30">
+        <div class="h-16 flex items-center justify-between px-5 border-b border-dark-border shrink-0 bg-dark-bg/20">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/40 shadow-neon">
-                    <span class="font-orbitron font-bold text-white text-base">赤</span>
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/30 shadow-neon">
+                    <span class="font-orbitron font-bold text-white text-sm">赤</span>
                 </div>
                 <div class="flex flex-col">
                     <span class="font-orbitron font-bold text-sm tracking-wide text-white">AkaShiro<span class="text-brand">.AI</span></span>
-                    <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800/50 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700/50">Pro v9.0</span>
+                    <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800/40 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700/50">V10 Ultimate</span>
                 </div>
             </div>
             <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-dark-border/40 text-zinc-400 hover:text-white hover:bg-rose-900/50 transition-all">
@@ -132,32 +138,32 @@
 
         <!-- Start New Chat Action -->
         <div class="p-4 shrink-0">
-            <button onclick="startNewChat()" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-brand to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white text-xs font-semibold tracking-wider transition-all shadow-neon hover:shadow-[0_0_25px_rgba(225,29,72,0.6)] active:scale-[0.98]">
-                <i class="fa-solid fa-pen-to-square"></i> SESI KOMPUTASI BARU
+            <button onclick="startNewChat()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white text-black hover:bg-zinc-200 text-xs font-semibold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] active:scale-[0.98]">
+                <i class="fa-solid fa-plus text-[10px]"></i> SESI BARU
             </button>
         </div>
 
         <!-- Search & Chat History List -->
-        <div class="px-4 py-2 flex flex-col gap-3 shrink-0">
-            <div class="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
-                <i class="fa-solid fa-hard-drive"></i> Riwayat Workspace
+        <div class="px-4 py-1.5 flex flex-col gap-2 shrink-0">
+            <div class="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
+                <i class="fa-solid fa-folder-open"></i> Riwayat Komputasi
             </div>
             <div class="relative">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-500 text-[10px]"></i>
-                <input type="text" id="searchHistory" oninput="handleSearchHistory(this.value)" placeholder="Cari percakapan..." class="w-full bg-dark-bg border border-dark-border rounded-lg pl-8 pr-3 py-1.5 text-[11px] text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all placeholder-zinc-600">
+                <input type="text" id="searchHistory" oninput="handleSearchHistory(this.value)" placeholder="Cari transkrip..." class="w-full bg-dark-input border border-dark-border rounded-md pl-8 pr-3 py-1.5 text-[11px] text-zinc-200 focus:outline-none focus:border-zinc-500 transition-colors placeholder-zinc-600">
             </div>
         </div>
-        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 mt-1 space-y-1.5 scroll-smooth no-scrollbar">
+        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 mt-2 space-y-1 scroll-smooth no-scrollbar">
             <!-- List item injected by JS -->
         </div>
 
         <!-- Bottom Actions -->
-        <div class="p-4 border-t border-dark-border bg-dark-bg/50 shrink-0 space-y-2.5">
-            <button onclick="clearAllChats()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-dark-panel hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 text-[11px] font-mono font-semibold border border-dark-border hover:border-rose-900/80 transition-all group">
-                <i class="fa-regular fa-trash-can group-hover:scale-110 transition-transform"></i> Bersihkan Data
+        <div class="p-4 border-t border-dark-border bg-dark-bg/30 shrink-0 flex gap-2">
+            <button onclick="clearAllChats()" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md bg-dark-panel hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 text-[10px] font-mono border border-dark-border hover:border-rose-900/80 transition-all group" title="Hapus Semua Riwayat">
+                <i class="fa-solid fa-trash-can group-hover:scale-110 transition-transform"></i> Bersihkan
             </button>
-            <button onclick="openModal('settingsModal')" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-dark-panel hover:bg-zinc-800 text-zinc-300 hover:text-white text-[11px] font-mono font-semibold border border-dark-border hover:border-zinc-600 transition-all group">
-                <i class="fa-solid fa-sliders group-hover:rotate-90 transition-transform duration-300"></i> Parameter AI
+            <button onclick="openModal('settingsModal')" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md bg-dark-panel hover:bg-zinc-800 text-zinc-300 hover:text-white text-[10px] font-mono border border-dark-border hover:border-zinc-600 transition-all group" title="Pengaturan Model">
+                <i class="fa-solid fa-sliders group-hover:rotate-90 transition-transform duration-300"></i> API & Parameter
             </button>
         </div>
     </aside>
@@ -171,65 +177,67 @@
     <main class="flex-1 flex flex-col h-full relative min-w-0 bg-dark-bg">
         
         <!-- HEADER -->
-        <header class="h-16 glass-header px-4 flex items-center justify-between z-30 shrink-0 sticky top-0">
-            <!-- Left: Sidebar Toggle & Title -->
-            <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar(true)" class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-dark-panel border border-dark-border text-zinc-400 hover:text-white hover:border-zinc-600 transition-all shadow-sm">
-                    <i class="fa-solid fa-bars-staggered text-sm"></i>
+        <header class="h-14 glass-header px-4 flex items-center justify-between z-30 shrink-0 sticky top-0">
+            <div class="flex items-center gap-2 md:gap-3">
+                <button onclick="toggleSidebar(true)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-md bg-dark-input border border-dark-border text-zinc-400 hover:text-white hover:border-zinc-500 transition-all">
+                    <i class="fa-solid fa-bars-staggered text-xs"></i>
                 </button>
-                <div class="hidden sm:flex items-center gap-2.5 text-zinc-300 text-sm font-medium border-l border-dark-border pl-4 lg:border-none lg:pl-0">
-                    <div class="w-6 h-6 rounded-full bg-brand/10 flex items-center justify-center border border-brand/20">
-                        <i class="fa-solid fa-message text-[10px] text-brand"></i>
-                    </div>
-                    <span id="headerChatTitle" class="truncate max-w-[250px] text-xs font-mono font-semibold">Sesi Baru</span>
+                <div class="hidden sm:flex items-center gap-2 text-zinc-300 text-xs font-medium border-l border-dark-border pl-3 lg:border-none lg:pl-0">
+                    <i class="fa-solid fa-terminal text-[10px] text-brand"></i>
+                    <span id="headerChatTitle" class="truncate max-w-[200px] font-mono text-zinc-400">Memuat Sesi...</span>
                 </div>
             </div>
 
-            <!-- Right: Dynamic Model Selector -->
-            <div class="flex items-center">
-                <div class="relative flex items-center bg-dark-panel border border-dark-border rounded-xl p-1 pr-2 hover:border-zinc-600 transition-colors shadow-sm group">
-                    <div class="w-8 h-8 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand shrink-0 border border-zinc-700/50">
-                        <i class="fa-solid fa-microchip text-xs"></i>
+            <!-- Dynamic Model Selector & PDF Export -->
+            <div class="flex items-center gap-2">
+                <div class="relative flex items-center bg-dark-input border border-dark-border rounded-lg p-1 pr-2 hover:border-zinc-600 transition-colors shadow-sm group">
+                    <div class="w-6 h-6 rounded bg-zinc-800/80 flex items-center justify-center text-brand shrink-0">
+                        <i class="fa-solid fa-microchip text-[10px]"></i>
                     </div>
-                    <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-zinc-200 text-[11px] md:text-xs font-mono focus:outline-none focus:ring-0 cursor-pointer w-36 md:w-52 appearance-none pl-3 pr-6 py-1 font-semibold truncate z-10 relative outline-none">
+                    <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-zinc-200 text-[10px] md:text-xs font-mono focus:outline-none focus:ring-0 cursor-pointer w-28 md:w-44 appearance-none pl-2 pr-5 py-0.5 truncate z-10 relative outline-none">
                         <!-- Options populated by JS -->
                     </select>
-                    <i class="fa-solid fa-chevron-down text-[10px] text-zinc-500 absolute right-3 pointer-events-none group-hover:text-zinc-300 transition-colors"></i>
+                    <i class="fa-solid fa-chevron-down text-[9px] text-zinc-500 absolute right-2 pointer-events-none group-hover:text-zinc-300"></i>
                 </div>
                 
-                <button onclick="exportCurrentChat()" class="ml-2.5 w-10 h-10 flex items-center justify-center rounded-xl border border-dark-border bg-dark-panel hover:bg-zinc-800 text-zinc-400 hover:text-emerald-400 transition-colors shadow-sm group" title="Export ke Markdown">
-                    <i class="fa-solid fa-download text-sm group-hover:-translate-y-0.5 transition-transform"></i>
-                </button>
+                <div class="flex bg-dark-input border border-dark-border rounded-lg p-0.5">
+                    <button onclick="exportCurrentChat('markdown')" class="w-7 h-7 flex items-center justify-center rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors" title="Export Markdown (.md)">
+                        <i class="fa-brands fa-markdown text-xs"></i>
+                    </button>
+                    <button onclick="window.print()" class="w-7 h-7 flex items-center justify-center rounded hover:bg-zinc-800 text-zinc-400 hover:text-emerald-400 transition-colors" title="Cetak / Simpan PDF">
+                        <i class="fa-solid fa-print text-xs"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
         <!-- CHAT SCROLL AREA -->
-        <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 flex flex-col scroll-smooth relative" onscroll="handleScroll()">
+        <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-6 flex flex-col scroll-smooth relative" onscroll="handleScroll()">
             
             <!-- Hero / Empty State -->
-            <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-8 w-full animate-fade-in flex flex-col items-center justify-center text-center">
-                <div class="w-24 h-24 rounded-[2rem] bg-gradient-to-br from-dark-panel to-dark-bg border border-zinc-700/50 flex items-center justify-center mb-8 shadow-panel relative group">
-                    <div class="absolute inset-0 bg-brand/20 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
-                    <i class="fa-solid fa-cube text-4xl text-transparent bg-clip-text bg-gradient-to-br from-white to-zinc-500 relative z-10"></i>
+            <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-4 w-full animate-fade-in flex flex-col items-center justify-center text-center">
+                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-dark-input to-dark-bg border border-zinc-700/50 flex items-center justify-center mb-6 shadow-panel relative group">
+                    <div class="absolute inset-0 bg-brand/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <i class="fa-solid fa-bolt-lightning text-3xl text-zinc-200 relative z-10"></i>
                 </div>
-                <h2 class="text-2xl md:text-3xl font-orbitron font-bold text-white mb-4 tracking-wide">Workspace Ready.</h2>
-                <p class="text-zinc-400 text-[13px] md:text-sm max-w-lg mx-auto leading-relaxed mb-10">Mesin Komputasi <b>V9 Ultimate</b>. Mendukung rendering visual penuh, perhitungan matematika (LaTeX), embed media, dan penulisan kode presisi tinggi.</p>
+                <h2 class="text-xl md:text-2xl font-orbitron font-bold text-white mb-2">Sistem V10 Aktif.</h2>
+                <p class="text-zinc-400 text-[12px] md:text-[13px] max-w-md mx-auto leading-relaxed mb-8">Dilengkapi fitur <b>Streaming Real-Time</b>, proteksi Memori Konteks, dan rendering Eksekusi Kode presisi tingkat tinggi.</p>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-xl">
-                    <button onclick="sendQuickPrompt('Jelaskan Teori Relativitas dengan menyertakan rumus E=mc^2 menggunakan format LaTeX.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
-                        <i class="fa-solid fa-square-root-variable text-emerald-400 mb-3 block text-lg group-hover:scale-110 transition-transform origin-left"></i>
-                        <span class="text-zinc-200 text-[13px] font-semibold block mb-1">Rendering Matematika</span>
-                        <span class="text-zinc-500 text-[10px] font-mono">Uji tampilan LaTeX / Kalkulus.</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">
+                    <button onclick="sendQuickPrompt('Tuliskan fungsi JavaScript yang mengimplementasikan algoritma QuickSort beserta penjelasannya.')" class="p-3.5 rounded-xl bg-dark-input border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
+                        <i class="fa-brands fa-js text-yellow-400 mb-2 block text-base group-hover:scale-110 transition-transform origin-left"></i>
+                        <span class="text-zinc-200 text-[12px] font-semibold block mb-0.5">Generate Algoritma (JS)</span>
+                        <span class="text-zinc-500 text-[9px] font-mono">Uji kecepatan Streaming Response.</span>
                     </button>
-                    <button onclick="sendQuickPrompt('Buat script Python untuk membuat REST API sederhana menggunakan framework Flask.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
-                        <i class="fa-solid fa-code text-cyan-400 mb-3 block text-lg group-hover:scale-110 transition-transform origin-left"></i>
-                        <span class="text-zinc-200 text-[13px] font-semibold block mb-1">Generate Code (Python)</span>
-                        <span class="text-zinc-500 text-[10px] font-mono">Kode dengan Syntax Highlight.</span>
+                    <button onclick="sendQuickPrompt('Buatkan template HTML lengkap dengan CSS Grid untuk layout Dashboard Admin minimalis.')" class="p-3.5 rounded-xl bg-dark-input border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left group">
+                        <i class="fa-brands fa-html5 text-orange-500 mb-2 block text-base group-hover:scale-110 transition-transform origin-left"></i>
+                        <span class="text-zinc-200 text-[12px] font-semibold block mb-0.5">Design UI Dashboard</span>
+                        <span class="text-zinc-500 text-[9px] font-mono">Penulisan struktur kode kompleks.</span>
                     </button>
-                    <button onclick="sendQuickPrompt('Tampilkan gambar ilustrasi pemandangan kota cyberpunk masa depan dan analisis warnanya.')" class="p-4 rounded-2xl bg-dark-panel border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left sm:col-span-2 group flex items-center justify-between">
+                    <button onclick="sendQuickPrompt('Jelaskan teori Fisika Kuantum menggunakan rumus Probabilitas matematika (gunakan syntax LaTeX).')" class="p-3.5 rounded-xl bg-dark-input border border-dark-border hover:border-brand/40 hover:shadow-neon transition-all text-left sm:col-span-2 group flex items-center justify-between">
                         <div>
-                            <i class="fa-regular fa-image text-purple-400 mb-2 block text-lg"></i>
-                            <span class="text-zinc-200 text-[13px] font-semibold block">Render Visual & Gambar</span>
+                            <i class="fa-solid fa-atom text-cyan-400 mb-1.5 block text-base"></i>
+                            <span class="text-zinc-200 text-[12px] font-semibold block">Render Matematika (KaTeX)</span>
                         </div>
                         <i class="fa-solid fa-arrow-right text-zinc-600 group-hover:text-brand transition-colors mr-2"></i>
                     </button>
@@ -237,46 +245,42 @@
             </div>
 
             <!-- Messages Container -->
-            <div id="chatMessagesList" class="flex flex-col space-y-7 w-full max-w-4xl mx-auto pb-4">
+            <div id="chatMessagesList" class="flex flex-col space-y-6 w-full max-w-4xl mx-auto pb-6">
                 <!-- Messages appended here dynamically -->
             </div>
             
-            <div class="h-32 shrink-0"></div> <!-- Floating Input Spacer -->
+            <div class="h-28 shrink-0"></div> <!-- Floating Input Spacer -->
         </div>
 
         <!-- Floating Scroll to Bottom Button -->
-        <button id="scrollBtn" onclick="forceScrollBottom()" class="absolute bottom-[110px] right-6 md:right-10 w-10 h-10 rounded-full bg-dark-panel border border-dark-border text-zinc-400 hover:text-white hover:border-brand shadow-float flex items-center justify-center z-20">
-            <i class="fa-solid fa-arrow-down text-sm"></i>
+        <button id="scrollBtn" onclick="forceScrollBottom()" class="absolute bottom-[100px] right-4 md:right-8 w-9 h-9 rounded-full bg-dark-input border border-dark-border text-zinc-400 hover:text-white hover:border-brand shadow-float flex items-center justify-center z-20">
+            <i class="fa-solid fa-arrow-down text-xs"></i>
         </button>
 
         <!-- INPUT AREA -->
-        <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-30 pointer-events-none">
+        <div class="absolute bottom-0 left-0 right-0 p-3 md:p-5 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-30 pointer-events-none">
             <form id="chatForm" onsubmit="handleChatSubmit(event)" class="max-w-4xl mx-auto flex flex-col relative pointer-events-auto">
-                
-                <!-- Error Toast Notification -->
-                <div id="errorToast" class="absolute -top-16 left-0 right-0 mx-auto w-max max-w-[95%] px-5 py-3 rounded-xl bg-rose-950/95 border border-rose-500/50 text-rose-200 text-xs font-mono shadow-[0_10px_30px_rgba(225,29,72,0.3)] backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-300 transform translate-y-4 flex items-center gap-3 z-50">
-                    <div class="w-6 h-6 rounded-full bg-rose-900/50 flex items-center justify-center shrink-0"><i class="fa-solid fa-exclamation text-rose-400"></i></div>
-                    <span id="errorToastText" class="leading-relaxed">Error Occurred</span>
-                </div>
-
                 <!-- Input Box -->
-                <div class="glass-input rounded-[1.25rem] p-1.5 flex items-end shadow-panel transition-all duration-300 focus-within:border-brand/70 focus-within:shadow-neon relative group">
-                    <textarea id="chatInput" rows="1" placeholder="Ketik instruksi Anda... (Shift+Enter untuk baris baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 resize-none max-h-48 min-h-[48px] px-5 py-3.5 no-scrollbar leading-relaxed" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
+                <div class="glass-input rounded-2xl p-1.5 flex items-end shadow-panel transition-all duration-300 focus-within:border-brand/60 focus-within:shadow-neon relative">
+                    <textarea id="chatInput" rows="1" placeholder="Masukkan instruksi sistem... (Shift+Enter: Baris Baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-0 resize-none max-h-[200px] min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed font-sans" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                     
-                    <div class="flex items-center gap-2 p-1.5 shrink-0">
-                        <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 rounded-xl bg-zinc-800 hover:bg-rose-900/40 text-rose-400 border border-zinc-700 hover:border-rose-500/50 transition-all items-center justify-center shadow-sm" title="Hentikan Proses">
-                            <i class="fa-solid fa-stop text-sm"></i>
+                    <div class="flex items-center gap-1.5 p-1 shrink-0">
+                        <button type="button" id="voiceBtn" class="hidden sm:flex h-9 w-9 rounded-xl bg-transparent text-zinc-500 hover:text-zinc-300 transition-colors items-center justify-center" title="Voice Input (Segera Hadir)">
+                            <i class="fa-solid fa-microphone text-sm"></i>
                         </button>
-                        <button type="submit" id="sendBtn" class="h-10 w-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-brand to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white transition-all shadow-[0_4px_15px_rgba(225,29,72,0.4)] active:scale-[0.85] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
+                        <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-9 w-9 rounded-xl bg-zinc-800 hover:bg-rose-900/40 text-rose-400 border border-zinc-700 hover:border-rose-500/50 transition-all items-center justify-center shadow-sm" title="Hentikan Proses">
+                            <i class="fa-solid fa-square text-xs"></i>
+                        </button>
+                        <button type="submit" id="sendBtn" class="h-9 w-9 flex items-center justify-center rounded-xl bg-white text-black hover:bg-zinc-200 transition-all shadow-[0_0_15px_rgba(255,255,255,0.2)] active:scale-[0.85] disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
                             <i class="fa-solid fa-arrow-up text-sm"></i>
                         </button>
                     </div>
                 </div>
                 
                 <!-- Footer Info -->
-                <div class="flex justify-between items-center px-4 mt-3 text-[10px] font-mono text-zinc-500 select-none">
-                    <span id="charCount" class="bg-dark-panel border border-dark-border px-2 py-0.5 rounded-md text-zinc-400">0 chars</span>
-                    <span class="flex items-center gap-1.5 text-zinc-400"><i class="fa-solid fa-shield-check text-emerald-500/80"></i> AkaShiro Secure V9</span>
+                <div class="flex justify-between items-center px-3 mt-2 text-[9px] font-mono text-zinc-500 select-none hidden md:flex">
+                    <span id="charCount" class="bg-dark-panel border border-dark-border px-1.5 py-0.5 rounded text-zinc-400">0 chars</span>
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-emerald-500/80"></i> AkaShiro Secure Execution</span>
                 </div>
             </form>
         </div>
@@ -285,102 +289,96 @@
     <!-- ==========================================
          MODAL: SETTINGS & API CONFIGURATION
          ========================================== -->
-    <div id="settingsModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[60] hidden flex items-center justify-center p-4 transition-opacity">
-        <div class="w-full max-w-lg bg-dark-panel rounded-[2rem] border border-dark-border shadow-[0_20px_60px_rgba(0,0,0,0.8)] transform scale-95 opacity-0 transition-all duration-300" id="settingsModalContent">
+    <div id="settingsModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="w-full max-w-lg bg-dark-panel rounded-2xl border border-dark-border shadow-[0_20px_60px_rgba(0,0,0,0.8)] transform scale-95 opacity-0 transition-all duration-300" id="settingsModalContent">
             
-            <div class="flex items-center justify-between p-6 border-b border-dark-border">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center text-brand shadow-inner">
-                        <i class="fa-solid fa-sliders text-base"></i>
+            <div class="flex items-center justify-between p-5 border-b border-dark-border bg-dark-input/50 rounded-t-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-zinc-800/80 border border-zinc-700/50 flex items-center justify-center text-brand">
+                        <i class="fa-solid fa-microchip text-sm"></i>
                     </div>
                     <div>
-                        <h3 class="font-orbitron font-bold text-base text-white">Parameter Sistem</h3>
-                        <p class="text-[10px] font-mono text-zinc-500 mt-0.5">Konfigurasi Jaringan & Sifat AI</p>
+                        <h3 class="font-orbitron font-bold text-sm text-white">Konfigurasi Engine V10</h3>
                     </div>
                 </div>
-                <button onclick="closeModal('settingsModal')" class="w-9 h-9 flex items-center justify-center rounded-xl bg-dark-bg text-zinc-400 hover:text-white transition-colors border border-dark-border hover:border-zinc-500 hover:bg-zinc-800">
-                    <i class="fa-solid fa-xmark text-sm"></i>
+                <button onclick="closeModal('settingsModal')" class="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-400 hover:text-white transition-colors border border-transparent hover:border-zinc-700 hover:bg-zinc-800">
+                    <i class="fa-solid fa-xmark text-xs"></i>
                 </button>
             </div>
 
-            <div class="p-6 space-y-6 text-xs font-mono max-h-[70vh] overflow-y-auto no-scrollbar">
-                
-                <div class="space-y-2">
-                    <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-link text-brand"></i> Endpoint URL</label>
-                    <input type="text" id="customBaseUrl" class="w-full bg-dark-input border border-dark-border rounded-xl px-4 py-3 text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all">
+            <div class="p-5 space-y-5 text-[11px] font-mono max-h-[70vh] overflow-y-auto no-scrollbar">
+                <div class="space-y-1.5">
+                    <label class="text-zinc-300 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-globe text-brand"></i> API Endpoint</label>
+                    <input type="text" id="customBaseUrl" class="w-full bg-dark-input border border-dark-border rounded-lg px-3 py-2.5 text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all">
                 </div>
 
-                <div class="space-y-2">
-                    <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-key text-amber-400"></i> API Key / Bearer Token</label>
-                    <input type="password" id="customApiKey" class="w-full bg-dark-input border border-dark-border rounded-xl px-4 py-3 text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all tracking-[0.2em]">
+                <div class="space-y-1.5">
+                    <label class="text-zinc-300 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-key text-amber-400"></i> Bearer Token / API Key</label>
+                    <input type="password" id="customApiKey" class="w-full bg-dark-input border border-dark-border rounded-lg px-3 py-2.5 text-zinc-200 focus:outline-none focus:border-brand focus:shadow-neon transition-all tracking-[0.2em]">
                 </div>
 
-                <div class="bg-dark-bg p-5 rounded-2xl border border-dark-border space-y-4 shadow-inner">
+                <div class="bg-dark-input p-4 rounded-xl border border-dark-border space-y-3">
                     <div class="flex justify-between items-center">
-                        <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-temperature-half text-cyan-400"></i> Creativity (Temp)</label>
-                        <span id="tempVal" class="text-white font-bold bg-dark-panel px-3 py-1 rounded-lg border border-dark-border text-xs">0.7</span>
+                        <label class="text-zinc-300 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-temperature-half text-cyan-400"></i> Temperature</label>
+                        <span id="tempVal" class="text-white font-bold bg-dark-panel px-2 py-0.5 rounded border border-dark-border text-[10px]">0.7</span>
                     </div>
-                    <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText = this.value" class="w-full h-2 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-brand">
-                    <div class="flex justify-between text-[10px] text-zinc-500 font-sans"><span>Logis / Presisi</span><span>Kreatif / Bebas</span></div>
+                    <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText = this.value" class="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-brand">
+                    <div class="flex justify-between text-[9px] text-zinc-500 font-sans"><span>Faktual (0.0)</span><span>Imajinatif (1.0)</span></div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-2">
                     <div class="flex items-center justify-between">
-                        <label class="text-zinc-300 font-semibold flex items-center gap-2"><i class="fa-solid fa-robot text-purple-400"></i> System Persona (Instruksi)</label>
-                        <select id="quickPersona" onchange="applyQuickPersona()" class="bg-dark-panel border border-dark-border text-zinc-300 text-[10px] rounded-lg px-2 py-1 outline-none cursor-pointer">
-                            <option value="custom">-- Pilih Template --</option>
-                            <option value="standard">Standard V9</option>
-                            <option value="programmer">Senior Programmer</option>
-                            <option value="writer">Creative Writer</option>
+                        <label class="text-zinc-300 font-semibold flex items-center gap-1.5"><i class="fa-solid fa-robot text-purple-400"></i> System Persona</label>
+                        <select id="quickPersona" onchange="applyQuickPersona()" class="bg-dark-panel border border-dark-border text-zinc-300 text-[9px] rounded px-1.5 py-0.5 outline-none cursor-pointer">
+                            <option value="custom">-- Template --</option>
+                            <option value="standard">Standard V10</option>
+                            <option value="programmer">Code Engineer</option>
                         </select>
                     </div>
-                    <textarea id="systemPersonaInput" rows="4" class="w-full bg-dark-input border border-dark-border rounded-xl p-4 text-zinc-300 focus:outline-none focus:border-brand focus:shadow-neon transition-all resize-none leading-relaxed font-sans text-[13px]"></textarea>
+                    <textarea id="systemPersonaInput" rows="3" class="w-full bg-dark-input border border-dark-border rounded-lg p-3 text-zinc-300 focus:outline-none focus:border-brand transition-all resize-none leading-relaxed font-sans text-[12px]"></textarea>
                 </div>
             </div>
 
-            <div class="p-5 border-t border-dark-border bg-dark-bg/50 rounded-b-[2rem]">
-                <button onclick="saveSettings()" class="w-full py-3.5 rounded-xl bg-white hover:bg-zinc-200 text-black text-xs font-mono font-bold transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] active:scale-[0.98]">
-                    SIMPAN KONFIGURASI
+            <div class="p-4 border-t border-dark-border bg-dark-input/50 rounded-b-2xl">
+                <button onclick="saveSettings()" class="w-full py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-black text-[11px] font-mono font-bold transition-all active:scale-[0.98]">
+                    SIMPAN & TERAPKAN
                 </button>
             </div>
         </div>
     </div>
 
     <!-- ==========================================
-         ENGINE SCRIPT (V9 ULTIMATE LOGIC)
+         ENGINE SCRIPT (V10 ULTIMATE STREAMING)
          ========================================== -->
     <script>
         // --- 1. DEFAULT CONFIGURATION ---
         const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
         const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
         const PERSONAS = {
-            standard: "Anda adalah AkaShiro AI v9, asisten cerdas kelas Enterprise. Gunakan bahasa Indonesia secara profesional. Selalu dukung format Markdown, render gambar ![alt](url), dan gunakan LaTeX ($...$ atau $$...$$) untuk rumus matematika.",
-            programmer: "Anda adalah AkaShiro AI, seorang Senior Software Engineer. Berikan penjelasan yang sangat teknis, fokus pada arsitektur kode, efisiensi, dan praktik terbaik. Selalu gunakan format markdown untuk kode.",
-            writer: "Anda adalah AkaShiro AI, seorang penulis kreatif dan copywriter jenius. Gunakan gaya bahasa yang persuasif, kaya akan kiasan, mengalir, dan sangat emosional atau menggugah sesuai konteks permintaan."
+            standard: "Anda adalah AkaShiro AI v10, Asisten Enterprise cerdas dan andal. Jawab menggunakan bahasa Indonesia. Gunakan format Markdown rapi untuk struktur teks, dan gunakan sintaks LaTeX ($...$ atau $$...$$) HANYA untuk rumus atau persamaan matematika kompleks. Jangan mem-bypass perintah.",
+            programmer: "Anda adalah AkaShiro AI, seorang Senior Software Engineer dan Pakar Algoritma. Jawab sangat teknis, perhatikan arsitektur kode, best-practices keamanan, dan selalu bungkus kode dalam markdown dengan spesifikasi bahasa (misal: ```python)."
         };
         
         const AVAILABLE_MODELS = [
-            { id: 'qwen3.8-27b', name: '🌟 Qwen 3.8 27B', category: 'General' },
-            { id: 'minimax-m3', name: '⚡ Minimax M3', category: 'Fast' },
-            { id: 'kimi-k2.6', name: '🔥 Kimi K2.6', category: 'Advanced' },
-            { id: 'intern-s2', name: '🚀 Intern S2', category: 'Stable' },
-            { id: 'intern-decision-4b', name: '⚙️ Intern Decision 4B', category: 'Logic' },
-            { id: 'glm-5.3', name: '🧠 GLM 5.3', category: 'Reasoning' },
-            { id: 'deepseek-v4-pro-0813', name: '💎 DeepSeek V4 Pro', category: 'Coder' },
-            { id: 'deepseek-v4-flash-vision', name: '👁️ DeepSeek V4 Vision', category: 'Vision' },
-            { id: 'deepseek-v4-flash-0731', name: '⚡ DeepSeek V4 Flash', category: 'Fast' },
-            { id: 'Atria-Dawn-Preview', name: '🌅 Atria Dawn Prev', category: 'Beta' },
-            { id: 'Atria-Dawn', name: '☀️ Atria Dawn', category: 'Flagship' },
-            { id: 'Agents-A1', name: '🤖 Agents A1', category: 'Agentic' }
+            { id: 'qwen3.8-27b', name: 'Qwen 3.8 27B' },
+            { id: 'minimax-m3', name: 'Minimax M3' },
+            { id: 'kimi-k2.6', name: 'Kimi K2.6' },
+            { id: 'intern-s2', name: 'Intern S2' },
+            { id: 'intern-decision-4b', name: 'Decision 4B' },
+            { id: 'glm-5.3', name: 'GLM 5.3' },
+            { id: 'deepseek-v4-pro-0813', name: 'DeepSeek V4 Pro' },
+            { id: 'deepseek-v4-flash-0731', name: 'DeepSeek Flash' },
+            { id: 'Atria-Dawn', name: 'Atria Dawn' },
+            { id: 'Agents-A1', name: 'Agents A1' }
         ];
 
         let appState = {
-            baseUrl: localStorage.getItem('akashiro_baseurl_v9') || DEFAULT_API_BASE_URL,
-            apiKey: localStorage.getItem('akashiro_apikey_v9') || DEFAULT_API_KEY,
-            temperature: parseFloat(localStorage.getItem('akashiro_temp_v9')) || 0.7,
-            systemPersona: localStorage.getItem('akashiro_persona_v9') || PERSONAS.standard,
-            currentModel: localStorage.getItem('akashiro_model_v9') || 'qwen3.8-27b',
-            chats: JSON.parse(localStorage.getItem('akashiro_chats_v9')) || [],
+            baseUrl: localStorage.getItem('akashiro_baseurl_v10') || DEFAULT_API_BASE_URL,
+            apiKey: localStorage.getItem('akashiro_apikey_v10') || DEFAULT_API_KEY,
+            temperature: parseFloat(localStorage.getItem('akashiro_temp_v10')) || 0.7,
+            systemPersona: localStorage.getItem('akashiro_persona_v10') || PERSONAS.standard,
+            currentModel: localStorage.getItem('akashiro_model_v10') || 'qwen3.8-27b',
+            chats: JSON.parse(localStorage.getItem('akashiro_chats_v10')) || [],
             currentChatId: null
         };
 
@@ -394,11 +392,8 @@
             setupMarkedRenderer();
             populateModelDropdown();
             
-            if (appState.chats.length > 0) { 
-                loadChatSession(appState.chats[0].id); 
-            } else { 
-                startNewChat(); 
-            }
+            if (appState.chats.length > 0) { loadChatSession(appState.chats[0].id); } 
+            else { startNewChat(); }
         });
 
         function setupDOMBindings() {
@@ -420,77 +415,84 @@
             select.innerHTML = '';
             AVAILABLE_MODELS.forEach(m => {
                 const opt = document.createElement('option');
-                opt.value = m.id;
-                opt.textContent = `${m.name}`;
+                opt.value = m.id; opt.textContent = m.name;
                 if(m.id === appState.currentModel) opt.selected = true;
                 select.appendChild(opt);
             });
         }
 
         function changeChatModel(val) {
-            appState.currentModel = val; 
-            localStorage.setItem('akashiro_model_v9', val);
-            let chat = getCurrentChat(); 
-            if(chat) { chat.model = val; saveChatsToStorage(); }
+            appState.currentModel = val; localStorage.setItem('akashiro_model_v10', val);
+            let chat = getCurrentChat(); if(chat) { chat.model = val; saveChatsToStorage(); }
         }
 
         function toggleSidebar(show) {
             const sidebar = document.getElementById('appSidebar');
             const overlay = document.getElementById('sidebarOverlay');
             if (!sidebar || !overlay) return;
-            if (show) { 
-                sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); 
-            } else { 
-                sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); 
-            }
+            if (show) { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); } 
+            else { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); }
         }
 
-        // --- 3. MARKDOWN, MEDIA & MATH RENDERER ---
+        // --- 3. TOAST SYSTEM (V10) ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if(!container) return;
+            
+            const toast = document.createElement('div');
+            let iconStr = '<i class="fa-solid fa-circle-info text-blue-400"></i>';
+            let bgClass = 'bg-blue-950/90 border-blue-500/50';
+            
+            if(type === 'error') { iconStr = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i>'; bgClass = 'bg-rose-950/90 border-rose-500/50'; }
+            if(type === 'success') { iconStr = '<i class="fa-solid fa-check-circle text-emerald-400"></i>'; bgClass = 'bg-emerald-950/90 border-emerald-500/50'; }
+
+            toast.className = `toast flex items-center gap-3 px-4 py-2.5 rounded-xl border ${bgClass} text-zinc-200 text-xs font-mono shadow-panel backdrop-blur-xl max-w-sm`;
+            toast.innerHTML = `<div class="shrink-0 text-sm">${iconStr}</div> <div class="leading-relaxed break-words">${message}</div>`;
+            
+            container.appendChild(toast);
+            // Trigger animation
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { if(toast.parentNode) toast.parentNode.removeChild(toast); }, 400);
+            }, 4000);
+        }
+
+        // --- 4. MARKDOWN, MEDIA & MATH (V10) ---
         function setupMarkedRenderer() {
             try {
                 if (typeof marked === 'undefined') return;
                 const renderer = new marked.Renderer();
                 
-                // Code block with language badge & copy
                 renderer.code = function(code, language) {
                     const validLang = !!(language && typeof hljs !== 'undefined' && hljs.getLanguage(language));
                     const highlighted = validLang ? hljs.highlight(code, { language }).value : escapeHtml(code);
                     const langName = language ? language.toUpperCase() : 'TEXT';
                     
                     return `
-                    <div class="my-5 rounded-xl border border-dark-border bg-[#0d1017] overflow-hidden shadow-panel group/code">
-                        <div class="flex justify-between items-center px-4 py-2.5 bg-dark-panel border-b border-dark-border">
-                            <div class="flex items-center gap-2">
-                                <i class="fa-solid fa-code text-[10px] text-brand"></i>
-                                <span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span>
-                            </div>
-                            <button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-3 py-1.5 rounded border border-dark-border" onclick="copyCodeBlock(this)">
-                                <i class="fa-regular fa-copy"></i> <span>Salin Kode</span>
+                    <div class="my-4 rounded-xl border border-dark-border bg-[#0d1117] overflow-hidden shadow-panel group/code">
+                        <div class="flex justify-between items-center px-4 py-2 bg-dark-input border-b border-dark-border">
+                            <span class="text-[10px] text-zinc-300 font-mono font-bold tracking-widest">${langName}</span>
+                            <button type="button" class="text-[10px] text-zinc-400 hover:text-white transition-all flex items-center gap-1.5 bg-dark-bg hover:bg-zinc-700 px-2.5 py-1 rounded border border-dark-border" onclick="copyCodeBlock(this)">
+                                <i class="fa-regular fa-copy"></i> <span>Copy</span>
                             </button>
                         </div>
-                        <div class="overflow-x-auto p-5 text-[13px] font-mono no-scrollbar bg-[#0d1017]">
+                        <div class="overflow-x-auto p-4 text-[12px] md:text-[13px] font-mono no-scrollbar">
                             <pre class="m-0"><code class="hljs ${language || ''}">${highlighted}</code></pre>
                         </div>
                     </div>`;
                 };
 
-                // Smart YouTube Link Parser
                 renderer.link = function(href, title, text) {
-                    if(href.includes('youtube.com/watch') || href.includes('youtu.be/')) {
+                    if(href.includes('[youtube.com/watch](https://youtube.com/watch)') || href.includes('youtu.be/')) {
                         let videoId = href.split('v=')[1] || href.split('youtu.be/')[1];
                         if(videoId) videoId = videoId.split('&')[0];
-                        return `
-                        <div class="my-4 w-full max-w-[600px] rounded-xl overflow-hidden border border-dark-border shadow-panel group/vid">
-                            <iframe src="https://www.youtube.com/embed/${videoId}" title="YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full aspect-video bg-black"></iframe>
-                            <div class="bg-dark-panel px-3 py-2 flex items-center justify-between border-t border-dark-border">
-                                <span class="text-[10px] text-zinc-400 font-mono"><i class="fa-brands fa-youtube text-brand mr-1"></i> YouTube Player</span>
-                                <a href="${href}" target="_blank" class="text-[10px] text-brand hover:text-white transition-colors bg-dark-bg px-2 py-1 rounded border border-dark-border">Buka di Tab Baru <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i></a>
-                            </div>
-                        </div>`;
+                        return `<div class="my-4 w-full max-w-[500px] rounded-lg overflow-hidden border border-dark-border shadow-panel"><iframe src="[https://www.youtube.com/embed/$](https://www.youtube.com/embed/$){videoId}" frameborder="0" allowfullscreen class="w-full aspect-video bg-black"></iframe><div class="bg-dark-input px-3 py-1.5 text-[10px] text-zinc-400 font-mono border-t border-dark-border flex justify-between"><span class="truncate">Video Player</span><a href="${href}" target="_blank" class="text-brand hover:text-white ml-2 shrink-0">Buka <i class="fa-solid fa-external-link-alt text-[9px]"></i></a></div></div>`;
                     }
                     return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title || ''}">${text}</a>`;
                 };
-
                 marked.setOptions({ renderer: renderer, breaks: true });
             } catch(e) { console.error("Markdown init error:", e); }
         }
@@ -503,62 +505,60 @@
                 if(codeEl) {
                     await navigator.clipboard.writeText(codeEl.innerText);
                     const originalHTML = btn.innerHTML;
-                    btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Tersalin!</span>';
-                    btn.classList.add('border-emerald-500/50', 'bg-emerald-900/30');
-                    setTimeout(() => { btn.innerHTML = originalHTML; btn.classList.remove('border-emerald-500/50', 'bg-emerald-900/30'); }, 2000);
+                    btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Copied!</span>';
+                    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+                }
+            } catch(e) {}
+        }
+
+        window.copyAiMessage = async function(msgIndex) {
+            try {
+                let chat = getCurrentChat();
+                if(chat && chat.messages[msgIndex]) {
+                    await navigator.clipboard.writeText(chat.messages[msgIndex].text);
+                    showToast("Teks berhasil disalin ke clipboard.", "success");
                 }
             } catch(e) {}
         }
         
-        window.copyAiMessage = async function(btn) {
-            try {
-                const msgBody = btn.closest('.group\\/msg').querySelector('.markdown-body');
-                if(msgBody) {
-                    await navigator.clipboard.writeText(msgBody.innerText);
-                    const originalHTML = btn.innerHTML;
-                    btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> <span class="text-emerald-400">Tersalin!</span>';
-                    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
-                }
-            } catch(e) {}
+        window.editUserMessage = function(msgIndex) {
+            let chat = getCurrentChat();
+            if(!chat || !chat.messages[msgIndex] || isGenerating) return;
+            
+            const originalText = chat.messages[msgIndex].text;
+            document.getElementById('chatInput').value = originalText;
+            
+            // Hapus pesan ini dan semua pesan setelahnya (AI responses)
+            chat.messages = chat.messages.slice(0, msgIndex);
+            saveChatsToStorage();
+            renderMessages();
+            document.getElementById('chatInput').focus();
         }
 
         window.regenerateResponse = function() {
             if(isGenerating) return;
             let chat = getCurrentChat();
             if(!chat || chat.messages.length < 2) return;
-            
-            // Remove last AI response and any errors
-            while(chat.messages.length > 0 && chat.messages[chat.messages.length-1].role !== 'user') {
-                chat.messages.pop();
-            }
+            while(chat.messages.length > 0 && chat.messages[chat.messages.length-1].role !== 'user') { chat.messages.pop(); }
             if(chat.messages.length === 0) return;
-            
-            // Resubmit silently
             handleChatSubmit(null, true);
         }
 
-        // --- 4. CORE CHAT LOGIC ---
+        // --- 5. CORE CHAT LOGIC ---
         function startNewChat() {
             if(isGenerating) abortGeneration();
             const newChat = { id: 'chat_' + Date.now(), title: 'Sesi Komputasi Baru', messages: [], model: appState.currentModel, updatedAt: new Date().toISOString() };
-            appState.chats.unshift(newChat); 
-            appState.currentChatId = newChat.id;
-            
+            appState.chats.unshift(newChat); appState.currentChatId = newChat.id;
             saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
             if(window.innerWidth < 1024) toggleSidebar(false);
         }
 
         function loadChatSession(chatId) {
             if(isGenerating) abortGeneration();
-            appState.currentChatId = chatId;
-            const chat = getCurrentChat();
-            
+            appState.currentChatId = chatId; const chat = getCurrentChat();
             if(chat && chat.model) {
-                appState.currentModel = chat.model;
-                const select = document.getElementById('chatModelSelect');
-                if(select) select.value = chat.model;
+                appState.currentModel = chat.model; const select = document.getElementById('chatModelSelect'); if(select) select.value = chat.model;
             }
-            
             renderChatHistory(); renderMessages(); updateHeaderTitle();
             if (window.innerWidth < 1024) toggleSidebar(false);
         }
@@ -566,53 +566,39 @@
         function getCurrentChat() { return appState.chats.find(c => c.id === appState.currentChatId); }
 
         function updateHeaderTitle() {
-            const chat = getCurrentChat();
-            const titleEl = document.getElementById('headerChatTitle');
+            const chat = getCurrentChat(); const titleEl = document.getElementById('headerChatTitle');
             if(titleEl && chat) titleEl.innerText = chat.title;
         }
         
         function handleSearchHistory(query) { renderChatHistory(query.toLowerCase()); }
 
         function renderChatHistory(filter = '') {
-            const listEl = document.getElementById('chatHistoryList'); 
-            if (!listEl) return;
+            const listEl = document.getElementById('chatHistoryList'); if (!listEl) return;
             listEl.innerHTML = '';
-            
             const filteredChats = appState.chats.filter(c => c.title.toLowerCase().includes(filter));
             
             filteredChats.forEach(chat => {
                 const isActive = chat.id === appState.currentChatId;
-                const activeClass = isActive 
-                    ? 'bg-zinc-800/80 border-l-2 border-brand text-white shadow-sm' 
-                    : 'hover:bg-zinc-900 border-l-2 border-transparent text-zinc-400 hover:text-zinc-200';
+                const activeClass = isActive ? 'bg-dark-input border-l-2 border-brand text-white shadow-sm' : 'hover:bg-zinc-900 border-l-2 border-transparent text-zinc-400 hover:text-zinc-200';
                 
                 const item = document.createElement('div');
-                item.className = `p-3 rounded-r-xl text-[11px] font-mono transition-all flex items-center justify-between group cursor-pointer ${activeClass}`;
+                item.className = `p-2.5 rounded-r-lg text-[11px] font-mono transition-all flex items-center justify-between group cursor-pointer ${activeClass}`;
                 item.onclick = () => loadChatSession(chat.id);
                 item.innerHTML = `
-                    <div class="flex items-center gap-3 w-[85%]">
-                        <i class="fa-regular fa-message text-[11px] ${isActive ? 'text-brand' : 'text-zinc-600'} shrink-0"></i>
-                        <span class="truncate">${escapeHtml(chat.title)}</span>
-                    </div>
-                    <button onclick="deleteChatSession(event, '${chat.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg bg-dark-bg text-zinc-500 hover:text-rose-400 hover:bg-rose-950/50 transition-colors shrink-0">
-                        <i class="fa-solid fa-trash-can text-[10px]"></i>
-                    </button>
+                    <div class="flex items-center gap-2.5 w-[85%]"><i class="fa-regular fa-message text-[10px] ${isActive ? 'text-brand' : 'text-zinc-600'} shrink-0"></i><span class="truncate">${escapeHtml(chat.title)}</span></div>
+                    <button onclick="deleteChatSession(event, '${chat.id}')" class="opacity-0 group-hover:opacity-100 p-1.5 rounded bg-dark-bg text-zinc-500 hover:text-rose-400 hover:bg-rose-950/50 transition-colors shrink-0"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
                 `;
                 listEl.appendChild(item);
             });
         }
 
-        // Smart Scroll Handling
+        // Smart Scroll
         function handleScroll() {
-            const scrollArea = document.getElementById('chatScrollArea');
-            const scrollBtn = document.getElementById('scrollBtn');
+            const scrollArea = document.getElementById('chatScrollArea'); const scrollBtn = document.getElementById('scrollBtn');
             if(!scrollArea || !scrollBtn) return;
-            
             const isAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop <= scrollArea.clientHeight + 150;
             isAutoScrolling = isAtBottom;
-            
-            if(!isAtBottom) { scrollBtn.classList.add('visible'); } 
-            else { scrollBtn.classList.remove('visible'); }
+            if(!isAtBottom) { scrollBtn.classList.add('visible'); } else { scrollBtn.classList.remove('visible'); }
         }
         
         function forceScrollBottom() {
@@ -621,11 +607,61 @@
         }
 
         function scrollToBottom() {
-            const scrollArea = document.getElementById('chatScrollArea');
-            if (!scrollArea) return;
-            setTimeout(() => {
-                if (isAutoScrolling) scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
-            }, 50);
+            const scrollArea = document.getElementById('chatScrollArea'); if (!scrollArea) return;
+            if (isAutoScrolling) scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Render Individual Message HTML (To be used by full render and streaming update)
+        function generateMessageHTML(msg, index, isLastMsg) {
+            const isUser = msg.role === 'user';
+            
+            if (isUser) {
+                return `
+                <div class="flex justify-end w-full animate-slide-up opacity-0" id="msg-${index}">
+                    <div class="group flex flex-col items-end max-w-[90%] sm:max-w-[75%]">
+                        <div class="rounded-[1.25rem] rounded-tr-sm bg-zinc-800 text-zinc-100 px-5 py-3.5 shadow-panel text-[13px] md:text-sm leading-relaxed border border-zinc-700/80 break-words w-full">
+                            <p class="whitespace-pre-wrap font-sans m-0">${escapeHtml(msg.text)}</p>
+                        </div>
+                        <div class="mt-1 mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onclick="editUserMessage(${index})" class="text-[9px] font-mono text-zinc-500 hover:text-brand bg-dark-panel px-2 py-0.5 rounded border border-dark-border"><i class="fa-solid fa-pen mr-1"></i> Edit Prompt</button>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                let rawHtml = escapeHtml(msg.text || '');
+                try { if(typeof marked !== 'undefined') rawHtml = marked.parse(msg.text || ''); } catch(e){}
+                
+                let safeHtml = rawHtml;
+                try { 
+                    if(typeof DOMPurify !== 'undefined') {
+                        safeHtml = DOMPurify.sanitize(rawHtml, { ADD_TAGS: ['img', 'iframe', 'video', 'audio', 'source'], ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls', 'class'] }); 
+                    }
+                } catch(e){}
+                
+                const isError = (msg.text || '').includes('⚠️');
+                const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream-cursor' : '';
+                
+                return `
+                <div class="flex gap-3 md:gap-4 w-full max-w-[100%] sm:max-w-[95%] group/msg animate-slide-up opacity-0" id="msg-${index}">
+                    <div class="w-8 h-8 md:w-9 md:h-9 rounded-[10px] bg-gradient-to-br from-brand to-rose-900 border border-brand/40 flex items-center justify-center text-white text-[11px] md:text-xs font-orbitron font-bold shrink-0 shadow-neon mt-1">赤</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="rounded-[1.25rem] rounded-tl-sm px-4 md:px-5 py-4 text-[13px] md:text-sm text-zinc-200 markdown-body bg-dark-panel border border-dark-border shadow-panel ${isError ? 'border-rose-900/50 bg-rose-950/20' : ''} ${streamClass}">
+                            ${msg.isTyping && msg.text.length === 0 ? `<div class="typing-dots"><span></span><span></span><span></span></div>` : safeHtml}
+                        </div>
+                        
+                        ${!msg.isTyping && !isError ? `
+                        <div class="mt-2 ml-2 flex flex-wrap items-center gap-2 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-300">
+                            <button type="button" onclick="copyAiMessage(${index})" class="text-[9px] font-mono text-zinc-400 hover:text-white flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2 py-1 rounded shadow-sm hover:bg-zinc-800">
+                                <i class="fa-regular fa-copy"></i> Salin
+                            </button>
+                            ${isLastMsg ? `
+                            <button type="button" onclick="regenerateResponse()" class="text-[9px] font-mono text-zinc-400 hover:text-brand flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2 py-1 rounded shadow-sm hover:border-brand/30 hover:bg-brand/5">
+                                <i class="fa-solid fa-rotate-right"></i> Regenerate
+                            </button>` : ''}
+                        </div>` : ''}
+                    </div>
+                </div>`;
+            }
         }
 
         function renderMessages() {
@@ -635,87 +671,62 @@
 
             if (!listContainer) return; 
             if (!chat || chat.messages.length === 0) {
-                listContainer.innerHTML = ''; 
-                if (welcomeHero) welcomeHero.classList.remove('hidden'); 
-                return;
+                listContainer.innerHTML = ''; if (welcomeHero) welcomeHero.classList.remove('hidden'); return;
             }
             if (welcomeHero) welcomeHero.classList.add('hidden');
             
             listContainer.innerHTML = '';
-
             chat.messages.forEach((msg, index) => {
-                const msgNode = document.createElement('div');
-                const isUser = msg.role === 'user';
-                msgNode.className = `flex ${isUser ? 'justify-end' : 'justify-start'} w-full animate-slide-up opacity-0`;
+                const isLast = index === chat.messages.length - 1;
+                listContainer.insertAdjacentHTML('beforeend', generateMessageHTML(msg, index, isLast));
                 
-                let bodyHtml = '';
-                if (isUser) {
-                    bodyHtml = `
-                    <div class="max-w-[90%] sm:max-w-[75%] rounded-[1.25rem] rounded-tr-sm bg-zinc-800 text-zinc-100 px-5 py-4 shadow-panel text-[13px] md:text-sm leading-relaxed border border-zinc-700/80">
-                        <p class="whitespace-pre-wrap font-sans m-0">${escapeHtml(msg.text)}</p>
-                    </div>`;
-                } else {
-                    let rawHtml = escapeHtml(msg.text || '');
-                    try { if(typeof marked !== 'undefined') rawHtml = marked.parse(msg.text || ''); } catch(e){}
-                    
-                    let safeHtml = rawHtml;
-                    try { 
-                        if(typeof DOMPurify !== 'undefined') {
-                            safeHtml = DOMPurify.sanitize(rawHtml, { 
-                                ADD_TAGS: ['img', 'iframe', 'video', 'audio', 'source'], 
-                                ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls', 'class'] 
-                            }); 
-                        }
-                    } catch(e){}
-                    
-                    const isError = (msg.text || '').includes('⚠️');
-                    const isLastAiMsg = index === chat.messages.length - 1;
-                    
-                    // Struktur Pesan AI V9 dengan Advanced Action Bar
-                    bodyHtml = `
-                    <div class="flex gap-4 w-full max-w-[100%] sm:max-w-[95%] group/msg">
-                        <div class="w-10 h-10 rounded-[10px] bg-gradient-to-br from-brand to-rose-900 border border-brand/40 flex items-center justify-center text-white text-sm font-orbitron font-bold shrink-0 shadow-neon mt-1 relative overflow-hidden">
-                            <div class="absolute inset-0 bg-white/20 translate-y-full group-hover/msg:translate-y-0 transition-transform duration-300"></div>
-                            <span class="relative z-10">赤</span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="rounded-[1.25rem] rounded-tl-sm px-5 py-5 text-[13px] md:text-sm text-zinc-200 markdown-body bg-dark-panel border border-dark-border shadow-panel ${isError ? 'border-rose-900/50 bg-rose-950/20 shadow-[0_0_20px_rgba(225,29,72,0.1)]' : ''}">
-                                ${msg.isTyping ? `<div class="typing-dots"><span></span><span></span><span></span></div>` : safeHtml}
-                            </div>
-                            
-                            ${!msg.isTyping && !isError ? `
-                            <div class="mt-2.5 ml-2 flex items-center gap-2 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-300">
-                                <button type="button" onclick="copyAiMessage(this)" class="text-[10px] font-mono text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2.5 py-1 rounded-md shadow-sm hover:border-zinc-500">
-                                    <i class="fa-regular fa-copy"></i> Salin Teks
-                                </button>
-                                ${isLastAiMsg ? `
-                                <button type="button" onclick="regenerateResponse()" class="text-[10px] font-mono text-zinc-400 hover:text-brand flex items-center gap-1.5 transition-colors bg-dark-panel border border-dark-border px-2.5 py-1 rounded-md shadow-sm hover:border-brand/50">
-                                    <i class="fa-solid fa-rotate-right"></i> Regenerate
-                                </button>` : ''}
-                                <span class="text-[9px] text-zinc-600 font-mono ml-2">${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                            </div>` : ''}
-                        </div>
-                    </div>`;
-                }
-                
-                msgNode.innerHTML = bodyHtml; 
-                listContainer.appendChild(msgNode);
-                
-                // Kicking KaTeX for Math Rendering
-                if(!isUser && !msg.isTyping && typeof renderMathInElement !== 'undefined') {
-                    try {
-                        renderMathInElement(msgNode, {
-                            delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '[', right: ']', display: true} ],
-                            throwOnError: false
-                        });
-                    } catch(e) { console.warn("KaTeX render error", e); }
+                // KaTeX Rendering (Delayed to ensure DOM is ready)
+                if(msg.role !== 'user' && !msg.isTyping && typeof renderMathInElement !== 'undefined') {
+                    const node = document.getElementById(`msg-${index}`);
+                    if(node) {
+                        try {
+                            renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '[', right: ']', display: true} ], throwOnError: false });
+                        } catch(e) {}
+                    }
                 }
             });
-
+            scrollToBottom();
+        }
+        
+        // Fast Update for Streaming
+        function updateLastMessageUI() {
+            const chat = getCurrentChat();
+            if(!chat || chat.messages.length === 0) return;
+            const index = chat.messages.length - 1;
+            const msg = chat.messages[index];
+            const node = document.getElementById(`msg-${index}`);
+            
+            if(node) {
+                const isError = (msg.text || '').includes('⚠️');
+                const streamClass = msg.isTyping && msg.text.length > 0 ? 'stream-cursor' : '';
+                
+                let rawHtml = escapeHtml(msg.text || '');
+                try { if(typeof marked !== 'undefined') rawHtml = marked.parse(msg.text || ''); } catch(e){}
+                let safeHtml = rawHtml;
+                try { if(typeof DOMPurify !== 'undefined') safeHtml = DOMPurify.sanitize(rawHtml, { ADD_TAGS: ['img', 'iframe', 'video', 'audio', 'source'], ADD_ATTR: ['target', 'src', 'alt', 'allow', 'allowfullscreen', 'frameborder', 'controls', 'class'] }); } catch(e){}
+                
+                const markdownBody = node.querySelector('.markdown-body');
+                if(markdownBody) {
+                    markdownBody.innerHTML = (msg.isTyping && msg.text.length === 0) ? `<div class="typing-dots"><span></span><span></span><span></span></div>` : safeHtml;
+                    
+                    if(msg.isTyping && msg.text.length > 0) markdownBody.classList.add('stream-cursor');
+                    else markdownBody.classList.remove('stream-cursor');
+                }
+                
+                // Render Math real-time ONLY if not typing to save CPU
+                if(!msg.isTyping && typeof renderMathInElement !== 'undefined') {
+                    try { renderMathInElement(node, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '[', right: ']', display: true} ], throwOnError: false }); } catch(e) {}
+                }
+            }
             scrollToBottom();
         }
 
-        // --- 5. NETWORK & GENERATION PROCESS ---
+        // --- 6. NETWORK & STREAMING PROCESS (V10) ---
         function sendQuickPrompt(promptText) {
             const inputEl = document.getElementById('chatInput');
             if (inputEl) { inputEl.value = promptText; handleInputAutoResize({target: inputEl}); }
@@ -731,19 +742,17 @@
                 const lastMsg = chat.messages[chat.messages.length-1];
                 if(lastMsg.isTyping) {
                     lastMsg.isTyping = false;
-                    lastMsg.text = "*(Proses dihentikan manual)*";
-                    saveChatsToStorage(); renderMessages();
+                    if(lastMsg.text.length === 0) lastMsg.text = "*(Proses dibatalkan)*";
+                    saveChatsToStorage(); updateLastMessageUI(); renderMessages(); // Full render to show action bar
                 }
             }
         }
 
         function toggleInputState(generating) {
             isGenerating = generating;
-            const btn = document.getElementById('sendBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            const input = document.getElementById('chatInput');
-            
+            const btn = document.getElementById('sendBtn'); const stopBtn = document.getElementById('stopBtn'); const input = document.getElementById('chatInput');
             if(!btn || !stopBtn || !input) return;
+            
             if(generating) {
                 btn.classList.add('hidden'); stopBtn.classList.remove('hidden');
                 input.disabled = true; input.classList.add('opacity-50');
@@ -759,17 +768,16 @@
 
             const inputEl = document.getElementById('chatInput');
             const charCountEl = document.getElementById('charCount');
-            
             if (!inputEl) return;
-            let prompt = "";
             
+            let prompt = "";
             if(!isRegenerate) {
                 prompt = inputEl.value.trim();
                 if (!prompt) return;
             }
 
             if (!appState.baseUrl || !appState.apiKey) { 
-                showErrorToast("Atur Kredensial API di Pengaturan Sistem!"); openModal('settingsModal'); return; 
+                showToast("Konfigurasi API belum diatur!", "error"); openModal('settingsModal'); return; 
             }
 
             let chat = getCurrentChat();
@@ -777,7 +785,7 @@
             
             if (!isRegenerate) {
                 if (chat.messages.length === 0) {
-                    chat.title = prompt.length > 28 ? prompt.substring(0, 28) + '...' : prompt;
+                    chat.title = prompt.length > 25 ? prompt.substring(0, 25) + '...' : prompt;
                     updateHeaderTitle(); renderChatHistory();
                 }
                 chat.messages.push({ role: 'user', text: prompt, timestamp: new Date().toISOString() });
@@ -788,62 +796,94 @@
             
             const loadingMsgIndex = chat.messages.length;
             chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
-            renderMessages();
-            forceScrollBottom();
+            renderMessages(); forceScrollBottom();
             
             toggleInputState(true);
             currentAbortController = new AbortController();
 
             try {
-                const responseData = await callAIAPI(chat.messages.slice(0, -1), currentAbortController.signal);
-                chat.messages[loadingMsgIndex] = { role: 'model', text: responseData.text, timestamp: new Date().toISOString() };
+                // Konteks Memori Pintar: Ambil maksimal 12 pesan terakhir agar tidak over-token
+                let contextMessages = chat.messages.slice(0, -1);
+                if(contextMessages.length > 12) {
+                    contextMessages = contextMessages.slice(contextMessages.length - 12);
+                }
+                
+                await callAIAPI_Stream(contextMessages, currentAbortController.signal, loadingMsgIndex);
                 saveChatsToStorage();
             } catch (err) {
                 if (err.name === 'AbortError') return; 
-                console.error("API Gateway Error:", err);
-                const errMsg = err.message || "Unknown Connection Error";
-                let userFriendlyError = `⚠️ **System Failure:** \`${errMsg}\`\n\n> **Info:** Matikan *AdBlock/Shield* jika CORS terblokir.`;
-                chat.messages[loadingMsgIndex] = { role: 'model', text: userFriendlyError, timestamp: new Date().toISOString() };
-                showErrorToast("Gagal menerima respons AI.");
+                console.error("API Fetch Error:", err);
+                chat.messages[loadingMsgIndex].isTyping = false;
+                chat.messages[loadingMsgIndex].text = `⚠️ **Gateway Error:** \`${err.message}\`\n\n*Jika API tidak merespons, coba ganti Model, pastikan API Key benar, atau matikan ekstensi pengaman.*`;
+                showToast("Gagal menerima stream data dari server.", "error");
             } finally {
-                toggleInputState(false); currentAbortController = null; renderMessages(); 
+                chat.messages[loadingMsgIndex].isTyping = false;
+                saveChatsToStorage();
+                toggleInputState(false); currentAbortController = null; 
+                renderMessages(); // Final full render to attach action bar
             }
         }
 
-        async function callAIAPI(messagesHistory, signal) {
+        // V10 STREAMING LOGIC
+        async function callAIAPI_Stream(messagesHistory, signal, msgIndex) {
             const cleanBaseUrl = appState.baseUrl.replace(/\/+$/, '');
             let apiUrl = `${cleanBaseUrl}/chat/completions`;
+            let chat = getCurrentChat();
             
-            const formattedMessages = messagesHistory.map(m => ({
-                role: m.role === 'user' ? 'user' : 'assistant',
-                content: m.text || ''
-            }));
-            
+            const formattedMessages = messagesHistory.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text || '' }));
             if (appState.systemPersona) { formattedMessages.unshift({ role: "system", content: appState.systemPersona }); }
 
-            const payload = { model: appState.currentModel, messages: formattedMessages, temperature: parseFloat(appState.temperature) };
+            const payload = { 
+                model: appState.currentModel, 
+                messages: formattedMessages, 
+                temperature: parseFloat(appState.temperature),
+                stream: true // Enable Streaming!
+            };
+            
             const reqHeaders = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${appState.apiKey}` };
 
             const response = await fetch(apiUrl, { method: 'POST', headers: reqHeaders, body: JSON.stringify(payload), signal: signal });
 
             if (!response.ok) {
                 let errMsg = `HTTP Status ${response.status}`;
-                try {
-                    const errText = await response.text();
-                    const errJson = JSON.parse(errText);
-                    errMsg = errJson.error?.message || errJson.message || errMsg;
-                } catch(e) {}
+                try { const errText = await response.text(); const errJson = JSON.parse(errText); errMsg = errJson.error?.message || errJson.message || errMsg; } catch(e) {}
                 throw new Error(errMsg);
             }
 
-            const data = await response.json();
-            const generatedText = data.choices?.[0]?.message?.content || data.response;
-            if(!generatedText) throw new Error("Format JSON API tidak valid.");
-            
-            return { text: generatedText };
+            // Stream Reader
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+            let aiFullResponse = "";
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split("\n").filter(line => line.trim() !== "");
+                
+                for (const line of lines) {
+                    const message = line.replace(/^data: /, "");
+                    if (message === "[DONE]") return;
+                    
+                    try {
+                        const parsed = JSON.parse(message);
+                        const token = parsed.choices?.[0]?.delta?.content || "";
+                        if (token) {
+                            aiFullResponse += token;
+                            chat.messages[msgIndex].text = aiFullResponse;
+                            
+                            // Throttle UI update using RequestAnimationFrame for buttery smooth typing
+                            window.requestAnimationFrame(updateLastMessageUI);
+                        }
+                    } catch (e) {
+                        // Silent ignore for non-JSON lines during stream
+                    }
+                }
+            }
         }
 
-        // --- 6. EVENT HANDLERS & HELPERS ---
+        // --- 7. EVENT HANDLERS & UTILS ---
         function handleInputKeydown(e) { 
             if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { 
                 e.preventDefault(); if(!isGenerating) handleChatSubmit(e); 
@@ -851,7 +891,7 @@
         }
         
         function handleInputAutoResize(e) {
-            const el = e.target; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 192) + 'px'; 
+            const el = e.target; el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 200) + 'px'; 
             const charCountEl = document.getElementById('charCount'); 
             if (charCountEl) charCountEl.innerText = `${el.value.length} chars`;
         }
@@ -867,15 +907,16 @@
             if (elTempSlider) appState.temperature = parseFloat(elTempSlider.value);
             if (elSystemPersona) appState.systemPersona = elSystemPersona.value.trim();
 
-            localStorage.setItem('akashiro_baseurl_v9', appState.baseUrl); 
-            localStorage.setItem('akashiro_apikey_v9', appState.apiKey);
-            localStorage.setItem('akashiro_temp_v9', appState.temperature); 
-            localStorage.setItem('akashiro_persona_v9', appState.systemPersona);
+            localStorage.setItem('akashiro_baseurl_v10', appState.baseUrl); 
+            localStorage.setItem('akashiro_apikey_v10', appState.apiKey);
+            localStorage.setItem('akashiro_temp_v10', appState.temperature); 
+            localStorage.setItem('akashiro_persona_v10', appState.systemPersona);
             
             closeModal('settingsModal'); 
+            showToast("Konfigurasi sistem berhasil disimpan.", "success");
         }
 
-        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v9', JSON.stringify(appState.chats)); }
+        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v10', JSON.stringify(appState.chats)); }
         
         function deleteChatSession(e, chatId) {
             if(e) e.stopPropagation(); 
@@ -885,26 +926,32 @@
         }
         
         function clearAllChats() { 
-            if(confirm("Hapus secara permanen semua riwayat chat dari browser ini?")) {
+            if(confirm("Hapus PERMANEN semua riwayat komputasi dari browser ini?")) {
                 appState.chats = []; appState.currentChatId = null; 
                 saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
+                showToast("Seluruh riwayat berhasil dibersihkan.");
             }
         }
 
-        function exportCurrentChat() {
+        function exportCurrentChat(format) {
             const chat = getCurrentChat(); 
-            if (!chat || chat.messages.length === 0) return; 
+            if (!chat || chat.messages.length === 0) {
+                showToast("Tidak ada data untuk diekspor.", "error"); return;
+            }
             
-            let textData = `# AkaShiro Transkrip: ${chat.title}\nID: ${chat.id}\nTanggal: ${new Date().toLocaleString()}\nModel: ${chat.model}\n\n---\n\n`;
-            chat.messages.forEach(m => { 
-                const roleName = m.role === 'user' ? 'USER' : 'AKASHIRO ENGINE';
-                textData += `### ${roleName} (${m.timestamp})\n${m.text}\n\n---\n\n`; 
-            });
-            
-            const blob = new Blob([textData], { type: 'text/markdown;charset=utf-8;' });
-            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
-            a.download = `AkaShiro_${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            if(format === 'markdown') {
+                let textData = `# AkaShiro Transkrip: ${chat.title}\nID: ${chat.id}\nTanggal: ${new Date().toLocaleString()}\nModel: ${chat.model}\n\n---\n\n`;
+                chat.messages.forEach(m => { 
+                    const roleName = m.role === 'user' ? 'USER' : 'AKASHIRO ENGINE';
+                    textData += `### ${roleName} (${new Date(m.timestamp).toLocaleTimeString()})\n${m.text}\n\n---\n\n`; 
+                });
+                
+                const blob = new Blob([textData], { type: 'text/markdown;charset=utf-8;' });
+                const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
+                a.download = `AkaShiro_${chat.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.md`;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                showToast("Transkrip Markdown berhasil diunduh.", "success");
+            }
         }
 
         function openModal(id) { 
@@ -915,15 +962,7 @@
         function closeModal(id) { 
             const el = document.getElementById(id); const content = document.getElementById(id + 'Content');
             if(content) { content.classList.remove('scale-100', 'opacity-100'); content.classList.add('scale-95', 'opacity-0'); }
-            setTimeout(() => { if (el) el.classList.add('hidden'); }, 200);
-        }
-        
-        let toastTimeout;
-        function showErrorToast(msg) {
-            const toast = document.getElementById('errorToast'); const toastTxt = document.getElementById('errorToastText');
-            if(!toast || !toastTxt) return; clearTimeout(toastTimeout); toastTxt.innerText = msg;
-            toast.classList.remove('opacity-0', 'translate-y-4'); toast.classList.add('opacity-100', 'translate-y-0');
-            toastTimeout = setTimeout(() => { toast.classList.remove('opacity-100', 'translate-y-0'); toast.classList.add('opacity-0', 'translate-y-4'); }, 4000);
+            setTimeout(() => { if (el) el.classList.add('hidden'); }, 300);
         }
     </script>
 </body>
