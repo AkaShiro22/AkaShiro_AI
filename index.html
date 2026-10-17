@@ -204,12 +204,18 @@
                     <div class="flex items-center w-full sm:w-auto">
                         <div class="relative w-full sm:w-64">
                             <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="w-full appearance-none bg-obsidian-card border border-crimson-500/30 text-white text-[11px] md:text-xs font-mono rounded-lg pl-8 pr-8 py-2 focus:outline-none focus:border-crimson-500 cursor-pointer shadow-sm">
-                                <option value="nemotron-3-ultra" selected>⚡ Nemotron-3 Ultra (Stabil)</option>
-                                <option value="nemotron-3-super">🔥 Nemotron-3 Super (Flaky)</option>
-                                <option value="nemotron-3-nano">🚀 Nemotron-3 Nano (Stabil)</option>
-                                <option value="gpt-oss120b">🧠 GPT-OSS 120B (Stabil)</option>
-                                <option value="laguna-s-2.1">🏝️ Laguna-S 2.1 (Gratis)</option>
-                                <option value="free">🔀 Auto-Router (Gratis)</option>
+                                <option value="qwen3.8-27b" selected>🌟 Qwen 3.8 27B</option>
+                                <option value="minimax-m3">⚡ Minimax M3</option>
+                                <option value="kimi-k2.6">🔥 Kimi K2.6</option>
+                                <option value="intern-s2">🚀 Intern S2</option>
+                                <option value="intern-decision-4b">⚙️ Intern Decision 4B</option>
+                                <option value="glm-5.3">🧠 GLM 5.3</option>
+                                <option value="deepseek-v4-pro-0813">💎 DeepSeek V4 Pro</option>
+                                <option value="deepseek-v4-flash-vision">👁️ DeepSeek V4 Flash Vision</option>
+                                <option value="deepseek-v4-flash-0731">⚡ DeepSeek V4 Flash</option>
+                                <option value="Atria-Dawn-Preview">🌅 Atria Dawn Preview</option>
+                                <option value="Atria-Dawn">☀️ Atria Dawn</option>
+                                <option value="Agents-A1">🤖 Agents A1</option>
                             </select>
                             <i class="fa-solid fa-robot absolute left-2.5 top-2.5 text-crimson-400 text-xs"></i>
                             <i class="fa-solid fa-chevron-down absolute right-2.5 top-2.5 text-slate-400 text-xs pointer-events-none"></i>
@@ -374,7 +380,7 @@
                         <i class="fa-solid fa-link text-crimson-400 text-[10px]"></i>
                         <span>Base URL API</span>
                     </label>
-                    <input type="text" id="customBaseUrl" placeholder="https://bansos.wahyu-hidayat.my.id/v1" class="w-full bg-obsidian-card border border-obsidian-border rounded-xl px-3.5 py-2.5 text-slate-100 focus:outline-none focus:border-crimson-500 text-xs shadow-inner">
+                    <input type="text" id="customBaseUrl" placeholder="https://discovery-api.intern-ai.org.cn/v1" class="w-full bg-obsidian-card border border-obsidian-border rounded-xl px-3.5 py-2.5 text-slate-100 focus:outline-none focus:border-crimson-500 text-xs shadow-inner">
                 </div>
 
                 <div>
@@ -414,17 +420,23 @@
 
     <!-- JAVASCRIPT APPLICATION LOGIC -->
     <script>
-        const DEFAULT_API_BASE_URL = "https://bansos.wahyu-hidayat.my.id/v1";
-        const DEFAULT_API_KEY = "sk-7e55a8f3c7fb044f-qoce3o-317c6884";
+        const DEFAULT_API_BASE_URL = "https://discovery-api.intern-ai.org.cn/v1";
+        const DEFAULT_API_KEY = "sk-3219debac749d044213b5cc17ce57c0ccd00ec4ce33fc9c3d5da2681bb496f6a";
         const DEFAULT_SYSTEM_PERSONA = "Anda adalah AkaShiro AI, asisten level enterprise super cerdas. Jawab dengan bahasa Indonesia yang rapi, profesional, dan gunakan format markdown untuk kode dan tabel.";
         
         const AVAILABLE_MODELS = [
-            { id: 'nemotron-3-ultra', name: '⚡ Nemotron-3 Ultra', category: 'Flagship', desc: 'Model paling cerdas dan stabil untuk penalaran tingkat lanjut.' },
-            { id: 'nemotron-3-super', name: '🔥 Nemotron-3 Super', category: 'High Performance', desc: 'Performa tinggi (terkadang mengalami beban kuota tinggi/flaky).' },
-            { id: 'nemotron-3-nano', name: '🚀 Nemotron-3 Nano', category: 'Fast Engine', desc: 'Dioptimalkan untuk respons cepat secara instan.' },
-            { id: 'gpt-oss120b', name: '🧠 GPT-OSS 120B', category: 'Open Source', desc: 'Arsitektur besar terbuka untuk kreativitas tanpa batas.' },
-            { id: 'laguna-s-2.1', name: '🏝️ Laguna-S 2.1', category: 'Free Tier', desc: 'Model stabil dan ramah sumber daya gratis.' },
-            { id: 'free', name: '🔀 Auto-Router', category: 'Smart Routing', desc: 'Otomatis memilih jalur model terbaik yang tersedia.' }
+            { id: 'qwen3.8-27b', name: '🌟 Qwen 3.8 27B', category: 'General', desc: 'Model Qwen berperforma tinggi untuk berbagai kebutuhan penalaran.' },
+            { id: 'minimax-m3', name: '⚡ Minimax M3', category: 'High Performance', desc: 'Model Minimax dengan kemampuan pemrosesan tingkat lanjut.' },
+            { id: 'kimi-k2.6', name: '🔥 Kimi K2.6', category: 'Advanced', desc: 'Model Kimi mutakhir untuk analisis dan teks komprehensif.' },
+            { id: 'intern-s2', name: '🚀 Intern S2', category: 'Engine', desc: 'Model internal berkecepatan dan kestabilan tinggi.' },
+            { id: 'intern-decision-4b', name: '⚙️ Intern Decision 4B', category: 'Lightweight', desc: 'Model efisien untuk tugas-tugas keputusan cepat.' },
+            { id: 'glm-5.3', name: '🧠 GLM 5.3', category: 'Reasoning', desc: 'Model GLM cerdas untuk logika dan percakapan mendalam.' },
+            { id: 'deepseek-v4-pro-0813', name: '💎 DeepSeek V4 Pro', category: 'Flagship', desc: 'Model pro DeepSeek dengan kapabilitas pemecahan masalah kompleks.' },
+            { id: 'deepseek-v4-flash-vision', name: '👁️ DeepSeek V4 Flash Vision', category: 'Multimodal', desc: 'Model cepat DeepSeek dengan dukungan analisis visual/gambar.' },
+            { id: 'deepseek-v4-flash-0731', name: '⚡ DeepSeek V4 Flash', category: 'Fast Engine', desc: 'Versi kilat DeepSeek untuk respons obrolan instan.' },
+            { id: 'Atria-Dawn-Preview', name: '🌅 Atria Dawn Preview', category: 'Experimental', desc: 'Pratinjau model eksperimental Atria.' },
+            { id: 'Atria-Dawn', name: '☀️ Atria Dawn', category: 'Stable', desc: 'Model Atria versi stabil.' },
+            { id: 'Agents-A1', name: '🤖 Agents A1', category: 'Agentic', desc: 'Model agen khusus untuk otomatisasi dan tugas interaktif.' }
         ];
 
         let appState = {
@@ -433,7 +445,7 @@
             apiKey: localStorage.getItem('akashiro_apikey') || DEFAULT_API_KEY,
             temperature: parseFloat(localStorage.getItem('akashiro_temp')) || 0.7,
             systemPersona: localStorage.getItem('akashiro_persona') || DEFAULT_SYSTEM_PERSONA,
-            currentModel: localStorage.getItem('akashiro_model') || 'nemotron-3-ultra',
+            currentModel: localStorage.getItem('akashiro_model') || 'qwen3.8-27b',
             chats: JSON.parse(localStorage.getItem('akashiro_chats')) || [],
             currentChatId: null,
             uploadedImageBase64: null
