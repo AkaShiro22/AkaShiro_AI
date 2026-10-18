@@ -130,6 +130,10 @@
             <button onclick="openModal('snippetsModal')" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-input hover:bg-zinc-800 text-zinc-300 text-[11px] font-mono border border-dark-border transition-all group">
                 <i class="fa-solid fa-bolt text-amber-400 group-hover:scale-110 transition-transform"></i> Prompt Snippets
             </button>
+            <!-- Tombol Link Telegram Bot Ditambahkan -->
+            <a href="https://t.me/AkaShiroWRTxBot" target="_blank" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9]/20 text-[#229ED9] text-[11px] font-mono border border-[#229ED9]/30 transition-all group mt-2 shadow-[0_0_10px_rgba(34,158,217,0.1)]">
+                <i class="fa-brands fa-telegram text-sm group-hover:scale-110 transition-transform"></i> Buka Telegram Bot
+            </a>
         </div>
 
         <div class="px-4 py-1.5 flex flex-col gap-2 shrink-0">
@@ -220,11 +224,12 @@
                     <div class="p-5 space-y-2.5">
                         <div class="flex items-center gap-2 text-emerald-400 font-medium"><span class="text-emerald-500">$</span> akashiro cluster --verify-all</div>
                         <div class="text-zinc-300 text-[11px] space-y-1.5 pl-2">
+                            <div class="text-blue-400">✓ InternAI Custom / Manual Gateway [Online & Added]</div>
                             <div>✓ Bansos Gateway Cluster [Online]</div>
                             <div>✓ InternAI Discovery Mesh [Online]</div>
                             <div>✓ Dahl Global Inference [Online]</div>
                             <div>✓ Rassya Edge Router [Online]</div>
-                            <div class="text-purple-400">✓ InternAI Vision / V2 [Online & Added]</div>
+                            <div>✓ InternAI Vision / V2 [Online]</div>
                         </div>
                         <div class="text-emerald-400 font-bold pt-1">All multi-gateway nodes operational.</div>
                     </div>
@@ -313,13 +318,20 @@
             </div>
             <div class="p-6 space-y-4 text-[11px] font-mono max-h-[70vh] overflow-y-auto no-scrollbar">
                 
-                <!-- Gateway 5 DITAMBAHKAN di posisi teratas sebagai model utama baru -->
+                <!-- Gateway 6: MANUAL INPUT DITAMBAHKAN di posisi teratas -->
+                <div class="bg-dark-input p-3.5 rounded-xl border border-blue-900/50 shadow-[0_0_15px_rgba(59,130,246,0.15)] space-y-2">
+                    <span class="text-blue-400 font-bold block">Gateway 6: InternAI V3 (Manual / Custom API)</span>
+                    <label class="text-zinc-500 text-[10px] block">Base URL</label>
+                    <input type="text" id="gw6Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]" placeholder="Masukkan Base URL Custom...">
+                    <label class="text-zinc-500 text-[10px] block">API Key</label>
+                    <input type="password" id="gw6Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]" placeholder="Masukkan API Key Custom...">
+                </div>
+
                 <div class="bg-dark-input p-3.5 rounded-xl border border-purple-900/50 shadow-[0_0_15px_rgba(168,85,247,0.15)] space-y-2">
-                    <span class="text-purple-400 font-bold block">Gateway 5: InternAI V2 (Kunci Baru)</span>
+                    <span class="text-purple-400 font-bold block">Gateway 5: InternAI V2</span>
                     <input type="text" id="gw5Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
                     <input type="password" id="gw5Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
                 </div>
-
                 <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
                     <span class="text-rose-400 font-bold block">Gateway 1: Bansos Server</span>
                     <input type="text" id="gw1Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
@@ -353,23 +365,33 @@
 
     <script>
         const GATEWAYS = {
+            internai_v3: {
+                name: "InternAI V3 (Manual / Custom)",
+                url: localStorage.getItem('akashiro_gw6_url') || "https://discovery-api.intern-ai.org.cn/v1",
+                key: localStorage.getItem('akashiro_gw6_key') || "sk-b93e211fd50f42f813e96b39e1eb05a1026b78ef806da27746091fd39f7a79db",
+                models: [
+                    { id: 'qwen3.8-27b', name: '[V3 Custom] Qwen 3.8 27B' },
+                    { id: 'minimax-m3', name: '[V3 Custom] Minimax M3' },
+                    { id: 'kimi-k2.6', name: '[V3 Custom] Kimi K2.6' },
+                    { id: 'intern-s2', name: '[V3 Custom] Intern S2' },
+                    { id: 'intern-decision-4b', name: '[V3 Custom] Decision 4B' },
+                    { id: 'glm-5.3', name: '[V3 Custom] GLM 5.3' },
+                    { id: 'deepseek-v4-pro-0813', name: '[V3 Custom] DeepSeek V4 Pro' },
+                    { id: 'deepseek-v4-flash-vision', name: '[V3 Custom Vision] DeepSeek Flash' },
+                    { id: 'deepseek-v4-flash-0731', name: '[V3 Custom] DeepSeek Flash 0731' },
+                    { id: 'Atria-Dawn-Preview', name: '[V3 Custom] Atria Dawn Preview' },
+                    { id: 'Atria-Dawn', name: '[V3 Custom] Atria Dawn' },
+                    { id: 'Agents-A1', name: '[V3 Custom] Agents A1' }
+                ]
+            },
             internai_v2: {
-                name: "InternAI V2 (New Key)",
+                name: "InternAI V2",
                 url: localStorage.getItem('akashiro_gw5_url') || "https://discovery-api.intern-ai.org.cn/v1",
                 key: localStorage.getItem('akashiro_gw5_key') || "sk-7bc9c56003496f2696ebdd1bb7e087ba2f60902153f4c0d38246ccc5174ff1ad",
                 models: [
                     { id: 'qwen3.8-27b', name: '[V2] Qwen 3.8 27B' },
                     { id: 'minimax-m3', name: '[V2] Minimax M3' },
-                    { id: 'kimi-k2.6', name: '[V2] Kimi K2.6' },
-                    { id: 'intern-s2', name: '[V2] Intern S2' },
-                    { id: 'intern-decision-4b', name: '[V2] Decision 4B' },
-                    { id: 'glm-5.3', name: '[V2] GLM 5.3' },
-                    { id: 'deepseek-v4-pro-0813', name: '[V2] DeepSeek V4 Pro' },
-                    { id: 'deepseek-v4-flash-vision', name: '[V2 Vision] DeepSeek Flash' },
-                    { id: 'deepseek-v4-flash-0731', name: '[V2] DeepSeek Flash 0731' },
-                    { id: 'Atria-Dawn-Preview', name: '[V2] Atria Dawn Preview' },
-                    { id: 'Atria-Dawn', name: '[V2] Atria Dawn' },
-                    { id: 'Agents-A1', name: '[V2] Agents A1' }
+                    { id: 'deepseek-v4-pro-0813', name: '[V2] DeepSeek V4 Pro' }
                 ]
             },
             bansos: {
@@ -525,6 +547,8 @@
             document.getElementById('gw4Key').value = GATEWAYS.rassya.key;
             document.getElementById('gw5Url').value = GATEWAYS.internai_v2.url;
             document.getElementById('gw5Key').value = GATEWAYS.internai_v2.key;
+            document.getElementById('gw6Url').value = GATEWAYS.internai_v3.url;
+            document.getElementById('gw6Key').value = GATEWAYS.internai_v3.key;
             document.getElementById('systemPersonaInput').value = appState.systemPersona;
         }
 
@@ -542,7 +566,7 @@
 
         function getGatewayForModel(modelId) {
             for (let k in GATEWAYS) { if (GATEWAYS[k].models.find(m => m.id === modelId)) return GATEWAYS[k]; }
-            return GATEWAYS.internai_v2;
+            return GATEWAYS.internai_v3;
         }
 
         async function handleChatSubmit(e, isRegen = false) {
@@ -712,12 +736,26 @@
         function scrollToBottom() { const sa = document.getElementById('chatScrollArea'); if(isAutoScrolling) sa.scrollTo({top: sa.scrollHeight, behavior: 'smooth'}); }
         function handleScroll() { const sa = document.getElementById('chatScrollArea'); isAutoScrolling = sa.scrollHeight - sa.scrollTop <= sa.clientHeight + 150; }
         function changeChatModel(val) { appState.currentModel = val; localStorage.setItem('akashiro_model_v10', val); const c = getCurrentChat(); if(c) { c.model = val; saveChatsToStorage(); } }
+        
         function saveSettings() {
             GATEWAYS.bansos.url = document.getElementById('gw1Url').value.trim(); GATEWAYS.bansos.key = document.getElementById('gw1Key').value.trim();
+            localStorage.setItem('akashiro_gw1_url', GATEWAYS.bansos.url); localStorage.setItem('akashiro_gw1_key', GATEWAYS.bansos.key);
+
             GATEWAYS.internai.url = document.getElementById('gw2Url').value.trim(); GATEWAYS.internai.key = document.getElementById('gw2Key').value.trim();
+            localStorage.setItem('akashiro_gw2_url', GATEWAYS.internai.url); localStorage.setItem('akashiro_gw2_key', GATEWAYS.internai.key);
+
             GATEWAYS.dahl.url = document.getElementById('gw3Url').value.trim(); GATEWAYS.dahl.key = document.getElementById('gw3Key').value.trim();
+            localStorage.setItem('akashiro_gw3_url', GATEWAYS.dahl.url); localStorage.setItem('akashiro_gw3_key', GATEWAYS.dahl.key);
+
             GATEWAYS.rassya.url = document.getElementById('gw4Url').value.trim(); GATEWAYS.rassya.key = document.getElementById('gw4Key').value.trim();
+            localStorage.setItem('akashiro_gw4_url', GATEWAYS.rassya.url); localStorage.setItem('akashiro_gw4_key', GATEWAYS.rassya.key);
+
             GATEWAYS.internai_v2.url = document.getElementById('gw5Url').value.trim(); GATEWAYS.internai_v2.key = document.getElementById('gw5Key').value.trim();
+            localStorage.setItem('akashiro_gw5_url', GATEWAYS.internai_v2.url); localStorage.setItem('akashiro_gw5_key', GATEWAYS.internai_v2.key);
+            
+            // Gateway 6 Baru - Manual Input disimmpan secara spesifik
+            GATEWAYS.internai_v3.url = document.getElementById('gw6Url').value.trim(); GATEWAYS.internai_v3.key = document.getElementById('gw6Key').value.trim();
+            localStorage.setItem('akashiro_gw6_url', GATEWAYS.internai_v3.url); localStorage.setItem('akashiro_gw6_key', GATEWAYS.internai_v3.key);
             
             appState.systemPersona = document.getElementById('systemPersonaInput').value.trim();
             localStorage.setItem('akashiro_persona_v10', appState.systemPersona);
