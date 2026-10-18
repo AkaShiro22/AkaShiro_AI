@@ -130,7 +130,6 @@
             <button onclick="openModal('snippetsModal')" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-input hover:bg-zinc-800 text-zinc-300 text-[11px] font-mono border border-dark-border transition-all group">
                 <i class="fa-solid fa-bolt text-amber-400 group-hover:scale-110 transition-transform"></i> Prompt Snippets
             </button>
-            <!-- Tombol Link Telegram Bot Ditambahkan -->
             <a href="https://t.me/AkaShiroWRTxBot" target="_blank" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9]/20 text-[#229ED9] text-[11px] font-mono border border-[#229ED9]/30 transition-all group mt-2 shadow-[0_0_10px_rgba(34,158,217,0.1)]">
                 <i class="fa-brands fa-telegram text-sm group-hover:scale-110 transition-transform"></i> Buka Telegram Bot
             </a>
@@ -224,7 +223,7 @@
                     <div class="p-5 space-y-2.5">
                         <div class="flex items-center gap-2 text-emerald-400 font-medium"><span class="text-emerald-500">$</span> akashiro cluster --verify-all</div>
                         <div class="text-zinc-300 text-[11px] space-y-1.5 pl-2">
-                            <div class="text-blue-400">✓ InternAI Custom / Manual Gateway [Online & Added]</div>
+                            <div class="text-blue-400">✓ InternAI Custom / Manual Gateway [Online]</div>
                             <div>✓ Bansos Gateway Cluster [Online]</div>
                             <div>✓ InternAI Discovery Mesh [Online]</div>
                             <div>✓ Dahl Global Inference [Online]</div>
@@ -259,7 +258,7 @@
 
                 <div id="inputContainer" class="glass-input rounded-2xl p-2 flex items-end shadow-panel relative">
                     
-                    <!-- Hidden File Input (Mendukung Gambar & Dokumen) -->
+                    <!-- Hidden File Input -->
                     <input type="file" id="fileUploadInput" class="hidden" onchange="handleFileSelected(event)">
                     <button type="button" onclick="document.getElementById('fileUploadInput').click()" class="h-10 w-10 mb-1 ml-1 rounded-xl bg-dark-panel border border-dark-border text-zinc-400 hover:text-white hover:border-zinc-600 transition-all flex items-center justify-center shrink-0" title="Upload Gambar / Dokumen / Kode">
                         <i class="fa-solid fa-paperclip text-sm"></i>
@@ -311,14 +310,13 @@
 
     <!-- MODAL SETTINGS -->
     <div id="settingsModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-lg bg-dark-panel rounded-2xl border border-dark-border shadow-2xl" id="settingsModalContent">
-            <div class="flex items-center justify-between p-5 border-b border-dark-border bg-dark-input/50 rounded-t-2xl">
+        <div class="w-full max-w-lg bg-dark-panel rounded-2xl border border-dark-border shadow-2xl flex flex-col max-h-[90vh]" id="settingsModalContent">
+            <div class="flex items-center justify-between p-5 border-b border-dark-border bg-dark-input/50 rounded-t-2xl shrink-0">
                 <h3 class="font-orbitron font-bold text-sm text-white">Multi-Gateway Configuration</h3>
                 <button onclick="closeModal('settingsModal')" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="p-6 space-y-4 text-[11px] font-mono max-h-[70vh] overflow-y-auto no-scrollbar">
-                
-                <!-- Gateway 6: MANUAL INPUT DITAMBAHKAN di posisi teratas -->
+            
+            <div class="p-6 space-y-4 text-[11px] font-mono overflow-y-auto no-scrollbar flex-1">
                 <div class="bg-dark-input p-3.5 rounded-xl border border-blue-900/50 shadow-[0_0_15px_rgba(59,130,246,0.15)] space-y-2">
                     <span class="text-blue-400 font-bold block">Gateway 6: InternAI V3 (Manual / Custom API)</span>
                     <label class="text-zinc-500 text-[10px] block">Base URL</label>
@@ -357,8 +355,15 @@
                     <textarea id="systemPersonaInput" rows="3" class="w-full bg-dark-input border border-dark-border rounded-xl p-3 text-zinc-300 focus:outline-none text-[12px]"></textarea>
                 </div>
             </div>
-            <div class="p-5 border-t border-dark-border bg-dark-input/50 rounded-b-2xl">
-                <button onclick="saveSettings()" class="w-full py-3 rounded-xl bg-white text-black font-bold text-xs font-mono hover:bg-zinc-200 transition-all shadow-md">SIMPAN KONFIGURASI</button>
+            
+            <div class="p-5 border-t border-dark-border bg-dark-input/50 rounded-b-2xl shrink-0 flex gap-3">
+                <!-- Tombol Reset Keamanan dengan Password Ditambahkan -->
+                <button onclick="resetSettingsWithPassword()" class="w-1/3 py-3 rounded-xl bg-dark-panel border border-rose-900 text-rose-500 font-bold text-[10px] font-mono hover:bg-rose-950 transition-all shadow-md flex items-center justify-center gap-2" title="Hapus Base URL & API Key">
+                    <i class="fa-solid fa-lock"></i> RESET KUNCI
+                </button>
+                <button onclick="saveSettings()" class="w-2/3 py-3 rounded-xl bg-white text-black font-bold text-xs font-mono hover:bg-zinc-200 transition-all shadow-md">
+                    SIMPAN KONFIGURASI
+                </button>
             </div>
         </div>
     </div>
@@ -452,7 +457,6 @@
         let isGenerating = false;
         let isAutoScrolling = true;
         
-        // MODUL VISION & FILE UPLOAD 
         let attachedFileContent = null;
         let attachedFileName = null;
         let attachedFileType = null;
@@ -482,7 +486,6 @@
                 showToast(`File "${attachedFileName}" berhasil dilampirkan.`, "success");
             };
 
-            // Baca sebagai Base64 jika gambar (Vision Support), atau teks biasa
             if (file.type.startsWith('image/')) {
                 reader.readAsDataURL(file); 
             } else {
@@ -498,7 +501,6 @@
             document.getElementById('filePreviewContainer').classList.add('hidden');
         }
 
-        /* ================= VOICE MODULE ================= */
         const AkaShiroVoice = (() => {
             let recognition;
             let isRecording = false;
@@ -579,7 +581,6 @@
             let finalPromptText = prompt;
             let base64Image = null;
 
-            // Modul Vision / Payload Gabungan
             if (attachedFileContent) {
                 if (attachedFileType && attachedFileType.startsWith('image/')) {
                     finalPromptText = prompt ? prompt : "Tolong jelaskan secara detail apa yang ada di dalam gambar ini.";
@@ -600,7 +601,6 @@
             chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
             renderMessages(); toggleInputState(true); currentAbortController = new AbortController();
 
-            // Membangun format Payload yang kompatibel dengan modul Vision (Array) dan Text (String)
             let apiMessages = [{role: "system", content: appState.systemPersona}];
             chat.messages.slice(0, -1).forEach(m => {
                 if (m.attachedImage) {
@@ -620,6 +620,12 @@
 
             try {
                 const activeGw = getGatewayForModel(appState.currentModel);
+                
+                // Mencegah API call jika Base URL kosong akibat reset
+                if (!activeGw.url || !activeGw.key) {
+                    throw new Error("Base URL / API Key kosong. Silakan konfigurasikan Gateway di menu Settings.");
+                }
+
                 const res = await fetch(`${activeGw.url.replace(/\/+$/, '')}/chat/completions`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${activeGw.key}` },
@@ -737,6 +743,42 @@
         function handleScroll() { const sa = document.getElementById('chatScrollArea'); isAutoScrolling = sa.scrollHeight - sa.scrollTop <= sa.clientHeight + 150; }
         function changeChatModel(val) { appState.currentModel = val; localStorage.setItem('akashiro_model_v10', val); const c = getCurrentChat(); if(c) { c.model = val; saveChatsToStorage(); } }
         
+        // FUNGSI BARU: Mereset API Key & URL dengan Password
+        function resetSettingsWithPassword() {
+            const pwd = prompt("Otorisasi Keamanan: Masukkan sandi untuk menghapus Base URL dan API Key.");
+            if (pwd === null) return; 
+            
+            if (pwd === "AkaShiro22#") {
+                const keysToRemove = [
+                    'akashiro_gw1_url', 'akashiro_gw1_key',
+                    'akashiro_gw2_url', 'akashiro_gw2_key',
+                    'akashiro_gw3_url', 'akashiro_gw3_key',
+                    'akashiro_gw4_url', 'akashiro_gw4_key',
+                    'akashiro_gw5_url', 'akashiro_gw5_key',
+                    'akashiro_gw6_url', 'akashiro_gw6_key'
+                ];
+                
+                keysToRemove.forEach(k => localStorage.removeItem(k));
+                
+                // Kosongkan form input
+                const inputs = ['gw1Url', 'gw1Key', 'gw2Url', 'gw2Key', 'gw3Url', 'gw3Key', 'gw4Url', 'gw4Key', 'gw5Url', 'gw5Key', 'gw6Url', 'gw6Key'];
+                inputs.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
+
+                // Kosongkan variabel GATEWAYS agar tidak menggunakan cache saat chatting
+                for (let k in GATEWAYS) {
+                    GATEWAYS[k].url = '';
+                    GATEWAYS[k].key = '';
+                }
+
+                showToast("Semua Base URL dan API Key berhasil dihapus.", "success");
+            } else {
+                showToast("Akses Ditolak: Password tidak valid.", "error");
+            }
+        }
+
         function saveSettings() {
             GATEWAYS.bansos.url = document.getElementById('gw1Url').value.trim(); GATEWAYS.bansos.key = document.getElementById('gw1Key').value.trim();
             localStorage.setItem('akashiro_gw1_url', GATEWAYS.bansos.url); localStorage.setItem('akashiro_gw1_key', GATEWAYS.bansos.key);
@@ -753,7 +795,6 @@
             GATEWAYS.internai_v2.url = document.getElementById('gw5Url').value.trim(); GATEWAYS.internai_v2.key = document.getElementById('gw5Key').value.trim();
             localStorage.setItem('akashiro_gw5_url', GATEWAYS.internai_v2.url); localStorage.setItem('akashiro_gw5_key', GATEWAYS.internai_v2.key);
             
-            // Gateway 6 Baru - Manual Input disimmpan secara spesifik
             GATEWAYS.internai_v3.url = document.getElementById('gw6Url').value.trim(); GATEWAYS.internai_v3.key = document.getElementById('gw6Key').value.trim();
             localStorage.setItem('akashiro_gw6_url', GATEWAYS.internai_v3.url); localStorage.setItem('akashiro_gw6_key', GATEWAYS.internai_v3.key);
             
