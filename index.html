@@ -1,1088 +1,746 @@
-import telebot
-import requests
-import time
-import os
-import yt_dlp
-import threading
-import json
-import logging
-import csv
-import io
-import urllib.parse
-import random
-import re
-from datetime import datetime
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, BotCommand
-from telebot.apihelper import ApiTelegramException
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AkaShiro AI — V10 Ultimate Pro (Multi-Gateway 2026)</title>
 
-# === SISTEM LOGGING PROFESIONAL ===
-logging.basicConfig(
-    format='%(asctime)s ┃ %(name)s ┃ %(levelname)s ┃ %(message)s', 
-    level=logging.INFO
-)
-logger = logging.getLogger("SHIRO_CYBER_OS")
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-# === KONFIGURASI MULTI-GATEWAY API ===
-# Gateway 1 (Lama - Bansos)
-API_URL_1 = os.getenv("API_URL_1", "https://bansos.wahyu-hidayat.my.id/v1/chat/completions")
-API_KEY_1 = os.getenv("API_KEY_1", "sk-7e55a8f3c7fb044f-qoce3o-317c6884")
-
-# Gateway 2 (Baru - InternAI)
-API_URL_2 = os.getenv("API_URL_2", "https://discovery-api.intern-ai.org.cn/v1/chat/completions")
-API_KEY_2 = os.getenv("API_KEY_2", "sk-b93e211fd50f42f813e96b39e1eb05a1026b78ef806da27746091fd39f7a79db")
-
-# Config Lanjutan
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "7387831219:AAFcF4qfO7tiUKupzZWowGB8m6TJelf1Xms")
-HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN", "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")
-
-bot = telebot.TeleBot(TELEGRAM_TOKEN, threaded=True, num_threads=100)
-telebot.apihelper.CONNECT_TIMEOUT = 60
-telebot.apihelper.READ_TIMEOUT = 600
-
-SYSTEM_START_TIME = time.time()
-
-# === UI CONSTANTS & MODELS ===
-SEP = "━━━━━━━━━━━━━━━━━━━━━━━━━"
-CYBER_HEADER = "💠 **S . H . I . R . O   O S   V 5 . 0** 💠\n*Advanced Autonomous Intelligence*"
-
-AVAILABLE_MODELS = {
-    # === GATEWAY 1 (BANSOS) ===
-    "nemotron-3-ultra": "🚀 Nemotron Ultra",
-    "nemotron-3-super": "⚡ Nemotron Super",
-    "nemotron-3-nano": "🔋 Nemotron Nano",
-    "gpt-oss120b": "🧠 GPT-OSS 120B",
-    "laguna-s-2.1": "🌊 Laguna S-2.1",
-    "free": "🌐 Free Router",
-    
-    # === GATEWAY 2 (INTERNAI) ===
-    "qwen3.8-27b": "🔷 Qwen 3.8 27B",
-    "minimax-m3": "🔶 Minimax M3",
-    "kimi-k2.6": "🌙 Kimi K2.6",
-    "intern-s2": "🌟 Intern S2",
-    "intern-decision-4b": "🧠 Decision 4B",
-    "glm-5.3": "🟢 GLM 5.3",
-    "deepseek-v4-pro-0813": "🐋 DeepSeek V4 Pro",
-    "deepseek-v4-flash-vision": "👁️ DeepSeek Flash Vision",
-    "deepseek-v4-flash-0731": "⚡ DeepSeek Flash 0731",
-    "Atria-Dawn-Preview": "🌅 Atria Dawn Prev",
-    "Atria-Dawn": "🌅 Atria Dawn",
-    "Agents-A1": "🤖 Agents A1"
-}
-
-AVAILABLE_PERSONAS = {
-    "standard": "Kamu adalah A.K.A S.H.I.R.O, Advanced Cyber OS 2026. Jawab dengan cerdas, terstruktur, elegan, dan profesional menggunakan Markdown.",
-    "coder": "Kamu adalah Senior Principal Software Engineer & Bug Hunter. Analisis kode secara mendalam, berikan arsitektur terbaik, dan solusi optimal.",
-    "writer": "Kamu adalah Penulis Kreatif Profesional. Gunakan diksi naratif yang estetis, puitis, dan menyentuh.",
-    "translator": "Kamu adalah Penerjemah Tersumpah Multilingual. Terjemahkan secara akurat, natural, dan tanpa basa-basi.",
-    "analyst": "Kamu adalah Strategic Data & Business Intelligence Analyst. Berikan wawasan mendalam, taktis, dan terstruktur.",
-    "brainstorm": "Kamu adalah Innovation & Creative Consultant. Berikan ide-ide out-of-the-box yang disruptif dan visioner."
-}
-
-HIDDEN_PERSONAS = {
-    "bughunter": "Kamu adalah Advanced Network & Security Analyst. Analisis struktur domain, port aktif, footprint, dan potensi kerentanan.",
-    "subdomainfinder": "Kamu adalah Master OSINT & Threat Intelligence. Berikan daftar subdomain aktif dan penting dalam bentuk list terstruktur."
-}
-
-# === DATABASE SESSION & GAMES ===
-user_sessions = {}
-user_locks = {}
-active_games = {} 
-active_rpg_sessions = {} 
-DOWNLOAD_DIR = 'downloads'
-os.makedirs(DOWNLOAD_DIR, exist_ok=True)
-
-# --- SYSTEM CACHE CLEANER ---
-def system_garbage_collector():
-    while True:
-        try:
-            now = time.time()
-            for f in os.listdir(DOWNLOAD_DIR):
-                path = os.path.join(DOWNLOAD_DIR, f)
-                if os.path.isfile(path) and now - os.path.getmtime(path) > 3600:
-                    os.remove(path)
-                    logger.info(f"System Cleanser: File temporer dihapus -> {f}")
-        except Exception as e:
-            logger.error(f"Error GC: {e}")
-        time.sleep(1800)
-
-threading.Thread(target=system_garbage_collector, daemon=True).start()
-
-def get_user_rank(xp):
-    if xp < 500: return "Bronze Novice 🥉"
-    elif xp < 2000: return "Silver Explorer 🥈"
-    elif xp < 5000: return "Gold Operator 🥇"
-    elif xp < 10000: return "Cyber Knight ⚔️"
-    elif xp < 25000: return "S.H.I.R.O Master 👑"
-    else: return "God Tier Admin 🌌"
-
-def get_session(chat_id):
-    if chat_id not in user_sessions:
-        user_sessions[chat_id] = {
-            "model": "qwen3.8-27b", # Default model ke yang terbaru
-            "persona": "standard", 
-            "msg_count": 0, 
-            "xp": 0, 
-            "dl_url": "", 
-            "last_action": 0,
-            "messages": [{"role": "system", "content": AVAILABLE_PERSONAS["standard"]}]
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { DEFAULT: '#E11D48', hover: '#BE123C', glow: '#FF3B5C', dim: 'rgba(225, 29, 72, 0.1)' },
+                        dark: { bg: '#09090b', panel: '#121214', border: '#27272a', input: '#18181b', hover: '#1f1f22' }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+                    boxShadow: { 'neon': '0 0 25px rgba(225, 29, 72, 0.35)', 'panel': '0 10px 40px rgba(0,0,0,0.6)', 'float': '0 15px 50px rgba(0,0,0,0.8)' },
+                    animation: { 
+                        'fade-in': 'fadeIn 0.25s ease-out forwards', 
+                        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards', 
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                    }
+                }
+            }
         }
-        user_locks[chat_id] = threading.Lock()
-    return user_sessions[chat_id]
+    </script>
 
-# === MULTI-GATEWAY ROUTER LOGIC ===
-def get_api_config(session):
-    """Router otomatis untuk memilih Base URL dan API Key yang tepat"""
-    # Override Manual jika User menggunakan command /setapi
-    if session.get("custom_api_url") and session.get("custom_api_key"):
-        return session["custom_api_url"], session["custom_api_key"]
+    <!-- Core Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    # Auto-Route berdasarkan Model yang digunakan
-    m = session.get("model", "qwen3.8-27b")
-    gateway1_models = ["nemotron-3-ultra", "nemotron-3-super", "nemotron-3-nano", "gpt-oss120b", "laguna-s-2.1", "free"]
-    
-    if m in gateway1_models:
-        return API_URL_1, API_KEY_1
-    else:
-        return API_URL_2, API_KEY_2
+    <!-- Markdown, Sanitizer, Code Highlight -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
-def setup_bot_commands():
-    commands = [
-        BotCommand("start", "Booting Sistem S.H.I.R.O"),
-        BotCommand("menu", "Control Center (Dashboard)"),
-        BotCommand("file", "File & Spreadsheet Generator"),
-        BotCommand("game", "Mini Games Multiplayer / RPG"),
-        BotCommand("setapi", "Set Manual API Url & Key (Custom)"),
-        BotCommand("resetapi", "Hapus Custom API"),
-        BotCommand("image", "Render Visual AI (Flux)"),
-        BotCommand("video", "Render Animasi (HuggingFace)"),
-        BotCommand("song", "Unduh MP3 High-Res"),
-        BotCommand("dl", "Unduh Media Sosial (MP4)"),
-        BotCommand("tts", "Neural Voice Synthesis"),
-        BotCommand("bug", "Scan Vulnerability Host"),
-        BotCommand("subdomain", "OSINT Subdomain Recon"),
-        BotCommand("checkbug", "HTTP Status & Latency Probe"),
-        BotCommand("clear", "Reset Memori Sesi (Purge)")
-    ]
-    try: bot.set_my_commands(commands)
-    except Exception: pass
+    <!-- KaTeX for Math -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
-def format_uptime(seconds):
-    hours, remainder = divmod(int(seconds), 3600)
-    minutes, seconds = divmod(remainder, 60)
-    return f"{hours}j {minutes}m {seconds}d"
+    <style>
+        body {
+            background-color: #09090b; color: #f4f4f5;
+            background-image: radial-gradient(circle at 15% 15%, rgba(225, 29, 72, 0.04), transparent 35%), radial-gradient(circle at 85% 85%, rgba(225, 29, 72, 0.04), transparent 35%);
+            -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #E11D48; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-# ==========================================
-# === GAME ENGINE: TIC-TAC-TOE ===
-# ==========================================
-def check_ttt_win(b):
-    wins = [(0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)]
-    for w in wins:
-        if b[w[0]] == b[w[1]] == b[w[2]] and b[w[0]] != "-": return b[w[0]]
-    if "-" not in b: return "Draw"
-    return None
-
-def get_bot_move(b):
-    empty = [i for i, x in enumerate(b) if x == "-"]
-    if not empty: return -1
-    for w in [(0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)]:
-        line = [b[w[0]], b[w[1]], b[w[2]]]
-        if line.count("O") == 2 and line.count("-") == 1: return w[line.index("-")]
-    for w in [(0,1,2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6)]:
-        line = [b[w[0]], b[w[1]], b[w[2]]]
-        if line.count("X") == 2 and line.count("-") == 1: return w[line.index("-")]
-    if b[4] == "-": return 4
-    return random.choice(empty)
-
-def render_ttt_board(game_id, board, is_over=False):
-    markup = InlineKeyboardMarkup(row_width=3)
-    buttons = []
-    for i, cell in enumerate(board):
-        text = "🔲" if cell == "-" else ("❌" if cell == "X" else "⭕")
-        cb_data = f"ttt_{game_id}_{i}" if not is_over else "ignore"
-        buttons.append(InlineKeyboardButton(text, callback_data=cb_data))
-    markup.add(buttons[0], buttons[1], buttons[2])
-    markup.add(buttons[3], buttons[4], buttons[5])
-    markup.add(buttons[6], buttons[7], buttons[8])
-    if not is_over: markup.add(InlineKeyboardButton("🛑 Akhiri Permainan", callback_data=f"ttt_{game_id}_end"))
-    else: markup.add(InlineKeyboardButton("🔄 Main Lagi", callback_data="cat_games"))
-    return markup
-
-def get_ttt_text(game):
-    mode_str = "AI Bot (PvB)" if game['mode'] == 'pvb' else "Multiplayer (PvP)"
-    status = game.get('status', 'playing')
-    text = f"╭─「 🎮 **CYBER TIC-TAC-TOE** 」\n├ ⚔️ **Mode**: `{mode_str}`\n├ 👤 **Pemain X**: `{game['name_x']}`\n├ 🤖 **Pemain O**: `{game['name_o']}`\n│\n"
-    if status == 'playing': text += f"╰─❯ _Giliran: {game['name_x'] if game['turn'] == 'X' else game['name_o']} ({game['turn']}...)_"
-    elif status == 'Draw': text += f"╰─❯ ⚖️ **SERI! Tidak ada yang menang.**"
-    else: text += f"╰─❯ 🏆 **PEMENANG: {game['name_x'] if status == 'X' else game['name_o']} ({status})!**"
-    return text
-
-# ==========================================
-# === GAME ENGINE: CYBER DUNGEON RPG V5.0 ===
-# ==========================================
-RPG_LOCATIONS = [
-    "Lantai 1: Sektor Neon Slum 🏙️",
-    "Lantai 2: Labyrinth Quantum Core 🌀",
-    "Lantai 3: Ruang Hampa Cyber-Grid ⚡",
-    "Lantai 4: Candi Data Terlarang 🏛️",
-    "Lantai 5: Benteng Malware Overlord 🏰"
-]
-
-RPG_MONSTERS = [
-    {"name": "Glitch Slime 👾", "hp": 50, "max_hp": 50, "dmg": 10, "xp": 40},
-    {"name": "Rogue AI Sentinel 🤖", "hp": 85, "max_hp": 85, "dmg": 16, "xp": 90},
-    {"name": "Cyber Hydra 🐍", "hp": 120, "max_hp": 120, "dmg": 22, "xp": 150},
-    {"name": "Dark Hacker Phantom 👤", "hp": 160, "max_hp": 160, "dmg": 28, "xp": 220},
-    {"name": "Malware Overlord 🐉 [BOSS]", "hp": 250, "max_hp": 250, "dmg": 38, "xp": 500}
-]
-
-RPG_LOOT = ["Ancient Cyber-Sword 🗡️", "Data Chip Vault 💎", "Quantum Shield 🛡️", "Sistem Core 🧪", "Relik Cyberpunk 🏺"]
-
-def rpg_battle_markup():
-    markup = InlineKeyboardMarkup(row_width=3)
-    markup.add(
-        InlineKeyboardButton("⚔️ Serang", callback_data="rpg_attack"),
-        InlineKeyboardButton("⚡ Overclock", callback_data="rpg_overclock"),
-        InlineKeyboardButton("💊 Repair", callback_data="rpg_heal")
-    )
-    markup.add(
-        InlineKeyboardButton("🛡️ Defend", callback_data="rpg_defend"),
-        InlineKeyboardButton("🏃 Kabur", callback_data="rpg_flee")
-    )
-    return markup
-
-def rpg_victory_markup():
-    markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(
-        InlineKeyboardButton("🏰 Lantai Selanjutnya", callback_data="rpg_next_floor"),
-        InlineKeyboardButton("🔙 Menu Games", callback_data="cat_games")
-    )
-    return markup
-
-def rpg_game_over_markup():
-    markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(
-        InlineKeyboardButton("🔄 Petualangan Baru", callback_data="start_adventure"),
-        InlineKeyboardButton("🔙 Menu Games", callback_data="cat_games")
-    )
-    return markup
-
-def render_rpg_interface(rpg_session):
-    player = rpg_session["player"]
-    monster = rpg_session["monster"]
-    floor = rpg_session["floor"]
-    
-    p_hp_bars = max(0, min(10, int((player['hp'] / player['max_hp']) * 10)))
-    p_hp_visual = "🟩" * p_hp_bars + "⬛" * (10 - p_hp_bars)
-    
-    p_ep_bars = max(0, min(10, int((player['ep'] / player['max_ep']) * 10)))
-    p_ep_visual = "🟦" * p_ep_bars + "⬛" * (10 - p_ep_bars)
-
-    m_hp_bars = max(0, min(10, int((monster['hp'] / monster['max_hp']) * 10)))
-    m_hp_visual = "🟥" * m_hp_bars + "⬛" * (10 - m_hp_bars)
-
-    text = (
-        f"╭─「 🗡️ **CYBER DUNGEON RPG V5.0** 」\n"
-        f"├ 📍 **Lokasi**: `{rpg_session['location']}`\n"
-        f"├ 📊 **Lantai**: `{floor}` | ⏱️ **Turn**: `{rpg_session['turn']}`\n"
-        f"│\n"
-        f"├ 👤 **OPERATOR STATS**:\n"
-        f"├ ❤️ HP: [{p_hp_visual}] `{player['hp']}/{player['max_hp']}`\n"
-        f"├ ⚡ EP: [{p_ep_visual}] `{player['ep']}/{player['max_ep']}`\n"
-        f"├ 💊 Repair Patch: `{player['potions']} Potion`\n"
-        f"│\n"
-        f"├ 👾 **MUSUH**: `{monster['name']}`\n"
-        f"├ 🩸 HP: [{m_hp_visual}] `{monster['hp']}/{monster['max_hp']}`\n"
-        f"│\n"
-        f"╰─❯ 📜 **COMBAT LOG**:\n_{rpg_session['log']}_"
-    )
-    return text
-
-# ==========================================
-# === MODERNISED UI MARKUPS (PAGINATION) ===
-# ==========================================
-def main_dashboard_markup():
-    markup = InlineKeyboardMarkup(row_width=2)
-    markup.add(InlineKeyboardButton("🧠 AI & Persona", callback_data="cat_ai"), InlineKeyboardButton("🎬 Multimedia", callback_data="cat_media"))
-    markup.add(InlineKeyboardButton("🛠️ Cyber Tools", callback_data="cat_tools"), InlineKeyboardButton("🎮 Mini Games", callback_data="cat_games"))
-    markup.add(InlineKeyboardButton("👤 Profil Sesi", callback_data="nav_status"), InlineKeyboardButton("📖 Dokumentasi", callback_data="nav_help"))
-    markup.add(InlineKeyboardButton("🗑️ Purge Memory", callback_data="action_clear"))
-    return markup
-
-def category_markup(category):
-    markup = InlineKeyboardMarkup(row_width=2)
-    if category == "cat_ai":
-        markup.add(InlineKeyboardButton("⚙️ Ganti Engine", callback_data="nav_models"), InlineKeyboardButton("🎭 Ganti Persona", callback_data="nav_personas"), InlineKeyboardButton("📄 File Generator", callback_data="tool_file_info"))
-    elif category == "cat_media":
-        markup.add(InlineKeyboardButton("🎨 Render Gambar", callback_data="tool_image_info"), InlineKeyboardButton("🎬 Render Video", callback_data="tool_video_info"), InlineKeyboardButton("🎵 Music Finder", callback_data="tool_song_info"), InlineKeyboardButton("🗣️ Text-to-Speech", callback_data="tool_tts_info"), InlineKeyboardButton("📥 Downloader", callback_data="tool_dl_info"))
-    elif category == "cat_tools":
-        markup.add(InlineKeyboardButton("🌐 Subdomain OSINT", callback_data="tool_sub_info"), InlineKeyboardButton("🛡️ Bug Scan", callback_data="tool_bug_info"), InlineKeyboardButton("🔍 HTTP Probe", callback_data="tool_checkbug_info"), InlineKeyboardButton("🔑 API Checker", callback_data="tool_checkkey_info"))
-    elif category == "cat_games":
-        markup = InlineKeyboardMarkup(row_width=1)
-        markup.add(InlineKeyboardButton("🗡️ Cyber Dungeon RPG V5.0", callback_data="start_adventure"))
-        markup.add(InlineKeyboardButton("🤖 Tic-Tac-Toe (Lawan AI)", callback_data="start_ttt_pvb"))
-        markup.add(InlineKeyboardButton("⚔️ Tic-Tac-Toe (Multiplayer)", callback_data="start_ttt_pvp"))
-    markup.add(InlineKeyboardButton("🔙 Menu Utama", callback_data="nav_main"))
-    return markup
-
-def models_menu_markup(current_model):
-    markup = InlineKeyboardMarkup(row_width=2)
-    buttons = [InlineKeyboardButton(f"{'🟢' if current_model == mid else '⚪'} {mname}", callback_data=f"setmodel_{mid}") for mid, mname in AVAILABLE_MODELS.items()]
-    markup.add(*buttons)
-    markup.add(InlineKeyboardButton("🔙 Kembali", callback_data="cat_ai"))
-    return markup
-
-def personas_menu_markup(current_persona):
-    markup = InlineKeyboardMarkup(row_width=2)
-    buttons = [InlineKeyboardButton(f"{'🟢' if current_persona==k else '⚪'} {k.upper()}", callback_data=f"setpersona_{k}") for k in AVAILABLE_PERSONAS.keys()]
-    markup.add(*buttons)
-    markup.add(InlineKeyboardButton("🔙 Kembali", callback_data="cat_ai"))
-    return markup
-
-def download_menu_markup():
-    return InlineKeyboardMarkup(row_width=2).add(InlineKeyboardButton("🎵 Unduh Audio (MP3)", callback_data="dl_audio"), InlineKeyboardButton("🎬 Unduh Video (MP4)", callback_data="dl_video"))
-
-def progress_hook(d, chat_id, msg_id, bot_instance):
-    if d['status'] == 'downloading':
-        try:
-            percent = d.get('_percent_str', '0.0%').strip()
-            bars = int(float(percent.strip('%')) // 10)
-            bar_str = "■" * bars + "□" * (10 - bars)
-            current_time = time.time()
-            if not hasattr(progress_hook, "last_update"): progress_hook.last_update = 0
-            if current_time - progress_hook.last_update > 2.0:
-                bot_instance.edit_message_text(f"📥 `Mengekstrak Media...`\n`[{bar_str}] {percent}`", chat_id, msg_id, parse_mode="Markdown")
-                progress_hook.last_update = current_time
-        except Exception: pass
-
-# --- CORE FILE GENERATOR LOGIC ENGINE ---
-def process_file_generation(chat_id, ext, prompt, message_id=None):
-    session = get_session(chat_id)
-    api_url, api_key = get_api_config(session)
-    loading_msg = bot.send_message(chat_id, f"📄 `[■■■□□□] Membangun dokumen .{ext} melalui {session['model']}...`", parse_mode="Markdown")
-    
-    def task():
-        sys_prompt = (
-            "Buat format tabel horizontal murni CSV dipisah koma (tanpa penjelasan tambahan)." 
-            if ext in ['xls', 'csv'] else 
-            "Buat kode HTML terstruktur rapi." 
-            if ext == 'html' else 
-            "Tulis isi dokumen profesional secara lengkap dan rapi tanpa menyertakan pesan meta atau basa-basi."
-        )
-        try:
-            res = requests.post(
-                api_url, 
-                headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}, 
-                json={"model": session["model"], "messages": [{"role": "system", "content": sys_prompt}, {"role": "user", "content": prompt}], "stream": False}, 
-                timeout=200
-            )
-            if res.status_code == 200:
-                resp = res.json()
-                ai_text = resp['choices'][0]['message']['content'].strip() if "choices" in resp else str(resp).strip()
-                if ai_text.startswith("```"):
-                    lines = ai_text.split("\n")
-                    if len(lines) >= 3: ai_text = "\n".join(lines[1:-1]).strip()
-                
-                target_ext = 'csv' if ext == 'xls' else ('doc' if ext in ['doc', 'docx'] else ext)
-                filename = os.path.join(DOWNLOAD_DIR, f"SHIRO_Dokumen_{int(time.time())}.{target_ext}")
-                
-                with open(filename, 'w', newline='', encoding='utf-8-sig') as f:
-                    if ext in ['xls', 'csv']:
-                        writer = csv.writer(f, delimiter=',')
-                        for row in csv.reader(io.StringIO(ai_text), delimiter=';' if ';' in ai_text else ','): 
-                            writer.writerow(row)
-                    else: 
-                        f.write(ai_text)
-                        
-                with open(filename, 'rb') as doc_file: 
-                    bot.send_document(
-                        chat_id, 
-                        doc_file, 
-                        caption=f"📊 **Dokumen Berhasil Disusun**\n⚙️ Format: `.{ext}`\n📝 Prompt: _{prompt[:50]}..._", 
-                        reply_to_message_id=message_id, 
-                        parse_mode="Markdown"
-                    )
-                bot.delete_message(chat_id, loading_msg.message_id)
-                os.remove(filename)
-            else: 
-                bot.edit_message_text(f"❌ Server AI Error: HTTP {res.status_code}", chat_id, loading_msg.message_id)
-        except Exception as e: 
-            bot.edit_message_text(f"❌ **Error Generator:** `{e}`", chat_id, loading_msg.message_id, parse_mode="Markdown")
-            
-    threading.Thread(target=task, daemon=True).start()
-
-# --- COMMAND HANDLERS ---
-@bot.message_handler(commands=['start', 'menu'])
-def send_dashboard(message):
-    session = get_session(message.chat.id)
-    text = f"╭─「 {CYBER_HEADER} 」\n│\n├ 👤 **Operator** : `{message.from_user.first_name}`\n├ ⚙️ **Engine**   : `{session['model']}`\n├ 🎭 **Persona**  : `{session['persona'].upper()}`\n├ 🛡️ **Status**   : `ONLINE & SECURE`\n│\n╰─❯ _Pilih modul di Control Center:_"
-    bot.send_message(message.chat.id, text, reply_markup=main_dashboard_markup(), parse_mode="Markdown")
-
-@bot.message_handler(commands=['help'])
-def send_help(message):
-    bot.send_message(message.chat.id, "Buka Menu Utama lalu pilih **Dokumentasi Sistem**.", reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🕹️ Buka Menu", callback_data="nav_main")))
-
-@bot.message_handler(commands=['clear'])
-def clear_mem(message):
-    session = get_session(message.chat.id)
-    session["messages"] = [{"role": "system", "content": AVAILABLE_PERSONAS[session["persona"]]}]
-    bot.reply_to(message, "🧹 **Memori Konteks Neural Berhasil Dipulihkan (0%).**", parse_mode="Markdown")
-
-@bot.message_handler(commands=['setapi'])
-def set_custom_api(message):
-    args = message.text.split(maxsplit=2)
-    if len(args) < 3:
-        return bot.reply_to(message, "⚠️ Format: `/setapi <base_url> <api_key>`\nKetik `/resetapi` untuk kembali ke Router Default.", parse_mode="Markdown")
-    
-    session = get_session(message.chat.id)
-    custom_url = args[1].strip()
-    
-    # Validasi Endpoint
-    if not custom_url.endswith("/chat/completions"):
-        if custom_url.endswith("/v1") or custom_url.endswith("/v1/"):
-            custom_url = custom_url.rstrip("/") + "/chat/completions"
-            
-    session["custom_api_url"] = custom_url
-    session["custom_api_key"] = args[2].strip()
-    
-    bot.reply_to(message, f"✅ **API Custom Berhasil Dipasang (Sesi Ini)**\n\n🌐 URL: `{custom_url}`\n🔑 Key: `[TERENKRIPSI]`", parse_mode="Markdown")
-
-@bot.message_handler(commands=['resetapi'])
-def reset_custom_api(message):
-    session = get_session(message.chat.id)
-    session.pop("custom_api_url", None)
-    session.pop("custom_api_key", None)
-    bot.reply_to(message, "✅ **API dikembalikan ke Multi-Gateway Router Default Sistem!**", parse_mode="Markdown")
-
-@bot.message_handler(commands=['game'])
-def open_games(message):
-    bot.send_message(message.chat.id, f"🎮 **MODUL MINI GAMES & RPG**\n{SEP}\nPilih simulasi pertempuran:", reply_markup=category_markup("cat_games"), parse_mode="Markdown")
-
-@bot.message_handler(commands=['file', 'buatfile'])
-def make_file(message):
-    args = message.text.split(maxsplit=2)
-    if len(args) < 3: 
-        return bot.reply_to(message, "⚠️ Format salah!\nGunakan: `/file <ekstensi> <deskripsi>`\nContoh: `/file doc Buatkan surat pengunduran diri`", parse_mode="Markdown")
-    
-    ext = args[1].lower().replace('.', '')
-    prompt = args[2]
-    if ext not in ['doc', 'docx', 'xls', 'txt', 'md', 'html', 'csv']: 
-        return bot.reply_to(message, f"❌ Format `{ext}` tidak didukung.\nPilihan: `doc, docx, xls, csv, txt, md, html`", parse_mode="Markdown")
-
-    process_file_generation(message.chat.id, ext, prompt, message.message_id)
-
-@bot.message_handler(commands=['image', 'gambar'])
-def generate_image(message):
-    args = message.text.split(maxsplit=1)
-    if len(args) < 2: return bot.reply_to(message, "⚠️ Format: `/image <deskripsi>`", parse_mode="Markdown")
-    loading_msg = bot.reply_to(message, "🎨 `[■■■■□□] Merender Visual AI (Flux)...`", parse_mode="Markdown")
-    def task():
-        try:
-            safe_prompt = urllib.parse.quote(f"{args[1]}, masterpiece, best quality, 8k, cinematic")
-            base_url = "https" + "://" + "image.pollinations.ai" + "/prompt/"
-            req_url = f"{base_url}{safe_prompt}?width=1024&height=1024&nologo=true&model=flux"
-            
-            res = requests.get(req_url, timeout=45)
-            if res.status_code == 200:
-                img = io.BytesIO(res.content); img.name = 'render.jpg'
-                bot.send_photo(message.chat.id, photo=img, caption=f"🎨 **Rendered:** `{args[1]}`", reply_to_message_id=message.message_id, parse_mode="Markdown")
-                bot.delete_message(message.chat.id, loading_msg.message_id)
-            else: bot.edit_message_text(f"❌ Render gagal (HTTP {res.status_code})", message.chat.id, loading_msg.message_id)
-        except Exception as e: bot.edit_message_text(f"❌ Render Error: `{e}`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-    threading.Thread(target=task, daemon=True).start()
-
-@bot.message_handler(commands=['video'])
-def generate_video(message):
-    args = message.text.split(maxsplit=1)
-    if len(args) < 2: return bot.reply_to(message, "⚠️ Format: `/video <deskripsi>`", parse_mode="Markdown")
-    loading_msg = bot.reply_to(message, "🎬 `[■■■□□□] Merender Video AI (HuggingFace)... (Estimasi 1-3 mnt)`", parse_mode="Markdown")
-    def task():
-        try:
-            api_hf = "https" + "://" + "api-inference.huggingface.co" + "/models/ali-vilab/modelscope-damo-text-to-video-synthesis"
-            headers = {"Authorization": f"Bearer {HUGGINGFACE_TOKEN}"}
-            for attempt in range(3):
-                res = requests.post(api_hf, headers=headers, json={"inputs": args[1]}, timeout=120)
-                if res.status_code == 200:
-                    vid = io.BytesIO(res.content); vid.name = 'render.mp4'
-                    bot.send_video(message.chat.id, vid, caption=f"🎬 **Rendered:** `{args[1]}`", reply_to_message_id=message.message_id, parse_mode="Markdown")
-                    bot.delete_message(message.chat.id, loading_msg.message_id)
-                    return
-                elif res.status_code == 503:
-                    bot.edit_message_text(f"⏳ `Memanaskan GPU Model... (Percobaan {attempt+1}/3)`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-                    time.sleep(25)
-                else:
-                    bot.edit_message_text(f"❌ Error API HF ({res.status_code})", message.chat.id, loading_msg.message_id)
-                    return
-            bot.edit_message_text("❌ Waktu tunggu habis. Server API penuh.", message.chat.id, loading_msg.message_id)
-        except Exception as e: bot.edit_message_text(f"❌ Error: `{e}`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-    threading.Thread(target=task, daemon=True).start()
-
-@bot.message_handler(commands=['tts', 'suara'])
-def generate_voice(message):
-    args = message.text.split(maxsplit=1)
-    if len(args) < 2: return bot.reply_to(message, "⚠️ Format: `/tts <teks>`", parse_mode="Markdown")
-    loading_msg = bot.reply_to(message, "🎙️ `[■■■□□□] Sintesis Neural Voice...`", parse_mode="Markdown")
-    def task():
-        try:
-            base = "http" + "://" + "translate.google.com" + "/translate_tts"
-            req_url = f"{base}?ie=UTF-8&total=1&idx=0&client=tw-ob&q={urllib.parse.quote(args[1][:500])}&tl=id"
-            res = requests.get(req_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=15)
-            if res.status_code == 200:
-                filename = os.path.join(DOWNLOAD_DIR, f"VOICE_{int(time.time())}.mp3")
-                with open(filename, 'wb') as f: f.write(res.content)
-                with open(filename, 'rb') as vf: bot.send_voice(message.chat.id, vf, reply_to_message_id=message.message_id)
-                bot.delete_message(message.chat.id, loading_msg.message_id)
-                os.remove(filename)
-            else: bot.edit_message_text(f"❌ Server Error: {res.status_code}", message.chat.id, loading_msg.message_id)
-        except Exception as e: bot.edit_message_text(f"❌ Error: `{e}`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-    threading.Thread(target=task, daemon=True).start()
-
-@bot.message_handler(commands=['subdomain'])
-def find_subdomains(message):
-    args = message.text.split(maxsplit=1)
-    if len(args) < 2: return bot.reply_to(message, "⚠️ Format: `/subdomain <domain>`", parse_mode="Markdown")
-    
-    session = get_session(message.chat.id)
-    api_url, api_key = get_api_config(session)
-    loading_msg = bot.reply_to(message, f"🌐 `[■■■□□□] Mengekstrak footprint OSINT...`", parse_mode="Markdown")
-    
-    def task():
-        try:
-            res = requests.post(api_url, headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}, json={"model": session["model"], "messages": [{"role": "system", "content": HIDDEN_PERSONAS["subdomainfinder"]}, {"role": "user", "content": args[1]}], "stream": False}, timeout=90)
-            resp = res.json()
-            content = resp['choices'][0]['message']['content'] if "choices" in resp else str(resp)
-            bot.edit_message_text(f"🌐 **OSINT SUBDOMAIN ENUMERATION**\n{SEP}\n{content}", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-        except Exception as e: bot.edit_message_text(f"❌ Gagal OSINT: {e}", message.chat.id, loading_msg.message_id)
-    threading.Thread(target=task, daemon=True).start()
-
-@bot.message_handler(commands=['bug'])
-def analyze_cellular_bug(message):
-    args = message.text.split(maxsplit=1)
-    if len(args) < 2: return bot.reply_to(message, "⚠️ Format: `/bug <target>`", parse_mode="Markdown")
-    
-    session = get_session(message.chat.id)
-    api_url, api_key = get_api_config(session)
-    loading_msg = bot.reply_to(message, f"🛡️ `[■■■□□□] Menganalisis kerentanan host...`", parse_mode="Markdown")
-    
-    def task():
-        try:
-            res = requests.post(api_url, headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}, json={"model": session["model"], "messages": [{"role": "system", "content": HIDDEN_PERSONAS["bughunter"]}, {"role": "user", "content": args[1]}], "stream": False}, timeout=90)
-            resp = res.json()
-            content = resp['choices'][0]['message']['content'] if "choices" in resp else str(resp)
-            bot.edit_message_text(f"🛡️ **SECURITY & BUG ANALYSIS**\n{SEP}\n{content}", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-        except Exception as e: bot.edit_message_text(f"❌ Gagal Scan: {e}", message.chat.id, loading_msg.message_id)
-    threading.Thread(target=task, daemon=True).start()
-
-@bot.message_handler(commands=['checkbug', 'cekbug'])
-def check_bug_status(message):
-    args = message.text.split(maxsplit=1)
-    if len(args) < 2: return bot.reply_to(message, "⚠️ Format: `/checkbug <url_target>`", parse_mode="Markdown")
-    target = args[1].strip()
-    if not target.startswith("http"): target = "http://" + target
-    loading_msg = bot.reply_to(message, f"🔍 `Melakukan HTTP Probe ke {target}...`", parse_mode="Markdown")
-    def task():
-        try:
-            st = time.time()
-            response = requests.get(target, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
-            dur = round((time.time() - st) * 1000, 2)
-            if response.status_code == 200: bot.edit_message_text(f"✅ **PROBE: LIVE (200 OK)**\n{SEP}\n🌐 Target: `{target}`\n⚡ Latency: `{dur} ms`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-            else: bot.edit_message_text(f"⚠️ **PROBE: RESPONS ({response.status_code})**\n{SEP}\n🌐 Target: `{target}`\n⚡ Latency: `{dur} ms`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-        except Exception: bot.edit_message_text(f"❌ **PROBE: TIMEOUT / DEAD**\n{SEP}\n🌐 Target: `{target}`\n❌ Error: `Gagal mencapai host`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-    threading.Thread(target=task, daemon=True).start()
-
-@bot.message_handler(commands=['checkkey'])
-def check_api_key_status(message):
-    args = message.text.split(maxsplit=1)
-    
-    session = get_session(message.chat.id)
-    api_url, api_key = get_api_config(session)
-    
-    target_key = args[1].strip() if len(args) > 1 and len(args[1].strip()) > 10 else api_key
-    masked_key = f"{target_key[:8]}...{target_key[-4:]}" if len(target_key) > 12 else target_key
-    loading_msg = bot.reply_to(message, f"🔑 `Menguji Token API ({masked_key})...`", parse_mode="Markdown")
-    
-    def task():
-        try:
-            st = time.time()
-            res = requests.post(api_url, headers={"Authorization": f"Bearer {target_key}", "Content-Type": "application/json"}, json={"model": session["model"], "messages": [{"role": "user", "content": "ping"}], "stream": False}, timeout=20)
-            dur = round((time.time() - st) * 1000, 2)
-            if res.status_code == 200: bot.edit_message_text(f"🟢 **TOKEN VALID**\n🔑 Key: `{masked_key}`\n⚡ Latency: `{dur} ms`\n⚙️ Endpoint: `{api_url}`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-            elif res.status_code == 429: bot.edit_message_text(f"⚠️ **TOKEN RATE LIMITED (429)**", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-            else: bot.edit_message_text(f"❌ **TOKEN ERROR ({res.status_code})**\nEndpoint: `{api_url}`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-        except Exception: bot.edit_message_text(f"❌ **SERVER UNREACHABLE**\nEndpoint: `{api_url}`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-    threading.Thread(target=task, daemon=True).start()
-
-@bot.message_handler(commands=['song', 'lagu'])
-def find_and_play_song(message):
-    args = message.text.split(maxsplit=1)
-    if len(args) < 2: return bot.reply_to(message, "⚠️ Format: `/song <judul>`", parse_mode="Markdown")
-    loading_msg = bot.reply_to(message, "🎵 `[■■□□□□] Mencari frekuensi audio...`", parse_mode="Markdown")
-    def task():
-        mp3_filename = None
-        try:
-            ydl_opts = {
-                'outtmpl': f'{DOWNLOAD_DIR}/%(title)s.%(ext)s', 'quiet': True, 'format': 'bestaudio/best', 
-                'nocheckcertificate': True, 'default_search': 'ytsearch',
-                'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
-                'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]
-            }
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                search = ydl.extract_info(f"ytsearch:{args[1]}", download=False)
-                if not search or 'entries' not in search or not search['entries']:
-                    return bot.edit_message_text("❌ Target tidak ditemukan / terblokir.", message.chat.id, loading_msg.message_id)
-                
-                info = search['entries'][0]
-                bot.edit_message_text(f"📥 `[■■■■■□] Mengunduh: {info.get('title')}...`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-                
-                base_yt = "https" + "://" + "[www.youtube.com](https://www.youtube.com)" + "/watch?v="
-                vid_url = info.get('webpage_url') or (base_yt + info.get('id'))
-                dl_info = ydl.extract_info(vid_url, download=True)
-                mp3_filename = ydl.prepare_filename(dl_info).rsplit('.', 1)[0] + '.mp3'
-                
-            with open(mp3_filename, 'rb') as audio_file: bot.send_audio(message.chat.id, audio_file, caption=f"🎵 **{info.get('title')}**", parse_mode="Markdown")
-            bot.delete_message(message.chat.id, loading_msg.message_id)
-        except Exception as e: bot.edit_message_text(f"❌ Error Audio Engine: `{e}`", message.chat.id, loading_msg.message_id, parse_mode="Markdown")
-        finally: 
-            if mp3_filename and os.path.exists(mp3_filename): os.remove(mp3_filename)
-    threading.Thread(target=task, daemon=True).start()
-
-@bot.message_handler(commands=['dl', 'download'])
-def request_download(message):
-    args = message.text.split(maxsplit=1)
-    if len(args) < 2: return bot.reply_to(message, "⚠️ Format: `/dl <link URL>`", parse_mode="Markdown")
-    get_session(message.chat.id)["dl_url"] = args[1] 
-    bot.reply_to(message, f"🔗 **Tautan Tersimpan:**\n`{args[1][:30]}...`\n\nPilih format output:", reply_markup=download_menu_markup(), parse_mode="Markdown")
-
-# --- CALLBACK HANDLERS (NAVIGATION & GAMES) ---
-@bot.callback_query_handler(func=lambda call: True)
-def handle_query(call):
-    chat_id = call.message.chat.id
-    session = get_session(chat_id)
-    msg_id = call.message.message_id
-    try:
-        if call.data == "ignore": 
-            try: bot.answer_callback_query(call.id, "Aksi tidak aktif", show_alert=False)
-            except: pass
-            return
+        .glass-header { background: rgba(18, 18, 20, 0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .glass-input { background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-input.recording { border-color: #E11D48; box-shadow: 0 0 25px rgba(225, 29, 72, 0.4); }
         
-        # --- MENU NAVIGATION ---
-        if call.data == "nav_main":
-            bot.answer_callback_query(call.id)
-            bot.edit_message_text(f"╭─「 {CYBER_HEADER} 」\n│\n╰─❯ _Menu Utama:_ ", chat_id, msg_id, reply_markup=main_dashboard_markup(), parse_mode="Markdown")
-        elif call.data.startswith("cat_"):
-            bot.answer_callback_query(call.id)
-            cat_titles = {"cat_ai": "🧠 **MODUL AI & KOGNITIF**", "cat_media": "🎬 **MODUL MULTIMEDIA**", "cat_tools": "🛠️ **MODUL CYBER OSINT**", "cat_games": "🎮 **MODUL MINI GAMES & RPG**"}
-            bot.edit_message_text(f"{cat_titles[call.data]}\n{SEP}\nPilih sub-sistem yang ingin dijalankan:", chat_id, msg_id, reply_markup=category_markup(call.data), parse_mode="Markdown")
+        .markdown-body { font-size: 0.95rem; line-height: 1.7; color: #d4d4d8; word-wrap: break-word; }
+        @media (max-width: 768px) { .markdown-body { font-size: 0.9rem; } }
+        .markdown-body p { margin-bottom: 1rem; }
+        .markdown-body p:last-child { margin-bottom: 0; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Inter', sans-serif; font-weight: 700; color: #fff; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+        .markdown-body h1 { font-size: 1.4rem; border-bottom: 1px solid #27272a; padding-bottom: 0.3rem; }
+        .markdown-body h2 { font-size: 1.2rem; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 1rem; }
+        .markdown-body ul { list-style-type: disc; }
+        .markdown-body ol { list-style-type: decimal; }
+        .markdown-body li { margin-bottom: 0.25rem; }
+        .markdown-body a { color: #E11D48; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s ease; }
+        .markdown-body a:hover { color: #FF3B5C; border-bottom-color: #FF3B5C; }
+        .markdown-body strong { color: #f4f4f5; font-weight: 600; }
+        .markdown-body blockquote { border-left: 3px solid #E11D48; background: rgba(225,29,72,0.05); padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; color: #a1a1aa; font-style: italic; }
+        .markdown-body code:not(pre code) { background: rgba(255,255,255,0.08); padding: 0.15rem 0.35rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff8fa3; }
         
-        elif call.data == "nav_models": 
-            bot.answer_callback_query(call.id)
-            bot.edit_message_text(f"⚙️ **ARSITEKTUR ENGINE AI (MULTI-GATEWAY)**\n{SEP}", chat_id, msg_id, reply_markup=models_menu_markup(session['model']), parse_mode="Markdown")
-        elif call.data == "nav_personas": 
-            bot.answer_callback_query(call.id)
-            bot.edit_message_text(f"🎭 **NEURAL PERSONA**\n{SEP}", chat_id, msg_id, reply_markup=personas_menu_markup(session['persona']), parse_mode="Markdown")
-        elif call.data == "nav_status":
-            bot.answer_callback_query(call.id)
-            uptime_str = format_uptime(time.time() - SYSTEM_START_TIME)
-            rank = get_user_rank(session['xp'])
-            st = f"╭─「 📊 **PROFIL & TELEMETRI** 」\n├ ⏱️ **Uptime:** `{uptime_str}`\n├ 🌟 **Pangkat:** `{rank}` (`{session['xp']} XP`)\n├ ⚙️ **Engine:** `{session['model']}`\n├ 🎭 **Persona:** `{session['persona'].upper()}`\n├ 🧠 **Memori:** `{len(session['messages'])-1} Blok`\n╰──────────────────────"
-            bot.edit_message_text(st, chat_id, msg_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🔙 Kembali", callback_data="nav_main")), parse_mode="Markdown")
-        elif call.data == "nav_help":
-            bot.answer_callback_query(call.id)
-            help_text = f"📖 **DOKUMENTASI SISTEM**\n{SEP}\n`/tts <teks>` ➔ Voice Engine\n`/song <judul>` ➔ Musik MP3\n`/dl <url>` ➔ Media Downloader\n`/image <prompt>` ➔ AI Image\n`/video <prompt>` ➔ AI Video\n`/bug <host>` ➔ Vuln Scan\n`/subdomain <domain>` ➔ OSINT\n`/checkbug <url>` ➔ Check Web\n`/checkkey` ➔ Check API Key Active\n`/file doc <teks>` ➔ Gen Dokumen\n`/setapi <url> <key>` ➔ Set Manual API\n`/game` ➔ Buka Mini Games\n`/clear` ➔ Purge RAM Session"
-            bot.edit_message_text(help_text, chat_id, msg_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🔙 Kembali", callback_data="nav_main")), parse_mode="Markdown")
-        elif call.data == "action_clear":
-            session["messages"] = [{"role": "system", "content": AVAILABLE_PERSONAS[session["persona"]]}]
-            bot.answer_callback_query(call.id, "Purge Berhasil!", show_alert=True)
-            bot.edit_message_text(f"🧹 **RIWAYAT MEMORI DIHAPUS TOTAL**\n{SEP}", chat_id, msg_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🔙 Menu Utama", callback_data="nav_main")), parse_mode="Markdown")
+        .markdown-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; border-radius: 8px; overflow: hidden; border: 1px solid #27272a; display: block; overflow-x: auto; }
+        .markdown-body th, .markdown-body td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #27272a; white-space: nowrap; }
+        .markdown-body th { background: rgba(255,255,255,0.03); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; }
+        .markdown-body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; border: 1px solid #27272a; }
         
-        elif call.data.startswith("tool_"):
-            bot.answer_callback_query(call.id)
-            infos = {
-                "tool_sub_info": "Gunakan perintah:\n`/subdomain <domain>`\n_Contoh: /subdomain google.com_",
-                "tool_bug_info": "Gunakan perintah:\n`/bug <target>`\n_Contoh: /bug google.com_",
-                "tool_checkbug_info": "Gunakan perintah:\n`/checkbug <url>`\n_Contoh: /checkbug google.com_",
-                "tool_checkkey_info": "Gunakan perintah:\n`/checkkey` atau `/checkkey <key>`",
-                "tool_song_info": "Gunakan perintah:\n`/song <judul>`\n_Contoh: /song payung teduh_",
-                "tool_tts_info": "Gunakan perintah:\n`/tts <teks>`\n_Contoh: /tts halo dunia_",
-                "tool_dl_info": "Gunakan perintah:\n`/dl <url>`\n_Contoh: /dl [https://instagram.com/](https://instagram.com/)..._",
-                "tool_file_info": "Gunakan perintah:\n`/file <ekstensi> <deskripsi>`\n_Contoh: /file doc surat pengunduran diri_",
-                "tool_image_info": "Gunakan perintah:\n`/image <prompt>`\n_Contoh: /image kucing cyberpunk_",
-                "tool_video_info": "Gunakan perintah:\n`/video <prompt>`\n_Contoh: /video astronaut walking on mars_"
-            }
-            if call.data in infos:
-                bot.edit_message_text(f"ℹ️ **PANDUAN PENGGUNAAN MODUL**\n{SEP}\n{infos[call.data]}", chat_id, msg_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🔙 Kembali", callback_data="nav_main")), parse_mode="Markdown")
+        .stream-cursor::after { content: '▋'; display: inline-block; animation: blink 1s step-end infinite; color: #E11D48; margin-left: 4px; vertical-align: baseline; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .typing-dots { display: inline-flex; align-items: center; height: 20px; gap: 4px; }
+        .typing-dots span { width: 6px; height: 6px; background-color: #E11D48; border-radius: 50%; animation: pulseDots 1.4s infinite ease-in-out both; }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes pulseDots { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
 
-        # ==========================================
-        # === GAME RPG V5.0 ENGINE HANDLERS ===
-        # ==========================================
-        elif call.data == "start_adventure":
-            bot.answer_callback_query(call.id, "Menginisialisasi Cyber Dungeon...")
-            user_id = call.from_user.id
-            
-            monster = RPG_MONSTERS[0].copy()
-            
-            active_rpg_sessions[user_id] = {
-                "floor": 1,
-                "turn": 1,
-                "location": RPG_LOCATIONS[0],
-                "player": {"hp": 100, "max_hp": 100, "ep": 50, "max_ep": 50, "potions": 2},
-                "monster": monster,
-                "log": f"Kamu memasuki Cyber Dungeon dan dicegat oleh {monster['name']}!"
-            }
-            
-            bot.edit_message_text(
-                render_rpg_interface(active_rpg_sessions[user_id]), 
-                chat_id, msg_id, 
-                reply_markup=rpg_battle_markup(), 
-                parse_mode="Markdown"
-            )
+        #scrollBtn { opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px); }
+        #scrollBtn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        
+        #toastContainer { position: fixed; top: 1rem; right: 1rem; z-index: 100; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
+        .toast { pointer-events: auto; transform: translateX(120%); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast.show { transform: translateX(0); }
+    </style>
+</head>
+<body class="h-[100dvh] flex overflow-hidden text-zinc-100 selection:bg-brand selection:text-white font-sans antialiased">
 
-        elif call.data == "rpg_next_floor":
-            user_id = call.from_user.id
-            if user_id not in active_rpg_sessions:
-                return bot.answer_callback_query(call.id, "Sesi usai. Mulai baru!", show_alert=True)
-            
-            rpg_sess = active_rpg_sessions[user_id]
-            rpg_sess["floor"] += 1
-            floor_idx = min(rpg_sess["floor"] - 1, len(RPG_MONSTERS) - 1)
-            
-            monster = RPG_MONSTERS[floor_idx].copy()
-            monster["max_hp"] += (rpg_sess["floor"] - 1) * 20
-            monster["hp"] = monster["max_hp"]
-            monster["dmg"] += (rpg_sess["floor"] - 1) * 4
-            
-            rpg_sess["location"] = RPG_LOCATIONS[min(floor_idx, len(RPG_LOCATIONS)-1)]
-            rpg_sess["monster"] = monster
-            rpg_sess["turn"] = 1
-            rpg_sess["log"] = f"Naik ke Lantai {rpg_sess['floor']}! Menghadapi {monster['name']}."
-            
-            rpg_sess["player"]["hp"] = min(rpg_sess["player"]["max_hp"], rpg_sess["player"]["hp"] + 30)
-            rpg_sess["player"]["ep"] = min(rpg_sess["player"]["max_ep"], rpg_sess["player"]["ep"] + 25)
-            
-            bot.answer_callback_query(call.id, f"Masuk ke Lantai {rpg_sess['floor']}!")
-            bot.edit_message_text(
-                render_rpg_interface(rpg_sess), 
-                chat_id, msg_id, 
-                reply_markup=rpg_battle_markup(), 
-                parse_mode="Markdown"
-            )
+    <div id="toastContainer"></div>
 
-        elif call.data.startswith("rpg_"):
-            user_id = call.from_user.id
-            if user_id not in active_rpg_sessions:
-                return bot.answer_callback_query(call.id, "Sesi petualangan usai. Silakan mulai baru!", show_alert=True)
-            
-            rpg_sess = active_rpg_sessions[user_id]
-            action = call.data.split("_")[1]
-            player = rpg_sess["player"]
-            monster = rpg_sess["monster"]
-            
-            player_dmg = 0
-            monster_dmg = random.randint(int(monster["dmg"] * 0.7), monster["dmg"])
-            log = ""
-            
-            if action == "attack":
-                player_dmg = random.randint(18, 30)
-                monster["hp"] -= player_dmg
-                player["ep"] = min(player["max_ep"], player["ep"] + 10)
-                log += f"⚔️ Kamu menyerang {monster['name']}! 💥{player_dmg} DMG (+10 EP).\n"
-                
-            elif action == "overclock":
-                if player["ep"] < 20:
-                    return bot.answer_callback_query(call.id, "⚠️ EP Tidak Cukup! Butuh 20 EP.", show_alert=True)
-                player["ep"] -= 20
-                player_dmg = random.randint(40, 65)
-                monster["hp"] -= player_dmg
-                log += f"⚡ **OVERCLOCK CRITICAL BURST!** 💥{player_dmg} DMG ke {monster['name']}! (-20 EP)\n"
-                
-            elif action == "heal":
-                if player["potions"] <= 0:
-                    return bot.answer_callback_query(call.id, "⚠️ Stok Repair Patch habis!", show_alert=True)
-                player["potions"] -= 1
-                healed = 40
-                player["hp"] = min(player["max_hp"], player["hp"] + healed)
-                log += f"💊 Menggunakan Repair Patch! +{healed} HP restored.\n"
-                
-            elif action == "defend":
-                monster_dmg = max(2, int(monster_dmg * 0.3))
-                player["ep"] = min(player["max_ep"], player["ep"] + 15)
-                log += f"🛡️ Mode Nano Barrier! Hanya menerima 💥{monster_dmg} DMG (+15 EP).\n"
-                
-            elif action == "flee":
-                bot.answer_callback_query(call.id)
-                if random.random() > 0.4:
-                    del active_rpg_sessions[user_id]
-                    return bot.edit_message_text(
-                        "🏃‍♂️ **Kamu berhasil melarikan diri dari pertarungan!**", 
-                        chat_id, msg_id, 
-                        reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🔙 Menu Games", callback_data="cat_games")),
-                        parse_mode="Markdown"
-                    )
-                else:
-                    log += "❌ Gagal kabur! Musuh melakukan Serangan Balasan!\n"
+    <!-- LEFT SIDEBAR -->
+    <aside id="appSidebar" class="w-72 bg-dark-panel border-r border-dark-border flex flex-col shrink-0 transition-transform duration-300 ease-in-out absolute lg:relative z-50 h-full -translate-x-full lg:translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.6)] lg:shadow-none">
+        <div class="h-16 flex items-center justify-between px-5 border-b border-dark-border shrink-0 bg-dark-bg/30">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/30 shadow-neon">
+                    <span class="font-orbitron font-bold text-white text-sm">赤</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-orbitron font-bold text-sm tracking-wide text-white">AkaShiro<span class="text-brand">.AI</span></span>
+                    <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800/40 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700/50">Core 2026 Pro</span>
+                </div>
+            </div>
+            <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-dark-border/40 text-zinc-400 hover:text-white transition-all">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
 
-            if monster["hp"] > 0 and action != "defend":
-                player["hp"] -= monster_dmg
-                log += f"👾 {monster['name']} membalas! 💥{monster_dmg} DMG."
-            elif monster["hp"] > 0 and action == "defend":
-                player["hp"] -= monster_dmg
+        <div class="p-4 shrink-0 space-y-2">
+            <button onclick="startNewChat()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-black hover:bg-zinc-200 text-xs font-semibold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] active:scale-[0.98]">
+                <i class="fa-solid fa-plus text-[10px]"></i> SESI BARU
+            </button>
+            <button onclick="openModal('snippetsModal')" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-input hover:bg-zinc-800 text-zinc-300 text-[11px] font-mono border border-dark-border transition-all group">
+                <i class="fa-solid fa-bolt text-amber-400 group-hover:scale-110 transition-transform"></i> Prompt Snippets
+            </button>
+        </div>
 
-            bot.answer_callback_query(call.id)
+        <div class="px-4 py-1.5 flex flex-col gap-2 shrink-0">
+            <div class="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
+                <i class="fa-solid fa-folder-open"></i> Riwayat Komputasi
+            </div>
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-500 text-[10px]"></i>
+                <input type="text" id="searchHistory" oninput="handleSearchHistory(this.value)" placeholder="Cari transkrip..." class="w-full bg-dark-input border border-dark-border rounded-lg pl-8 pr-3 py-2 text-[11px] text-zinc-200 focus:outline-none focus:border-zinc-500 transition-colors placeholder-zinc-600">
+            </div>
+        </div>
+        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 mt-2 space-y-1 scroll-smooth no-scrollbar"></div>
 
-            if player["hp"] <= 0:
-                del active_rpg_sessions[user_id]
-                session["xp"] = max(0, session["xp"] - 25)
-                game_over_text = (
-                    f"💀 **GAME OVER** 💀\n{SEP}\n"
-                    f"Sistem Operator hancur di Lantai {rpg_sess['floor']} oleh {monster['name']}.\n"
-                    f"📉 **Hukuman**: Lost -25 XP (Sisa: {session['xp']} XP)"
-                )
-                return bot.edit_message_text(game_over_text, chat_id, msg_id, reply_markup=rpg_game_over_markup(), parse_mode="Markdown")
-                
-            elif monster["hp"] <= 0:
-                xp_gained = monster["xp"] + (rpg_sess["floor"] * 10)
-                session["xp"] += xp_gained
-                loot = random.choice(RPG_LOOT)
-                
-                win_text = (
-                    f"🏆 **VICTORY - LANTAI {rpg_sess['floor']} CLEARED!** 🏆\n{SEP}\n"
-                    f"Kamu berhasil menghancurkan `{monster['name']}`!\n\n"
-                    f"🎁 **Loot**: `{loot}`\n"
-                    f"🌟 **XP Received**: `+{xp_gained} XP`\n"
-                    f"📊 **Total XP**: `{session['xp']} XP`\n\n"
-                    f"_Siap untuk menantang lantai berikutnya?_"
-                )
-                return bot.edit_message_text(win_text, chat_id, msg_id, reply_markup=rpg_victory_markup(), parse_mode="Markdown")
-            
-            else:
-                rpg_sess["turn"] += 1
-                rpg_sess["log"] = log
-                bot.edit_message_text(
-                    render_rpg_interface(rpg_sess), 
-                    chat_id, msg_id, 
-                    reply_markup=rpg_battle_markup(), 
-                    parse_mode="Markdown"
-                )
+        <div class="p-4 border-t border-dark-border bg-dark-bg/40 shrink-0 flex gap-2">
+            <button onclick="clearAllChats()" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-dark-panel hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 text-[10px] font-mono border border-dark-border transition-all">
+                <i class="fa-solid fa-trash-can"></i> Bersihkan
+            </button>
+            <button onclick="openModal('settingsModal')" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-dark-panel hover:bg-zinc-800 text-zinc-300 hover:text-white text-[10px] font-mono border border-dark-border transition-all">
+                <i class="fa-solid fa-sliders"></i> Gateway
+            </button>
+        </div>
+    </aside>
 
-        # --- TTT GAME ENGINE ---
-        elif call.data.startswith("start_ttt_"):
-            bot.answer_callback_query(call.id)
-            mode = call.data.split("_")[2]
-            game_id = str(int(time.time() * 1000))
-            active_games[game_id] = {
-                'board': ["-"] * 9, 'mode': mode, 'turn': 'X',
-                'player_x': call.from_user.id, 'name_x': call.from_user.first_name,
-                'player_o': None, 'name_o': "S.H.I.R.O (AI)" if mode == 'pvb' else "⏳ Menunggu Lawan..."
-            }
-            bot.edit_message_text(get_ttt_text(active_games[game_id]), chat_id, msg_id, reply_markup=render_ttt_board(game_id, active_games[game_id]['board']), parse_mode="Markdown")
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden transition-opacity lg:hidden" onclick="toggleSidebar(false)"></div>
 
-        elif call.data.startswith("ttt_"):
-            parts = call.data.split("_")
-            game_id, action = parts[1], parts[2]
-            
-            if game_id not in active_games: return bot.answer_callback_query(call.id, "⚠️ Sesi game ini sudah berakhir.", show_alert=True)
-            
-            game = active_games[game_id]
-            user_id = call.from_user.id
-            
-            if action == "end":
-                bot.answer_callback_query(call.id)
-                del active_games[game_id]
-                return bot.edit_message_text(f"🛑 **Permainan Dihentikan.**\n{SEP}", chat_id, msg_id, reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton("🔙 Kembali ke Games", callback_data="cat_games")), parse_mode="Markdown")
-            
-            pos = int(action)
-            if game['board'][pos] != "-": return bot.answer_callback_query(call.id, "⚠️ Kotak sudah terisi!")
+    <!-- MAIN WORKSPACE -->
+    <main class="flex-1 flex flex-col h-full relative min-w-0 bg-dark-bg">
+        <header class="h-16 glass-header px-5 flex items-center justify-between z-30 shrink-0 sticky top-0">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar(true)" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-dark-input border border-dark-border text-zinc-400 hover:text-white transition-all">
+                    <i class="fa-solid fa-bars-staggered text-xs"></i>
+                </button>
+                <div class="hidden sm:flex items-center gap-2.5 text-zinc-300 text-xs font-medium border-l border-dark-border pl-3 lg:border-none lg:pl-0">
+                    <i class="fa-solid fa-terminal text-[10px] text-brand"></i>
+                    <span id="headerChatTitle" class="truncate max-w-[200px] font-mono text-zinc-300 font-semibold">Memuat Sesi...</span>
+                </div>
+            </div>
+
+            <!-- Performance Metrics Pill -->
+            <div id="metricsPill" class="hidden md:flex items-center gap-3 bg-dark-input/90 border border-dark-border px-3.5 py-1.5 rounded-full text-[10px] font-mono text-zinc-400 shadow-inner">
+                <span class="flex items-center gap-1.5 text-emerald-400"><i class="fa-solid fa-bolt"></i> <span id="metricTps">0.0</span> tok/s</span>
+                <span class="text-zinc-600">|</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-stopwatch"></i> <span id="metricLatency">0</span>ms</span>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+                <div class="relative flex items-center bg-dark-input border border-dark-border rounded-xl p-1 pr-2.5 hover:border-zinc-600 transition-colors shadow-sm group">
+                    <div class="w-6 h-6 rounded-lg bg-zinc-800 flex items-center justify-center text-brand shrink-0">
+                        <i class="fa-solid fa-microchip text-[10px]"></i>
+                    </div>
+                    <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-zinc-200 text-[11px] md:text-xs font-mono focus:outline-none cursor-pointer w-32 md:w-52 appearance-none pl-2.5 pr-6 py-0.5 truncate z-10 relative outline-none">
+                    </select>
+                    <i class="fa-solid fa-chevron-down text-[9px] text-zinc-500 absolute right-2.5 pointer-events-none"></i>
+                </div>
                 
-            if game['mode'] == 'pvb':
-                if user_id != game['player_x']: return bot.answer_callback_query(call.id, "Bukan game Anda!", show_alert=True)
+                <div class="flex bg-dark-input border border-dark-border rounded-xl p-1">
+                    <button onclick="exportCurrentChat('markdown')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors" title="Export Markdown">
+                        <i class="fa-brands fa-markdown text-xs"></i>
+                    </button>
+                    <button onclick="window.print()" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-emerald-400 transition-colors" title="Cetak PDF">
+                        <i class="fa-solid fa-print text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col scroll-smooth relative" onscroll="handleScroll()">
+            
+            <!-- Hero Section -->
+            <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-8 w-full animate-fade-in flex flex-col items-center justify-center text-center">
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand/20 to-rose-950/40 border border-brand/30 flex items-center justify-center text-brand text-2xl mb-4 shadow-neon">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-inter font-bold text-white mb-2 leading-tight">Multi-Gateway AI Router.<br>Enterprise Grade 2026.</h2>
+                    <p class="text-zinc-400 text-xs md:text-sm max-w-md mx-auto">Lampirkan foto/file data/dokumen atau pilih model untuk memulai percakapan instan.</p>
+                </div>
                 
-                bot.answer_callback_query(call.id)
-                game['board'][pos] = "X"
-                win_res = check_ttt_win(game['board'])
-                if not win_res:
-                    b_pos = get_bot_move(game['board'])
-                    if b_pos != -1: game['board'][b_pos] = "O"
-                    win_res = check_ttt_win(game['board'])
-                if win_res:
-                    game['status'] = win_res
-                    bot.edit_message_text(get_ttt_text(game), chat_id, msg_id, reply_markup=render_ttt_board(game_id, game['board'], True), parse_mode="Markdown")
-                    del active_games[game_id]
-                else: bot.edit_message_reply_markup(chat_id, msg_id, reply_markup=render_ttt_board(game_id, game['board']))
+                <div class="w-full max-w-[480px] bg-[#0c0c0e] border border-zinc-800 rounded-2xl shadow-panel overflow-hidden font-mono text-[12px] text-left mx-auto">
+                    <div class="flex items-center px-4 py-3 bg-[#141416] border-b border-zinc-800">
+                        <div class="flex gap-1.5">
+                            <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
+                            <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
+                            <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
+                        </div>
+                        <div class="flex-1 text-center text-zinc-400 text-[11px] font-semibold">cluster-status.sh</div>
+                    </div>
+                    <div class="p-5 space-y-2.5">
+                        <div class="flex items-center gap-2 text-emerald-400 font-medium"><span class="text-emerald-500">$</span> akashiro cluster --verify-all</div>
+                        <div class="text-zinc-300 text-[11px] space-y-1.5 pl-2">
+                            <div>✓ Bansos Gateway Cluster [Online]</div>
+                            <div>✓ InternAI Discovery Mesh [Online]</div>
+                            <div>✓ Dahl Global Inference [Online]</div>
+                            <div>✓ Rassya Edge Router [Online]</div>
+                            <div class="text-purple-400">✓ InternAI Vision / V2 [Online & Added]</div>
+                        </div>
+                        <div class="text-emerald-400 font-bold pt-1">All multi-gateway nodes operational.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chatMessagesList" class="flex flex-col space-y-6 w-full max-w-4xl mx-auto pb-6"></div>
+            <div class="h-32 shrink-0"></div> 
+        </div>
+
+        <button id="scrollBtn" onclick="forceScrollBottom()" class="absolute bottom-[110px] right-6 md:right-10 w-10 h-10 rounded-full bg-dark-input border border-dark-border text-zinc-400 hover:text-white hover:border-brand shadow-float flex items-center justify-center z-20">
+            <i class="fa-solid fa-arrow-down text-xs"></i>
+        </button>
+
+        <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-30 pointer-events-none">
+            <form id="chatForm" onsubmit="handleChatSubmit(event)" class="max-w-4xl mx-auto flex flex-col relative pointer-events-auto">
+                
+                <!-- Attached File Preview Container -->
+                <div id="filePreviewContainer" class="hidden mb-2 p-2 px-3 rounded-xl bg-dark-panel border border-dark-border flex items-center justify-between text-xs font-mono animate-fade-in">
+                    <div class="flex items-center gap-2 truncate text-zinc-300">
+                        <i id="fileIconType" class="fa-solid fa-file-lines text-brand"></i>
+                        <span id="fileNameDisplay" class="truncate"></span>
+                        <span id="fileSizeDisplay" class="text-[10px] text-zinc-500"></span>
+                    </div>
+                    <button type="button" onclick="removeAttachedFile()" class="text-zinc-500 hover:text-rose-400 p-1"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+
+                <div id="inputContainer" class="glass-input rounded-2xl p-2 flex items-end shadow-panel relative">
                     
-            elif game['mode'] == 'pvp':
-                if game['turn'] == "X":
-                    if user_id != game['player_x']: return bot.answer_callback_query(call.id, "⚠️ Sekarang Giliran Player X!", show_alert=True)
-                    bot.answer_callback_query(call.id)
-                    game['board'][pos] = "X"; game['turn'] = "O"
-                else:
-                    if game['player_o'] is None:
-                        if user_id == game['player_x']: return bot.answer_callback_query(call.id, "Tunggu lawan bermain!", show_alert=True)
-                        bot.answer_callback_query(call.id, "Bergabung sebagai Player O!")
-                        game['player_o'] = user_id; game['name_o'] = call.from_user.first_name
-                    elif user_id != game['player_o']: return bot.answer_callback_query(call.id, "⚠️ Sekarang Giliran Player O!", show_alert=True)
+                    <!-- Hidden File Input (Mendukung Gambar & Dokumen) -->
+                    <input type="file" id="fileUploadInput" class="hidden" onchange="handleFileSelected(event)">
+                    <button type="button" onclick="document.getElementById('fileUploadInput').click()" class="h-10 w-10 mb-1 ml-1 rounded-xl bg-dark-panel border border-dark-border text-zinc-400 hover:text-white hover:border-zinc-600 transition-all flex items-center justify-center shrink-0" title="Upload Gambar / Dokumen / Kode">
+                        <i class="fa-solid fa-paperclip text-sm"></i>
+                    </button>
+
+                    <textarea id="chatInput" rows="1" placeholder="Ketik perintah atau tanyakan sesuatu... (Shift+Enter: Baris Baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none resize-none max-h-[200px] min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed font-sans" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                     
-                    bot.answer_callback_query(call.id)
-                    game['board'][pos] = "O"; game['turn'] = "X"
+                    <div class="flex items-center gap-2 p-1 shrink-0">
+                        <button type="button" id="voiceBtn" onclick="AkaShiroVoice.toggleDictation()" class="flex h-10 w-10 rounded-xl bg-dark-panel border border-dark-border text-zinc-400 hover:text-brand transition-all items-center justify-center group" title="Dikte Suara">
+                            <i id="voiceIcon" class="fa-solid fa-microphone text-sm"></i>
+                        </button>
+                        <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 rounded-xl bg-zinc-800 text-rose-400 border border-zinc-700 transition-all items-center justify-center" title="Hentikan">
+                            <i class="fa-solid fa-square text-xs"></i>
+                        </button>
+                        <button type="submit" id="sendBtn" class="h-10 w-10 flex items-center justify-center rounded-xl bg-white text-black hover:bg-zinc-200 transition-all shadow-md active:scale-[0.85]">
+                            <i class="fa-solid fa-arrow-up text-sm"></i>
+                        </button>
+                    </div>
+                </div>
                 
-                win_res = check_ttt_win(game['board'])
-                if win_res:
-                    game['status'] = win_res
-                    bot.edit_message_text(get_ttt_text(game), chat_id, msg_id, reply_markup=render_ttt_board(game_id, game['board'], True), parse_mode="Markdown")
-                    del active_games[game_id]
-                else: bot.edit_message_text(get_ttt_text(game), chat_id, msg_id, reply_markup=render_ttt_board(game_id, game['board']), parse_mode="Markdown")
+                <div class="flex justify-between items-center px-3 mt-2.5 text-[10px] font-mono text-zinc-500 select-none hidden md:flex">
+                    <span id="charCount" class="bg-dark-panel border border-dark-border px-2 py-0.5 rounded text-zinc-400">0 chars</span>
+                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> AkaShiro Secure Multi-Gateway & Vision Module Aktif</span>
+                </div>
+            </form>
+        </div>
+    </main>
 
-        elif call.data.startswith("setmodel_"):
-            session["model"] = call.data.split("_")[1]
-            bot.answer_callback_query(call.id, "Engine Aktif Diperbarui.")
-            bot.edit_message_reply_markup(chat_id, msg_id, reply_markup=models_menu_markup(session["model"]))
-        elif call.data.startswith("setpersona_"):
-            session["persona"] = call.data.split("_")[1]
-            session["messages"] = [{"role": "system", "content": AVAILABLE_PERSONAS[session["persona"]]}]
-            bot.answer_callback_query(call.id, "Persona & Konteks Diperbarui.")
-            bot.edit_message_reply_markup(chat_id, msg_id, reply_markup=personas_menu_markup(session["persona"]))
-            
-        elif call.data in ["dl_audio", "dl_video"]:
-            url = session.get("dl_url")
-            if not url: return bot.answer_callback_query(call.id, "Tautan usang. Gunakan /dl ulang.", show_alert=True)
-            
-            bot.answer_callback_query(call.id)
-            is_audio = (call.data == "dl_audio")
-            bot.edit_message_text("⏳ `Menginisialisasi Ekstraktor...`", chat_id, msg_id, parse_mode="Markdown")
-            
-            ydl_opts = {
-                'outtmpl': f'{DOWNLOAD_DIR}/%(title)s.%(ext)s', 'quiet': True, 'nocheckcertificate': True,
-                'extractor_args': {'youtube': {'player_client': ['android', 'web']}},
-                'progress_hooks': [lambda d: progress_hook(d, chat_id, msg_id, bot)]
+    <!-- MODAL PROMPT SNIPPETS -->
+    <div id="snippetsModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-dark-panel rounded-2xl border border-dark-border shadow-2xl p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-dark-border pb-3">
+                <h3 class="font-orbitron font-bold text-sm text-white">Prompt Snippets Cepat</h3>
+                <button onclick="closeModal('snippetsModal')" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-2.5 text-[12px] font-mono">
+                <button onclick="useSnippet('Buatkan struktur arsitektur project web fullstack modern menggunakan Tailwind CSS dan Vanilla JS.')" class="w-full text-left p-3.5 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border text-zinc-300 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-bolt text-brand"></i> Arsitektur Fullstack Modern
+                </button>
+                <button onclick="useSnippet('Analisis dan berikan optimasi keamanan pada skrip JavaScript berikut dari celah XSS dan Injection.')" class="w-full text-left p-3.5 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border text-zinc-300 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-shield-halved text-emerald-400"></i> Security Audit & Code Review
+                </button>
+                <button onclick="useSnippet('Jelaskan konsep algoritma machine learning atau deep learning secara komprehensif beserta contoh kodenya.')" class="w-full text-left p-3.5 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border text-zinc-300 transition-all flex items-center gap-3">
+                    <i class="fa-solid fa-brain text-cyan-400"></i> Deep Explanation & Algoritma
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SETTINGS -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-dark-panel rounded-2xl border border-dark-border shadow-2xl" id="settingsModalContent">
+            <div class="flex items-center justify-between p-5 border-b border-dark-border bg-dark-input/50 rounded-t-2xl">
+                <h3 class="font-orbitron font-bold text-sm text-white">Multi-Gateway Configuration</h3>
+                <button onclick="closeModal('settingsModal')" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 space-y-4 text-[11px] font-mono max-h-[70vh] overflow-y-auto no-scrollbar">
+                
+                <!-- Gateway 5 DITAMBAHKAN di posisi teratas sebagai model utama baru -->
+                <div class="bg-dark-input p-3.5 rounded-xl border border-purple-900/50 shadow-[0_0_15px_rgba(168,85,247,0.15)] space-y-2">
+                    <span class="text-purple-400 font-bold block">Gateway 5: InternAI V2 (Kunci Baru)</span>
+                    <input type="text" id="gw5Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                    <input type="password" id="gw5Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                </div>
+
+                <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
+                    <span class="text-rose-400 font-bold block">Gateway 1: Bansos Server</span>
+                    <input type="text" id="gw1Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                    <input type="password" id="gw1Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                </div>
+                <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
+                    <span class="text-amber-400 font-bold block">Gateway 2: InternAI Discovery (Lama)</span>
+                    <input type="text" id="gw2Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                    <input type="password" id="gw2Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                </div>
+                <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
+                    <span class="text-cyan-400 font-bold block">Gateway 3: Dahl Global</span>
+                    <input type="text" id="gw3Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                    <input type="password" id="gw3Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                </div>
+                <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
+                    <span class="text-emerald-400 font-bold block">Gateway 4: Rassya Router</span>
+                    <input type="text" id="gw4Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                    <input type="password" id="gw4Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-zinc-300 font-semibold">System Persona</label>
+                    <textarea id="systemPersonaInput" rows="3" class="w-full bg-dark-input border border-dark-border rounded-xl p-3 text-zinc-300 focus:outline-none text-[12px]"></textarea>
+                </div>
+            </div>
+            <div class="p-5 border-t border-dark-border bg-dark-input/50 rounded-b-2xl">
+                <button onclick="saveSettings()" class="w-full py-3 rounded-xl bg-white text-black font-bold text-xs font-mono hover:bg-zinc-200 transition-all shadow-md">SIMPAN KONFIGURASI</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GATEWAYS = {
+            internai_v2: {
+                name: "InternAI V2 (New Key)",
+                url: localStorage.getItem('akashiro_gw5_url') || "https://discovery-api.intern-ai.org.cn/v1",
+                key: localStorage.getItem('akashiro_gw5_key') || "sk-7bc9c56003496f2696ebdd1bb7e087ba2f60902153f4c0d38246ccc5174ff1ad",
+                models: [
+                    { id: 'qwen3.8-27b', name: '[V2] Qwen 3.8 27B' },
+                    { id: 'minimax-m3', name: '[V2] Minimax M3' },
+                    { id: 'kimi-k2.6', name: '[V2] Kimi K2.6' },
+                    { id: 'intern-s2', name: '[V2] Intern S2' },
+                    { id: 'intern-decision-4b', name: '[V2] Decision 4B' },
+                    { id: 'glm-5.3', name: '[V2] GLM 5.3' },
+                    { id: 'deepseek-v4-pro-0813', name: '[V2] DeepSeek V4 Pro' },
+                    { id: 'deepseek-v4-flash-vision', name: '[V2 Vision] DeepSeek Flash' },
+                    { id: 'deepseek-v4-flash-0731', name: '[V2] DeepSeek Flash 0731' },
+                    { id: 'Atria-Dawn-Preview', name: '[V2] Atria Dawn Preview' },
+                    { id: 'Atria-Dawn', name: '[V2] Atria Dawn' },
+                    { id: 'Agents-A1', name: '[V2] Agents A1' }
+                ]
+            },
+            bansos: {
+                name: "Bansos Gateway",
+                url: localStorage.getItem('akashiro_gw1_url') || "https://bansos.wahyu-hidayat.my.id/v1",
+                key: localStorage.getItem('akashiro_gw1_key') || "sk-7e55a8f3c7fb044f-qoce3o-317c6884",
+                models: [
+                    { id: 'nemotron-3-ultra', name: '[Bansos] Nemotron 3 Ultra' },
+                    { id: 'nemotron-3-super', name: '[Bansos] Nemotron 3 Super' },
+                    { id: 'nemotron-3-nano', name: '[Bansos] Nemotron 3 Nano' },
+                    { id: 'gpt-oss120b', name: '[Bansos] GPT-OSS 120B' },
+                    { id: 'laguna-s-2.1', name: '[Bansos] Laguna S 2.1' },
+                    { id: 'free', name: '[Bansos] Free Auto-Router' }
+                ]
+            },
+            internai: {
+                name: "InternAI Gateway (Lama)",
+                url: localStorage.getItem('akashiro_gw2_url') || "https://discovery-api.intern-ai.org.cn/v1",
+                key: localStorage.getItem('akashiro_gw2_key') || "sk-7e168a9a7c1fd296e88fc65485fd9037cf843bb197af8ee28be54016b4d724fc",
+                models: [
+                    { id: 'qwen3.8-27b', name: '[InternAI] Qwen 3.8 27B' },
+                    { id: 'minimax-m3', name: '[InternAI] Minimax M3' }
+                ]
+            },
+            dahl: {
+                name: "Dahl Global Gateway",
+                url: localStorage.getItem('akashiro_gw3_url') || "https://inference.dahl.global/v1",
+                key: localStorage.getItem('akashiro_gw3_key') || "dahl_KY4weS1zsNq9sMeNmrzECGYgXZ8s9JNbg",
+                models: [
+                    { id: 'MiniMaxAI/MiniMax-M2.7', name: '[Dahl] MiniMax M2.7' },
+                    { id: 'deepseek-ai/DeepSeek-V4-Flash-0731', name: '[Dahl] DeepSeek V4 Flash' }
+                ]
+            },
+            rassya: {
+                name: "Rassya Router Gateway",
+                url: localStorage.getItem('akashiro_gw4_url') || "https://router.rassya.eu.cc/v1",
+                key: localStorage.getItem('akashiro_gw4_key') || "sk-8c0f7d2525033292-lh9fwx-ae1b9af1",
+                models: [
+                    { id: 'auto-router', name: '[Rassya] Auto-Router Default' },
+                    { id: 'deepseek-v4-flash-0731', name: '[Rassya] DeepSeek Flash Router' }
+                ]
             }
-            if is_audio: ydl_opts.update({'format': 'bestaudio/best', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320'}]})
-            else: ydl_opts['format'] = 'best[ext=mp4]/best'
+        };
 
-            def download_thread():
-                filename = None
-                try:
-                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                        info = ydl.extract_info(url, download=True)
-                        filename = ydl.prepare_filename(info)
-                        if is_audio: filename = filename.rsplit('.', 1)[0] + '.mp3'
-                        
-                    bot.edit_message_text("🚀 `Mengunggah Payload...`", chat_id, msg_id, parse_mode="Markdown")
-                    with open(filename, 'rb') as f: 
-                        if is_audio: bot.send_audio(chat_id, f) 
-                        else: bot.send_video(chat_id, f, supports_streaming=True)
-                    bot.delete_message(chat_id, msg_id)
-                except Exception as e: bot.edit_message_text(f"❌ **Gagal Unduh:** `{e}`", chat_id, msg_id, parse_mode="Markdown")
-                finally: 
-                    if filename and os.path.exists(filename): os.remove(filename)
-            threading.Thread(target=download_thread, daemon=True).start()
-    except ApiTelegramException as e: 
-        if "message is not modified" not in str(e).lower(): pass
+        const PERSONAS = {
+            standard: "Anda adalah AkaShiro AI Multi-Gateway, Asisten Enterprise cerdas dan andal. Jawab menggunakan bahasa Indonesia dengan Markdown rapi."
+        };
 
-# --- CORE CHAT HANDLER (AI RESPONSE + AUTO FILE INTERCEPTOR) ---
-@bot.message_handler(func=lambda m: not m.text.startswith('/'))
-def handle_chat(message):
-    chat_id = message.chat.id
-    text = message.text.strip()
+        let appState = {
+            temperature: 0.7,
+            systemPersona: localStorage.getItem('akashiro_persona_v10') || PERSONAS.standard,
+            currentModel: localStorage.getItem('akashiro_model_v10') || 'qwen3.8-27b',
+            chats: JSON.parse(localStorage.getItem('akashiro_chats_v10')) || [],
+            currentChatId: null
+        };
 
-    if message.chat.type in ['group', 'supergroup']:
-        bot_info = bot.get_me()
-        is_mentioned = f"@{bot_info.username}" in text
-        is_replied = message.reply_to_message and message.reply_to_message.from_user.id == bot_info.id
-        if not (is_mentioned or is_replied): return 
-        text = text.replace(f"@{bot_info.username}", "").strip()
-
-    text_lower = text.lower()
-    
-    ext_found = None
-    if re.search(r'\b(doc|docx|word)\b', text_lower):
-        ext_found = "doc"
-    elif re.search(r'\b(xls|xlsx|excel)\b', text_lower):
-        ext_found = "xls"
-    elif re.search(r'\b(csv)\b', text_lower):
-        ext_found = "csv"
-    elif re.search(r'\b(txt)\b', text_lower):
-        ext_found = "txt"
-    elif re.search(r'\b(html)\b', text_lower):
-        ext_found = "html"
-    elif re.search(r'\b(md|markdown)\b', text_lower):
-        ext_found = "md"
-
-    file_intent_keywords = [
-        "file", "dokumen", "format", "kirim", "kirimkan", "buatkan", "bikin", 
-        "jadikan", "download", "unduh", "export", "simpan", "lampiran", "attachment"
-    ]
-    has_file_intent = any(kw in text_lower for kw in file_intent_keywords)
-
-    if ext_found and has_file_intent:
-        return process_file_generation(chat_id, ext_found, text, message.message_id)
-
-    session = get_session(chat_id)
-    if time.time() - session.get("last_action", 0) < 1.5: 
-        return bot.reply_to(message, "⚠️ Overload. Beri jeda 1 detik.", parse_mode="Markdown")
-    session["last_action"] = time.time()
-
-    with user_locks[chat_id]:
-        session["xp"] += (len(text) // 5) + 10 
-        session["messages"].append({"role": "user", "content": text})
+        let currentAbortController = null;
+        let isGenerating = false;
+        let isAutoScrolling = true;
         
-        bot.send_chat_action(chat_id, 'typing')
-        loading_msg = bot.reply_to(message, "⚡ `[■□□□□□] Linking Neural Core...`", parse_mode="Markdown")
-        
-        # PANGGIL ROUTER UNTUK MENDAPATKAN URL DAN KEY YANG TEPAT
-        api_url, api_key = get_api_config(session)
-        
-        payload = {"model": session["model"], "messages": session["messages"], "stream": True}
-        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-        h_title = {"standard": "S.H.I.R.O", "coder": "DEV.SHIRO", "writer": "CREA.SHIRO", "translator": "LINGO.SHIRO", "analyst": "DATA.SHIRO", "brainstorm": "IDEA.SHIRO"}.get(session['persona'], "S.H.I.R.O")
-        spinners = ['[■■□□□□]', '[■■■□□□]', '[■■■■□□]', '[■■■■■□]', '[■■■■■■]']
-        spin_idx = 0
-        
-        try:
-            res = requests.post(api_url, headers=headers, json=payload, stream=True, timeout=120)
-            if res.status_code == 200:
-                full_reply = ""
-                last_edit_time = time.time()
-                for line in res.iter_lines():
-                    if line:
-                        data_str = line.decode('utf-8')
-                        if data_str.startswith("data: ") and "[DONE]" not in data_str:
-                            try:
-                                chunk = json.loads(data_str[6:])['choices'][0]['delta'].get('content', '')
-                                if chunk:
-                                    full_reply += chunk
-                                    current_time = time.time()
-                                    if current_time - last_edit_time > 1.5:
-                                        spin_char = spinners[spin_idx % len(spinners)]
-                                        spin_idx += 1
-                                        try: 
-                                            bot.edit_message_text(f"╭─「 🤖 **{h_title}** 」\n│\n╰─❯ {full_reply} {spin_char}", chat_id, loading_msg.message_id, parse_mode="Markdown")
-                                            last_edit_time = current_time
-                                        except Exception: pass
-                            except Exception: pass
+        // MODUL VISION & FILE UPLOAD 
+        let attachedFileContent = null;
+        let attachedFileName = null;
+        let attachedFileType = null;
+
+        function handleFileSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            attachedFileName = file.name;
+            attachedFileType = file.type;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                attachedFileContent = e.target.result;
                 
-                session["messages"].append({"role": "assistant", "content": full_reply})
-                final_text = f"╭─「 🤖 **{h_title}** 」\n│\n╰─❯ {full_reply}\n{SEP}\n⚡ `{session['model']}` | 🌟 `+{len(text)//5+10} XP`"
-                try: bot.edit_message_text(final_text, chat_id, loading_msg.message_id, parse_mode="Markdown")
-                except Exception: bot.edit_message_text(full_reply, chat_id, loading_msg.message_id)
-            else:
-                bot.edit_message_text(f"❌ **API Error ({res.status_code})**\nEndpoint: `{api_url}`", chat_id, loading_msg.message_id, parse_mode="Markdown")
-                session["messages"].pop()
-        except Exception as e:
-            bot.edit_message_text(f"❌ **Koneksi Terputus.** Node tidak merespons.\nEndpoint: `{api_url}`", chat_id, loading_msg.message_id, parse_mode="Markdown")
-            if session["messages"][-1]["role"] == "user": session["messages"].pop()
+                document.getElementById('fileNameDisplay').innerText = attachedFileName;
+                document.getElementById('fileSizeDisplay').innerText = `(${(file.size / 1024).toFixed(1)} KB)`;
+                
+                const icon = document.getElementById('fileIconType');
+                if(attachedFileType.startsWith('image/')) {
+                    icon.className = 'fa-solid fa-image text-purple-400';
+                } else {
+                    icon.className = 'fa-solid fa-file-lines text-brand';
+                }
+                
+                document.getElementById('filePreviewContainer').classList.remove('hidden');
+                showToast(`File "${attachedFileName}" berhasil dilampirkan.`, "success");
+            };
 
-# --- MAIN SERVER STARTUP ---
-if __name__ == "__main__":
-    setup_bot_commands()
-    print("================================================================")
-    print(" 🚀 A.K.A S.H.I.R.O [ULTIMATE CYBER OS - V5.0 PRO BUILD]")
-    print("================================================================")
-    print(" [*] Modul Multi-Gateway API (Auto Router) AKTIF")
-    print(" [*] 18 Model (Bansos + InternAI) Berhasil Dimuat")
-    print(" [*] Universal File Request Interceptor (.doc/.xls) AKTIF")
-    print(" [*] Game Petualangan RPG V5.0: Turn-based Combat Engine AKTIF")
-    print("================================================================")
-    
-    while True:
-        try: bot.infinity_polling(skip_pending=True, timeout=90, long_polling_timeout=90)
-        except Exception as e:
-            logger.error(f"Fatal Crash: {e}. Rebooting 5s...")
-            time.sleep(5)
+            // Baca sebagai Base64 jika gambar (Vision Support), atau teks biasa
+            if (file.type.startsWith('image/')) {
+                reader.readAsDataURL(file); 
+            } else {
+                reader.readAsText(file);
+            }
+        }
+
+        function removeAttachedFile() {
+            attachedFileContent = null;
+            attachedFileName = null;
+            attachedFileType = null;
+            document.getElementById('fileUploadInput').value = '';
+            document.getElementById('filePreviewContainer').classList.add('hidden');
+        }
+
+        /* ================= VOICE MODULE ================= */
+        const AkaShiroVoice = (() => {
+            let recognition;
+            let isRecording = false;
+            if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = true;
+                recognition.lang = 'id-ID';
+                recognition.onstart = () => { isRecording = true; document.getElementById('inputContainer').classList.add('recording'); };
+                recognition.onresult = (e) => {
+                    for (let i = e.resultIndex; i < e.results.length; ++i) {
+                        if (e.results[i].isFinal) {
+                            const input = document.getElementById('chatInput');
+                            input.value += e.results[i][0].transcript + ' ';
+                        }
+                    }
+                };
+                recognition.onend = () => { isRecording = false; document.getElementById('inputContainer').classList.remove('recording'); };
+            }
+            const toggleDictation = () => { if (recognition) { isRecording ? recognition.stop() : recognition.start(); } else { showToast("Speech recognition tidak didukung browser.", "error"); } };
+            const playTTS = (btn, text) => {
+                if(window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Baca'; return; }
+                const cleanText = text.replace(/[#*`_]/g, '');
+                const utt = new SpeechSynthesisUtterance(cleanText); utt.lang = 'id-ID';
+                utt.onend = () => { btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Baca'; };
+                btn.innerHTML = '<i class="fa-solid fa-stop"></i> Stop'; window.speechSynthesis.speak(utt);
+            };
+            return { toggleDictation, playTTS };
+        })();
+        window.AkaShiroVoice = AkaShiroVoice;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setupDOM(); populateModelDropdown();
+            if (appState.chats.length > 0) loadChatSession(appState.chats[0].id); else startNewChat();
+        });
+
+        function setupDOM() {
+            document.getElementById('gw1Url').value = GATEWAYS.bansos.url;
+            document.getElementById('gw1Key').value = GATEWAYS.bansos.key;
+            document.getElementById('gw2Url').value = GATEWAYS.internai.url;
+            document.getElementById('gw2Key').value = GATEWAYS.internai.key;
+            document.getElementById('gw3Url').value = GATEWAYS.dahl.url;
+            document.getElementById('gw3Key').value = GATEWAYS.dahl.key;
+            document.getElementById('gw4Url').value = GATEWAYS.rassya.url;
+            document.getElementById('gw4Key').value = GATEWAYS.rassya.key;
+            document.getElementById('gw5Url').value = GATEWAYS.internai_v2.url;
+            document.getElementById('gw5Key').value = GATEWAYS.internai_v2.key;
+            document.getElementById('systemPersonaInput').value = appState.systemPersona;
+        }
+
+        function populateModelDropdown() {
+            const select = document.getElementById('chatModelSelect'); if(!select) return; select.innerHTML = '';
+            Object.keys(GATEWAYS).forEach(k => {
+                const gw = GATEWAYS[k]; const group = document.createElement('optgroup'); group.label = gw.name;
+                gw.models.forEach(m => {
+                    const opt = document.createElement('option'); opt.value = m.id; opt.textContent = m.name;
+                    if(m.id === appState.currentModel) opt.selected = true; group.appendChild(opt);
+                });
+                select.appendChild(group);
+            });
+        }
+
+        function getGatewayForModel(modelId) {
+            for (let k in GATEWAYS) { if (GATEWAYS[k].models.find(m => m.id === modelId)) return GATEWAYS[k]; }
+            return GATEWAYS.internai_v2;
+        }
+
+        async function handleChatSubmit(e, isRegen = false) {
+            if(e) e.preventDefault(); if(isGenerating) return;
+            const input = document.getElementById('chatInput'); 
+            let prompt = input.value.trim(); 
+            
+            if(!prompt && !attachedFileContent && !isRegen) return;
+
+            let finalPromptText = prompt;
+            let base64Image = null;
+
+            // Modul Vision / Payload Gabungan
+            if (attachedFileContent) {
+                if (attachedFileType && attachedFileType.startsWith('image/')) {
+                    finalPromptText = prompt ? prompt : "Tolong jelaskan secara detail apa yang ada di dalam gambar ini.";
+                    base64Image = attachedFileContent;
+                } else {
+                    finalPromptText = `[Lampiran File: ${attachedFileName}]\n\`\`\`\n${attachedFileContent}\n\`\`\`\n\nPerintah/Pertanyaan: ${prompt}`;
+                }
+                removeAttachedFile();
+            }
+
+            let chat = getCurrentChat(); if(!chat) { startNewChat(); chat = getCurrentChat(); }
+            
+            chat.messages.push({ role: 'user', text: finalPromptText, attachedImage: base64Image, timestamp: new Date().toISOString() });
+            if(chat.messages.length === 1) { chat.title = prompt.substring(0, 25) || "Analisis Gambar"; updateHeaderTitle(); renderChatHistory(); }
+            input.value = ''; input.style.height = 'auto';
+
+            const msgIdx = chat.messages.length;
+            chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
+            renderMessages(); toggleInputState(true); currentAbortController = new AbortController();
+
+            // Membangun format Payload yang kompatibel dengan modul Vision (Array) dan Text (String)
+            let apiMessages = [{role: "system", content: appState.systemPersona}];
+            chat.messages.slice(0, -1).forEach(m => {
+                if (m.attachedImage) {
+                    apiMessages.push({
+                        role: m.role,
+                        content: [
+                            { type: "text", text: m.text },
+                            { type: "image_url", image_url: { url: m.attachedImage } }
+                        ]
+                    });
+                } else {
+                    apiMessages.push({role: m.role, content: m.text});
+                }
+            });
+
+            const startTime = performance.now(); let tokenCount = 0;
+
+            try {
+                const activeGw = getGatewayForModel(appState.currentModel);
+                const res = await fetch(`${activeGw.url.replace(/\/+$/, '')}/chat/completions`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${activeGw.key}` },
+                    body: JSON.stringify({
+                        model: appState.currentModel,
+                        messages: apiMessages,
+                        temperature: appState.temperature, stream: true
+                    }),
+                    signal: currentAbortController.signal
+                });
+
+                if(!res.ok) throw new Error(`HTTP ${res.status}`);
+                const reader = res.body.getReader(); const decoder = new TextDecoder(); let fullText = "";
+
+                while(true) {
+                    const {done, value} = await reader.read(); if(done) break;
+                    const chunk = decoder.decode(value, {stream: true});
+                    for(const line of chunk.split("\n")) {
+                        const clean = line.replace(/^data: /, "").trim();
+                        if(clean === "[DONE]") break;
+                        try {
+                            const json = JSON.parse(clean);
+                            const token = json.choices?.[0]?.delta?.content || "";
+                            if(token) {
+                                fullText += token; tokenCount++;
+                                chat.messages[msgIdx].text = fullText;
+                                window.requestAnimationFrame(updateLastMessageUI);
+                            }
+                        }catch(err){}
+                    }
+                }
+                const duration = (performance.now() - startTime) / 1000;
+                const tps = (tokenCount / duration).toFixed(1);
+                document.getElementById('metricTps').innerText = tps;
+                document.getElementById('metricLatency').innerText = Math.round(duration * 1000);
+            } catch(err) {
+                if(err.name !== 'AbortError') {
+                    chat.messages[msgIdx].text = `⚠️ **Gateway Error:** \`${err.message}\``;
+                }
+            } finally {
+                chat.messages[msgIdx].isTyping = false;
+                toggleInputState(false); saveChatsToStorage(); renderMessages();
+            }
+        }
+
+        function updateLastMessageUI() {
+            const chat = getCurrentChat(); if(!chat) return;
+            const idx = chat.messages.length - 1; const msg = chat.messages[idx];
+            const node = document.getElementById(`msg-${idx}`);
+            if(node) {
+                const body = node.querySelector('.markdown-body');
+                if(body) body.innerHTML = marked.parse(msg.text || '');
+            }
+            scrollToBottom();
+        }
+
+        function generateMessageHTML(msg, index) {
+            if(msg.role === 'user') {
+                let imgHtml = msg.attachedImage ? `<div class="mb-3"><img src="${msg.attachedImage}" class="max-w-[200px] md:max-w-xs rounded-xl border-2 border-zinc-700 shadow-md"></div>` : '';
+                return `<div class="flex justify-end w-full animate-slide-up"><div class="rounded-[1.25rem] rounded-tr-sm bg-zinc-800 text-zinc-100 px-5 py-3.5 max-w-[85%] text-[13px] whitespace-pre-wrap">${imgHtml}${escapeHtml(msg.text)}</div></div>`;
+            } else {
+                let html = ''; try { html = marked.parse(msg.text || ''); } catch(e){ html = escapeHtml(msg.text); }
+                return `<div class="flex gap-3.5 w-full max-w-[95%] animate-slide-up" id="msg-${index}">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center text-white text-[11px] font-orbitron shrink-0 shadow-neon">赤</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="rounded-[1.25rem] rounded-tl-sm px-5 py-4 text-[13px] md:text-sm markdown-body bg-dark-panel border border-dark-border shadow-panel">${html}</div>
+                        <div class="mt-2 ml-2 flex gap-2">
+                            <button onclick="AkaShiroVoice.playTTS(this, getCurrentChat().messages[${index}].text)" class="text-[9px] font-mono text-zinc-400 bg-dark-panel border border-dark-border px-2.5 py-1 rounded-lg hover:text-white transition-colors">Baca</button>
+                        </div>
+                    </div>
+                </div>`;
+            }
+        }
+
+        function escapeHtml(str) { return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+        function toggleInputState(gen) { isGenerating = gen; document.getElementById('sendBtn').classList.toggle('hidden', gen); document.getElementById('stopBtn').classList.toggle('hidden', !gen); }
+        function abortGeneration() { if(currentAbortController) currentAbortController.abort(); toggleInputState(false); }
+        function renderMessages() {
+            const chat = getCurrentChat(); const list = document.getElementById('chatMessagesList'); const hero = document.getElementById('welcomeHero');
+            if(!chat || chat.messages.length === 0) { list.innerHTML = ''; hero.classList.remove('hidden'); return; }
+            hero.classList.add('hidden'); list.innerHTML = '';
+            chat.messages.forEach((m, idx) => list.insertAdjacentHTML('beforeend', generateMessageHTML(m, idx)));
+            scrollToBottom();
+        }
+        function startNewChat() {
+            if(isGenerating) abortGeneration();
+            const newChat = { id: 'c_' + Date.now(), title: 'Sesi Baru', messages: [], model: appState.currentModel };
+            appState.chats.unshift(newChat); appState.currentChatId = newChat.id;
+            saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
+            if(window.innerWidth < 1024) toggleSidebar(false);
+        }
+        function loadChatSession(id) {
+            appState.currentChatId = id; const chat = getCurrentChat();
+            if(chat && chat.model) { appState.currentModel = chat.model; document.getElementById('chatModelSelect').value = chat.model; }
+            renderChatHistory(); renderMessages(); updateHeaderTitle();
+            if(window.innerWidth < 1024) toggleSidebar(false);
+        }
+        function getCurrentChat() { return appState.chats.find(c => c.id === appState.currentChatId); }
+        function updateHeaderTitle() { const chat = getCurrentChat(); if(chat) document.getElementById('headerChatTitle').innerText = chat.title; }
+        function handleSearchHistory(q) { renderChatHistory(q.toLowerCase()); }
+        function renderChatHistory(filter = '') {
+            const list = document.getElementById('chatHistoryList'); if(!list) return; list.innerHTML = '';
+            appState.chats.filter(c => c.title.toLowerCase().includes(filter)).forEach(c => {
+                const active = c.id === appState.currentChatId;
+                list.insertAdjacentHTML('beforeend', `<div onclick="loadChatSession('${c.id}')" class="p-2.5 rounded-xl text-[11px] font-mono cursor-pointer flex justify-between items-center transition-all ${active ? 'bg-dark-input border-l-2 border-brand text-white shadow-sm' : 'text-zinc-400 hover:bg-zinc-900'}"><span class="truncate">${escapeHtml(c.title)}</span><button onclick="deleteChat(event, '${c.id}')" class="text-zinc-600 hover:text-rose-400 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`);
+            });
+        }
+        function deleteChat(e, id) { e.stopPropagation(); appState.chats = appState.chats.filter(c => c.id !== id); if(appState.currentChatId === id) appState.currentChatId = appState.chats[0]?.id || null; saveChatsToStorage(); renderChatHistory(); renderMessages(); }
+        function clearAllChats() { if(confirm("Bersihkan semua riwayat?")) { appState.chats = []; appState.currentChatId = null; saveChatsToStorage(); renderChatHistory(); renderMessages(); } }
+        function useSnippet(text) { document.getElementById('chatInput').value = text; closeModal('snippetsModal'); }
+        function handleInputKeydown(e) { if(e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { e.preventDefault(); handleChatSubmit(); } }
+        function handleInputAutoResize(e) { e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px'; }
+        function forceScrollBottom() { const sa = document.getElementById('chatScrollArea'); sa.scrollTo({top: sa.scrollHeight, behavior: 'smooth'}); }
+        function scrollToBottom() { const sa = document.getElementById('chatScrollArea'); if(isAutoScrolling) sa.scrollTo({top: sa.scrollHeight, behavior: 'smooth'}); }
+        function handleScroll() { const sa = document.getElementById('chatScrollArea'); isAutoScrolling = sa.scrollHeight - sa.scrollTop <= sa.clientHeight + 150; }
+        function changeChatModel(val) { appState.currentModel = val; localStorage.setItem('akashiro_model_v10', val); const c = getCurrentChat(); if(c) { c.model = val; saveChatsToStorage(); } }
+        function saveSettings() {
+            GATEWAYS.bansos.url = document.getElementById('gw1Url').value.trim(); GATEWAYS.bansos.key = document.getElementById('gw1Key').value.trim();
+            GATEWAYS.internai.url = document.getElementById('gw2Url').value.trim(); GATEWAYS.internai.key = document.getElementById('gw2Key').value.trim();
+            GATEWAYS.dahl.url = document.getElementById('gw3Url').value.trim(); GATEWAYS.dahl.key = document.getElementById('gw3Key').value.trim();
+            GATEWAYS.rassya.url = document.getElementById('gw4Url').value.trim(); GATEWAYS.rassya.key = document.getElementById('gw4Key').value.trim();
+            GATEWAYS.internai_v2.url = document.getElementById('gw5Url').value.trim(); GATEWAYS.internai_v2.key = document.getElementById('gw5Key').value.trim();
+            
+            appState.systemPersona = document.getElementById('systemPersonaInput').value.trim();
+            localStorage.setItem('akashiro_persona_v10', appState.systemPersona);
+            closeModal('settingsModal'); showToast("Gateway berhasil diperbarui.", "success");
+        }
+        function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v10', JSON.stringify(appState.chats)); }
+        function toggleSidebar(show) { const sb = document.getElementById('appSidebar'); const ov = document.getElementById('sidebarOverlay'); sb.classList.toggle('-translate-x-full', !show); ov.classList.toggle('hidden', !show); }
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function showToast(msg, type='info') {
+            const c = document.getElementById('toastContainer'); const t = document.createElement('div');
+            t.className = `toast px-4 py-2.5 rounded-xl border text-xs font-mono shadow-xl backdrop-blur-xl ${type==='error'?'bg-rose-950/90 border-rose-500':'bg-emerald-950/90 border-emerald-500'} text-zinc-200`;
+            t.innerHTML = msg; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10);
+            setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 3000);
+        }
+        function exportCurrentChat(fmt) {
+            const chat = getCurrentChat(); if(!chat) return;
+            if(fmt === 'markdown') {
+                let text = `# Transkrip: ${chat.title}\n\n`; chat.messages.forEach(m => text += `### ${m.role.toUpperCase()}\n${m.text}\n\n`);
+                const blob = new Blob([text], {type: 'text/markdown'}); const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.href = url; a.download = `AkaShiro_${chat.id}.md`; a.click();
+            }
+        }
+    </script>
+</body>
+</html>
