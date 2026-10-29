@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AkaShiro AI — V10 Ultimate Pro (Multi-Gateway 2026)</title>
+    <title>AkaShiro AI — V12 Cyber-Enterprise Edition</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,15 +18,39 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { DEFAULT: '#E11D48', hover: '#BE123C', glow: '#FF3B5C', dim: 'rgba(225, 29, 72, 0.1)' },
-                        dark: { bg: '#09090b', panel: '#121214', border: '#27272a', input: '#18181b', hover: '#1f1f22' }
+                        brand: { DEFAULT: '#E11D48', hover: '#BE123C', glow: '#FF3B5C', dim: 'rgba(225, 29, 72, 0.15)' },
+                        dark: { bg: '#030305', panel: '#0a0a0d', border: '#1f1f24', input: '#111115', hover: '#18181f' }
                     },
-                    fontFamily: { sans: ['Inter', 'sans-serif'], orbitron: ['Orbitron', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
-                    boxShadow: { 'neon': '0 0 25px rgba(225, 29, 72, 0.35)', 'panel': '0 10px 40px rgba(0,0,0,0.6)', 'float': '0 15px 50px rgba(0,0,0,0.8)' },
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'], 
+                        orbitron: ['Orbitron', 'sans-serif'], 
+                        mono: ['JetBrains Mono', 'monospace'] 
+                    },
+                    boxShadow: { 
+                        'neon': '0 0 35px rgba(225, 29, 72, 0.35)', 
+                        'panel': '0 20px 45px rgba(0,0,0,0.85)', 
+                        'float': '0 25px 50px rgba(0,0,0,0.9)', 
+                        'glass': 'inset 0 1px 0 rgba(255,255,255,0.08)' 
+                    },
                     animation: { 
-                        'fade-in': 'fadeIn 0.25s ease-out forwards', 
-                        'slide-up': 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards', 
-                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                        'fade-in': 'fadeIn 0.3s ease-out forwards', 
+                        'slide-up-fade': 'slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards', 
+                        'pulse-glow': 'pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float-slow': 'floatSlow 6s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        slideUpFade: {
+                            '0%': { opacity: '0', transform: 'translateY(15px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '1', boxShadow: '0 0 25px rgba(225, 29, 72, 0.45)' },
+                            '50%': { opacity: '0.6', boxShadow: '0 0 10px rgba(225, 29, 72, 0.2)' }
+                        },
+                        floatSlow: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-8px)' }
+                        }
                     }
                 }
             }
@@ -39,7 +63,7 @@
     <!-- Markdown, Sanitizer, Code Highlight -->
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/tokyo-night-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 
     <!-- KaTeX for Math -->
@@ -49,109 +73,120 @@
 
     <style>
         body {
-            background-color: #09090b; color: #f4f4f5;
-            background-image: radial-gradient(circle at 15% 15%, rgba(225, 29, 72, 0.04), transparent 35%), radial-gradient(circle at 85% 85%, rgba(225, 29, 72, 0.04), transparent 35%);
+            background-color: #030305; color: #f4f4f5;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(225, 29, 72, 0.04), transparent 45%), 
+                radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.04), transparent 45%),
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
             -webkit-tap-highlight-color: transparent; scroll-behavior: smooth;
         }
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #E11D48; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .glass-header { background: rgba(18, 18, 20, 0.75); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.06); }
-        .glass-input { background: rgba(24, 24, 27, 0.85); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .glass-input.recording { border-color: #E11D48; box-shadow: 0 0 25px rgba(225, 29, 72, 0.4); }
+        .glass-header { background: rgba(8, 8, 12, 0.88); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .glass-input-wrapper { background: rgba(15, 15, 20, 0.75); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.09); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .glass-input-wrapper:focus-within { border-color: rgba(225, 29, 72, 0.65); box-shadow: 0 0 30px rgba(225, 29, 72, 0.2); background: rgba(18, 18, 24, 0.9); }
+        .glass-input-wrapper.recording { animation: pulseGlow 2s infinite; border-color: #E11D48; }
+        .glass-input-wrapper.drag-active { border-color: #E11D48; box-shadow: 0 0 35px rgba(225, 29, 72, 0.45); background: rgba(225, 29, 72, 0.08); }
         
-        .markdown-body { font-size: 0.95rem; line-height: 1.7; color: #d4d4d8; word-wrap: break-word; }
+        .markdown-body { font-size: 0.95rem; line-height: 1.8; color: #d4d4d8; word-wrap: break-word; }
         @media (max-width: 768px) { .markdown-body { font-size: 0.9rem; } }
-        .markdown-body p { margin-bottom: 1rem; }
+        .markdown-body p { margin-bottom: 1.25rem; }
         .markdown-body p:last-child { margin-bottom: 0; }
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Inter', sans-serif; font-weight: 700; color: #fff; margin-top: 1.5rem; margin-bottom: 0.75rem; }
-        .markdown-body h1 { font-size: 1.4rem; border-bottom: 1px solid #27272a; padding-bottom: 0.3rem; }
-        .markdown-body h2 { font-size: 1.2rem; }
-        .markdown-body ul, .markdown-body ol { margin-left: 1.25rem; margin-bottom: 1rem; }
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { font-family: 'Inter', sans-serif; font-weight: 700; color: #fff; margin-top: 2rem; margin-bottom: 1rem; }
+        .markdown-body h1 { font-size: 1.5rem; border-bottom: 1px solid #27272a; padding-bottom: 0.5rem; }
+        .markdown-body h2 { font-size: 1.25rem; }
+        .markdown-body ul, .markdown-body ol { margin-left: 1.5rem; margin-bottom: 1.25rem; }
         .markdown-body ul { list-style-type: disc; }
+        .markdown-body ul ul { list-style-type: circle; margin-top: 0.25rem; }
         .markdown-body ol { list-style-type: decimal; }
-        .markdown-body li { margin-bottom: 0.25rem; }
-        .markdown-body a { color: #E11D48; text-decoration: none; border-bottom: 1px solid transparent; transition: all 0.2s ease; }
-        .markdown-body a:hover { color: #FF3B5C; border-bottom-color: #FF3B5C; }
+        .markdown-body li { margin-bottom: 0.35rem; }
+        .markdown-body a { color: #FF3B5C; text-decoration: none; transition: all 0.2s ease; font-weight: 500; }
+        .markdown-body a:hover { color: #f43f5e; text-decoration: underline; text-underline-offset: 4px; }
         .markdown-body strong { color: #f4f4f5; font-weight: 600; }
-        .markdown-body blockquote { border-left: 3px solid #E11D48; background: rgba(225,29,72,0.05); padding: 0.75rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; color: #a1a1aa; font-style: italic; }
-        .markdown-body code:not(pre code) { background: rgba(255,255,255,0.08); padding: 0.15rem 0.35rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #ff8fa3; }
+        .markdown-body blockquote { border-left: 4px solid #E11D48; background: linear-gradient(90deg, rgba(225,29,72,0.1) 0%, transparent 100%); padding: 0.875rem 1.25rem; margin: 1.25rem 0; border-radius: 0 8px 8px 0; color: #a1a1aa; font-style: italic; }
+        .markdown-body code:not(pre code) { background: rgba(255,255,255,0.08); padding: 0.2rem 0.4rem; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; color: #fca5a5; border: 1px solid rgba(255,255,255,0.05); }
         
-        .markdown-body table { width: 100%; border-collapse: collapse; margin: 1rem 0; border-radius: 8px; overflow: hidden; border: 1px solid #27272a; display: block; overflow-x: auto; }
-        .markdown-body th, .markdown-body td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #27272a; white-space: nowrap; }
-        .markdown-body th { background: rgba(255,255,255,0.03); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; }
-        .markdown-body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; border: 1px solid #27272a; }
+        .markdown-body table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; border-radius: 10px; overflow: hidden; border: 1px solid #27272a; display: block; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .markdown-body th, .markdown-body td { padding: 0.875rem 1.25rem; text-align: left; border-bottom: 1px solid #27272a; white-space: nowrap; }
+        .markdown-body th { background: rgba(255,255,255,0.04); color: #fff; font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.05em; }
+        .markdown-body tr:last-child td { border-bottom: none; }
+        .markdown-body tr:nth-child(even) { background: rgba(255,255,255,0.01); }
+        .markdown-body img { max-width: 100%; border-radius: 12px; margin: 1.5rem 0; border: 1px solid #3f3f46; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         
-        .stream-cursor::after { content: '▋'; display: inline-block; animation: blink 1s step-end infinite; color: #E11D48; margin-left: 4px; vertical-align: baseline; }
+        .stream-cursor::after { content: '▋'; display: inline-block; animation: blink 0.8s step-end infinite; color: #E11D48; margin-left: 4px; vertical-align: baseline; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        .typing-dots { display: inline-flex; align-items: center; height: 20px; gap: 4px; }
-        .typing-dots span { width: 6px; height: 6px; background-color: #E11D48; border-radius: 50%; animation: pulseDots 1.4s infinite ease-in-out both; }
-        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes pulseDots { 0%, 80%, 100% { transform: scale(0); opacity: 0.3; } 40% { transform: scale(1); opacity: 1; } }
-
-        #scrollBtn { opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px); }
-        #scrollBtn.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
         
-        #toastContainer { position: fixed; top: 1rem; right: 1rem; z-index: 100; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
-        .toast { pointer-events: auto; transform: translateX(120%); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .toast.show { transform: translateX(0); }
+        #scrollBtn { opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(20px) scale(0.9); }
+        #scrollBtn.visible { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+        
+        #toastContainer { position: fixed; top: 1.5rem; right: 1.5rem; z-index: 100; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none; }
+        .toast { pointer-events: auto; transform: translateX(120%); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; }
+        .toast.show { transform: translateX(0); opacity: 1; }
     </style>
 </head>
 <body class="h-[100dvh] flex overflow-hidden text-zinc-100 selection:bg-brand selection:text-white font-sans antialiased">
 
     <div id="toastContainer"></div>
 
+    <!-- Hidden Input For Importing JSON Sessions -->
+    <input type="file" id="importJsonInput" accept=".json" class="hidden" onchange="handleImportChatFile(event)">
+
     <!-- LEFT SIDEBAR -->
-    <aside id="appSidebar" class="w-72 bg-dark-panel border-r border-dark-border flex flex-col shrink-0 transition-transform duration-300 ease-in-out absolute lg:relative z-50 h-full -translate-x-full lg:translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.6)] lg:shadow-none">
-        <div class="h-16 flex items-center justify-between px-5 border-b border-dark-border shrink-0 bg-dark-bg/30">
+    <aside id="appSidebar" class="w-72 bg-dark-panel/95 backdrop-blur-2xl border-r border-dark-border flex flex-col shrink-0 transition-transform duration-300 ease-in-out absolute lg:relative z-50 h-full -translate-x-full lg:translate-x-0 shadow-[10px_0_35px_rgba(0,0,0,0.9)] lg:shadow-none">
+        <div class="h-16 flex items-center justify-between px-5 border-b border-dark-border shrink-0 bg-black/30">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center border border-brand/30 shadow-neon">
-                    <span class="font-orbitron font-bold text-white text-sm">赤</span>
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand via-rose-600 to-rose-950 flex items-center justify-center border border-brand/50 shadow-neon">
+                    <span class="font-orbitron font-bold text-white text-base">赤</span>
                 </div>
                 <div class="flex flex-col">
-                    <span class="font-orbitron font-bold text-sm tracking-wide text-white">AkaShiro<span class="text-brand">.AI</span></span>
-                    <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800/40 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700/50">Core 2026 Pro</span>
+                    <span class="font-orbitron font-bold text-sm tracking-wider text-white">AkaShiro<span class="text-brand">.AI</span></span>
+                    <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-800/80 px-1.5 py-0.5 rounded w-max mt-0.5 border border-zinc-700/60">V12 Cyber Pro</span>
                 </div>
             </div>
-            <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-dark-border/40 text-zinc-400 hover:text-white transition-all">
+            <button onclick="toggleSidebar(false)" class="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg bg-dark-border/40 text-zinc-400 hover:text-white transition-all hover:bg-dark-border">
                 <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
 
-        <div class="p-4 shrink-0 space-y-2">
-            <button onclick="startNewChat()" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-black hover:bg-zinc-200 text-xs font-semibold tracking-wide transition-all shadow-[0_0_15px_rgba(255,255,255,0.15)] active:scale-[0.98]">
-                <i class="fa-solid fa-plus text-[10px]"></i> SESI BARU
+        <div class="p-4 shrink-0 space-y-2.5">
+            <button onclick="startNewChat()" class="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-zinc-100 to-zinc-200 text-zinc-950 hover:from-white hover:to-white hover:shadow-[0_0_25px_rgba(255,255,255,0.25)] text-xs font-bold tracking-wide transition-all active:scale-[0.98]" title="Pintasan: Ctrl+Shift+O">
+                <i class="fa-solid fa-plus text-[10px]"></i> SESI KOMPUTASI BARU
             </button>
-            <button onclick="openModal('snippetsModal')" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-input hover:bg-zinc-800 text-zinc-300 text-[11px] font-mono border border-dark-border transition-all group">
-                <i class="fa-solid fa-bolt text-amber-400 group-hover:scale-110 transition-transform"></i> Prompt Snippets
-            </button>
-            <a href="https://t.me/AkaShiroWRTxBot" target="_blank" class="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9]/20 text-[#229ED9] text-[11px] font-mono border border-[#229ED9]/30 transition-all group mt-2 shadow-[0_0_10px_rgba(34,158,217,0.1)]">
-                <i class="fa-brands fa-telegram text-sm group-hover:scale-110 transition-transform"></i> Buka Telegram Bot
-            </a>
-        </div>
-
-        <div class="px-4 py-1.5 flex flex-col gap-2 shrink-0">
-            <div class="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-1.5">
-                <i class="fa-solid fa-folder-open"></i> Riwayat Komputasi
-            </div>
-            <div class="relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-500 text-[10px]"></i>
-                <input type="text" id="searchHistory" oninput="handleSearchHistory(this.value)" placeholder="Cari transkrip..." class="w-full bg-dark-input border border-dark-border rounded-lg pl-8 pr-3 py-2 text-[11px] text-zinc-200 focus:outline-none focus:border-zinc-500 transition-colors placeholder-zinc-600">
+            <div class="flex gap-2">
+                <button onclick="openModal('snippetsModal')" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-input hover:bg-zinc-800/80 text-zinc-300 text-[10px] font-mono border border-dark-border transition-all group shadow-sm">
+                    <i class="fa-solid fa-bolt text-amber-400 group-hover:scale-110 transition-transform"></i> Snippets
+                </button>
+                <button onclick="document.getElementById('importJsonInput').click()" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-input hover:bg-zinc-800/80 text-zinc-300 text-[10px] font-mono border border-dark-border transition-all group shadow-sm" title="Impor Berkas JSON Sesi">
+                    <i class="fa-solid fa-file-import text-blue-400 group-hover:scale-110 transition-transform"></i> Impor
+                </button>
             </div>
         </div>
-        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 mt-2 space-y-1 scroll-smooth no-scrollbar"></div>
 
-        <div class="p-4 border-t border-dark-border bg-dark-bg/40 shrink-0 flex gap-2">
-            <button onclick="clearAllChats()" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-dark-panel hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 text-[10px] font-mono border border-dark-border transition-all">
-                <i class="fa-solid fa-trash-can"></i> Bersihkan
+        <div class="px-4 py-2 flex flex-col gap-2.5 shrink-0 border-t border-dark-border/50">
+            <div class="text-[9px] font-mono font-bold text-zinc-500 uppercase tracking-widest flex items-center justify-between">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-layer-group text-zinc-600"></i> Riwayat Komputasi</span>
+                <span class="text-[8px] bg-zinc-800/80 px-1.5 py-0.5 rounded text-zinc-400 border border-zinc-700/50">Ctrl+K</span>
+            </div>
+            <div class="relative group">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-500 text-[10px] group-focus-within:text-brand transition-colors"></i>
+                <input type="text" id="searchHistory" oninput="handleSearchHistory(this.value)" placeholder="Pencarian arsip..." class="w-full bg-dark-input border border-dark-border rounded-lg pl-8 pr-3 py-2.5 text-[11px] font-sans text-zinc-200 focus:outline-none focus:border-zinc-500 focus:bg-zinc-900 transition-all placeholder-zinc-600">
+            </div>
+        </div>
+        <div id="chatHistoryList" class="flex-1 overflow-y-auto px-3 pb-3 mt-1 space-y-1.5 scroll-smooth no-scrollbar"></div>
+
+        <div class="p-4 border-t border-dark-border bg-black/30 shrink-0 flex gap-2">
+            <button onclick="clearAllChats()" class="w-10 flex items-center justify-center rounded-xl bg-dark-panel hover:bg-rose-950/50 text-zinc-500 hover:text-rose-400 border border-dark-border transition-all" title="Bersihkan Semua">
+                <i class="fa-solid fa-trash-can text-[11px]"></i>
             </button>
-            <button onclick="openModal('settingsModal')" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-dark-panel hover:bg-zinc-800 text-zinc-300 hover:text-white text-[10px] font-mono border border-dark-border transition-all">
-                <i class="fa-solid fa-sliders"></i> Gateway
+            <button onclick="openModal('settingsModal')" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-dark-panel hover:bg-zinc-800 text-zinc-300 hover:text-white text-[11px] font-mono border border-dark-border transition-all shadow-sm">
+                <i class="fa-solid fa-sliders text-zinc-400"></i> Gateway & Model
             </button>
         </div>
     </aside>
@@ -160,40 +195,49 @@
 
     <!-- MAIN WORKSPACE -->
     <main class="flex-1 flex flex-col h-full relative min-w-0 bg-dark-bg">
-        <header class="h-16 glass-header px-5 flex items-center justify-between z-30 shrink-0 sticky top-0">
+        <header class="h-16 glass-header px-4 md:px-6 flex items-center justify-between z-30 shrink-0 sticky top-0">
             <div class="flex items-center gap-3">
                 <button onclick="toggleSidebar(true)" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl bg-dark-input border border-dark-border text-zinc-400 hover:text-white transition-all">
                     <i class="fa-solid fa-bars-staggered text-xs"></i>
                 </button>
                 <div class="hidden sm:flex items-center gap-2.5 text-zinc-300 text-xs font-medium border-l border-dark-border pl-3 lg:border-none lg:pl-0">
                     <i class="fa-solid fa-terminal text-[10px] text-brand"></i>
-                    <span id="headerChatTitle" class="truncate max-w-[200px] font-mono text-zinc-300 font-semibold">Memuat Sesi...</span>
+                    <span id="headerChatTitle" class="truncate max-w-[200px] font-mono text-zinc-200 font-semibold tracking-wide">Memuat Sesi...</span>
                 </div>
             </div>
 
-            <!-- Performance Metrics Pill -->
-            <div id="metricsPill" class="hidden md:flex items-center gap-3 bg-dark-input/90 border border-dark-border px-3.5 py-1.5 rounded-full text-[10px] font-mono text-zinc-400 shadow-inner">
-                <span class="flex items-center gap-1.5 text-emerald-400"><i class="fa-solid fa-bolt"></i> <span id="metricTps">0.0</span> tok/s</span>
-                <span class="text-zinc-600">|</span>
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-stopwatch"></i> <span id="metricLatency">0</span>ms</span>
+            <!-- Header Status Pill & Performance Metrics -->
+            <div class="hidden md:flex items-center gap-3">
+                <div id="gatewayStatusBadge" class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-mono text-emerald-400 shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="activeGatewayNameDisplay" class="font-bold">Gateway Ready</span>
+                </div>
+                <div id="metricsPill" class="flex items-center gap-3 bg-dark-input/80 backdrop-blur-md border border-dark-border px-3.5 py-1 rounded-full text-[10px] font-mono text-zinc-400 shadow-glass">
+                    <span class="flex items-center gap-1.5 text-emerald-400 font-semibold"><i class="fa-solid fa-bolt text-[9px]"></i> <span id="metricTps">0.0</span> t/s</span>
+                    <span class="w-[1px] h-3 bg-zinc-700"></span>
+                    <span class="flex items-center gap-1.5 font-semibold"><i class="fa-solid fa-stopwatch text-[9px]"></i> <span id="metricLatency">0</span>ms</span>
+                </div>
             </div>
 
             <div class="flex items-center gap-2.5">
-                <div class="relative flex items-center bg-dark-input border border-dark-border rounded-xl p-1 pr-2.5 hover:border-zinc-600 transition-colors shadow-sm group">
-                    <div class="w-6 h-6 rounded-lg bg-zinc-800 flex items-center justify-center text-brand shrink-0">
+                <div class="relative flex items-center bg-dark-input border border-dark-border rounded-xl p-1 pr-2 hover:border-zinc-500 transition-colors shadow-sm group">
+                    <div class="w-6 h-6 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand shrink-0">
                         <i class="fa-solid fa-microchip text-[10px]"></i>
                     </div>
-                    <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-zinc-200 text-[11px] md:text-xs font-mono focus:outline-none cursor-pointer w-32 md:w-52 appearance-none pl-2.5 pr-6 py-0.5 truncate z-10 relative outline-none">
+                    <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-zinc-200 text-[11px] md:text-xs font-mono font-medium focus:outline-none cursor-pointer w-36 md:w-56 appearance-none pl-2.5 pr-6 py-0.5 truncate z-10 relative outline-none">
                     </select>
-                    <i class="fa-solid fa-chevron-down text-[9px] text-zinc-500 absolute right-2.5 pointer-events-none"></i>
+                    <i class="fa-solid fa-chevron-down text-[9px] text-zinc-500 absolute right-3 pointer-events-none group-hover:text-zinc-300 transition-colors"></i>
                 </div>
                 
-                <div class="flex bg-dark-input border border-dark-border rounded-xl p-1">
+                <div class="flex bg-dark-input border border-dark-border rounded-xl p-1 shadow-sm hidden sm:flex">
                     <button onclick="exportCurrentChat('markdown')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors" title="Export Markdown">
-                        <i class="fa-brands fa-markdown text-xs"></i>
+                        <i class="fa-brands fa-markdown text-[13px]"></i>
+                    </button>
+                    <button onclick="exportCurrentChat('json')" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-blue-400 transition-colors" title="Export JSON Sesi">
+                        <i class="fa-solid fa-file-code text-[12px]"></i>
                     </button>
                     <button onclick="window.print()" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-emerald-400 transition-colors" title="Cetak PDF">
-                        <i class="fa-solid fa-print text-xs"></i>
+                        <i class="fa-solid fa-print text-[13px]"></i>
                     </button>
                 </div>
             </div>
@@ -202,251 +246,389 @@
         <div id="chatScrollArea" class="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col scroll-smooth relative" onscroll="handleScroll()">
             
             <!-- Hero Section -->
-            <div id="welcomeHero" class="max-w-2xl mx-auto my-auto py-8 w-full animate-fade-in flex flex-col items-center justify-center text-center">
-                <div class="flex flex-col items-center mb-6">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand/20 to-rose-950/40 border border-brand/30 flex items-center justify-center text-brand text-2xl mb-4 shadow-neon">
-                        <i class="fa-solid fa-brain"></i>
+            <div id="welcomeHero" class="max-w-3xl mx-auto my-auto py-8 w-full animate-fade-in flex flex-col items-center justify-center text-center">
+                <div class="relative flex flex-col items-center mb-8 animate-float-slow">
+                    <div class="absolute inset-0 bg-brand/20 blur-[60px] rounded-full w-40 h-40 -z-10"></div>
+                    <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-brand/30 via-rose-800/20 to-black border border-brand/50 flex items-center justify-center text-brand text-3xl mb-5 shadow-neon">
+                        <i class="fa-solid fa-layer-group"></i>
                     </div>
-                    <h2 class="text-2xl md:text-3xl font-inter font-bold text-white mb-2 leading-tight">Multi-Gateway AI Router.<br>Enterprise Grade 2026.</h2>
-                    <p class="text-zinc-400 text-xs md:text-sm max-w-md mx-auto">Lampirkan foto/file data/dokumen atau pilih model untuk memulai percakapan instan.</p>
+                    <h2 class="text-3xl md:text-5xl font-inter font-extrabold text-white mb-3 tracking-tight">Enterprise Multi-Gateway.<br><span class="bg-gradient-to-r from-brand via-rose-400 to-amber-400 bg-clip-text text-transparent">Smart Resilient Engine.</span></h2>
+                    <p class="text-zinc-400 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">Sistem dilengkapi dengan Auto-Fallback Mesh, Parameter Control, & Real-time Health Checker. Pilih akselerator AI favorit Anda.</p>
                 </div>
                 
-                <div class="w-full max-w-[480px] bg-[#0c0c0e] border border-zinc-800 rounded-2xl shadow-panel overflow-hidden font-mono text-[12px] text-left mx-auto">
-                    <div class="flex items-center px-4 py-3 bg-[#141416] border-b border-zinc-800">
-                        <div class="flex gap-1.5">
-                            <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
-                            <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
-                            <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
+                <!-- Quick Starter Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 w-full max-w-2xl text-left">
+                    <button onclick="useSnippet('Buat arsitektur backend REST API modern dengan Node.js/Python beserta middleware keamanan standar OWASP.')" class="p-4 rounded-2xl bg-dark-panel/90 hover:bg-zinc-900/90 border border-dark-border hover:border-brand/50 transition-all shadow-md group flex items-start gap-3.5 text-left">
+                        <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-brand text-lg shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-code"></i>
                         </div>
-                        <div class="flex-1 text-center text-zinc-400 text-[11px] font-semibold">cluster-status.sh</div>
-                    </div>
-                    <div class="p-5 space-y-2.5">
-                        <div class="flex items-center gap-2 text-emerald-400 font-medium"><span class="text-emerald-500">$</span> akashiro cluster --verify-all</div>
-                        <div class="text-zinc-300 text-[11px] space-y-1.5 pl-2">
-                            <div class="text-blue-400">✓ InternAI Custom / Manual Gateway [Online]</div>
-                            <div>✓ Bansos Gateway Cluster [Online]</div>
-                            <div>✓ InternAI Discovery Mesh [Online]</div>
-                            <div>✓ Dahl Global Inference [Online]</div>
-                            <div>✓ Rassya Edge Router [Online]</div>
-                            <div>✓ InternAI Vision / V2 [Online]</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white mb-1 group-hover:text-brand transition-colors">Backend Architecture</h4>
+                            <p class="text-[11px] text-zinc-400 leading-snug">Rancang arsitektur API modern & middleware OWASP.</p>
                         </div>
-                        <div class="text-emerald-400 font-bold pt-1">All multi-gateway nodes operational.</div>
-                    </div>
+                    </button>
+
+                    <button onclick="useSnippet('Lakukan analisis audit keamanan penuh dan berikan rekomendasi patch untuk pencegahan XSS dan SQL Injection.')" class="p-4 rounded-2xl bg-dark-panel/90 hover:bg-zinc-900/90 border border-dark-border hover:border-emerald-500/50 transition-all shadow-md group flex items-start gap-3.5 text-left">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-lg shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">Security Audit Code</h4>
+                            <p class="text-[11px] text-zinc-400 leading-snug">Pindai celah keamanan kode dan remediasi terpandu.</p>
+                        </div>
+                    </button>
+
+                    <button onclick="useSnippet('Berikan skrip otomatisasi bash/python untuk manajemen server Linux VPS, Nginx reverse proxy, dan SSL cert.')" class="p-4 rounded-2xl bg-dark-panel/90 hover:bg-zinc-900/90 border border-dark-border hover:border-cyan-500/50 transition-all shadow-md group flex items-start gap-3.5 text-left">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-lg shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-server"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white mb-1 group-hover:text-cyan-400 transition-colors">Linux VPS Automation</h4>
+                            <p class="text-[11px] text-zinc-400 leading-snug">Skrip konfigurasi Nginx reverse proxy & SSL.</p>
+                        </div>
+                    </button>
+
+                    <button onclick="useSnippet('Jelaskan konsep Transformer Model, Self-Attention Mechanism, dan implementasinya dalam persamaan matematika.')" class="p-4 rounded-2xl bg-dark-panel/90 hover:bg-zinc-900/90 border border-dark-border hover:border-amber-500/50 transition-all shadow-md group flex items-start gap-3.5 text-left">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-lg shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white mb-1 group-hover:text-amber-400 transition-colors">Deep AI Concepts</h4>
+                            <p class="text-[11px] text-zinc-400 leading-snug">Penjelasan matematis Transformer & Self-Attention.</p>
+                        </div>
+                    </button>
                 </div>
             </div>
 
             <div id="chatMessagesList" class="flex flex-col space-y-6 w-full max-w-4xl mx-auto pb-6"></div>
-            <div class="h-32 shrink-0"></div> 
+            <div class="h-40 md:h-44 shrink-0"></div> 
         </div>
 
-        <button id="scrollBtn" onclick="forceScrollBottom()" class="absolute bottom-[110px] right-6 md:right-10 w-10 h-10 rounded-full bg-dark-input border border-dark-border text-zinc-400 hover:text-white hover:border-brand shadow-float flex items-center justify-center z-20">
-            <i class="fa-solid fa-arrow-down text-xs"></i>
+        <!-- Float Scroll Button -->
+        <button id="scrollBtn" onclick="forceScrollBottom()" class="absolute bottom-[130px] right-6 md:right-10 w-11 h-11 rounded-full bg-dark-panel border border-dark-border text-zinc-400 hover:text-white hover:border-brand hover:shadow-neon transition-all flex items-center justify-center z-20 shadow-float backdrop-blur-md" title="Gulir ke Bawah">
+            <i class="fa-solid fa-arrow-down text-sm"></i>
         </button>
 
-        <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-30 pointer-events-none">
+        <!-- Input Area Container -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-dark-bg via-dark-bg/95 to-transparent z-30 pointer-events-none pb-safe">
             <form id="chatForm" onsubmit="handleChatSubmit(event)" class="max-w-4xl mx-auto flex flex-col relative pointer-events-auto">
                 
-                <!-- Attached File Preview Container -->
-                <div id="filePreviewContainer" class="hidden mb-2 p-2 px-3 rounded-xl bg-dark-panel border border-dark-border flex items-center justify-between text-xs font-mono animate-fade-in">
-                    <div class="flex items-center gap-2 truncate text-zinc-300">
-                        <i id="fileIconType" class="fa-solid fa-file-lines text-brand"></i>
-                        <span id="fileNameDisplay" class="truncate"></span>
-                        <span id="fileSizeDisplay" class="text-[10px] text-zinc-500"></span>
+                <div id="filePreviewContainer" class="hidden mb-3 p-2.5 px-4 rounded-xl bg-dark-panel/90 backdrop-blur-md border border-dark-border flex items-center justify-between text-xs font-mono animate-slide-up-fade shadow-lg">
+                    <div class="flex items-center gap-3 truncate text-zinc-300">
+                        <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0">
+                            <i id="fileIconType" class="fa-solid fa-file-lines text-brand text-sm"></i>
+                        </div>
+                        <div class="flex flex-col truncate">
+                            <span id="fileNameDisplay" class="truncate font-semibold text-zinc-200"></span>
+                            <span id="fileSizeDisplay" class="text-[10px] text-zinc-500"></span>
+                        </div>
                     </div>
-                    <button type="button" onclick="removeAttachedFile()" class="text-zinc-500 hover:text-rose-400 p-1"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" onclick="removeAttachedFile()" class="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"><i class="fa-solid fa-xmark text-sm"></i></button>
                 </div>
 
-                <div id="inputContainer" class="glass-input rounded-2xl p-2 flex items-end shadow-panel relative">
-                    
-                    <!-- Hidden File Input -->
+                <div id="inputContainer" class="glass-input-wrapper rounded-2xl p-2.5 flex items-end shadow-panel relative" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDropFile(event)">
                     <input type="file" id="fileUploadInput" class="hidden" onchange="handleFileSelected(event)">
-                    <button type="button" onclick="document.getElementById('fileUploadInput').click()" class="h-10 w-10 mb-1 ml-1 rounded-xl bg-dark-panel border border-dark-border text-zinc-400 hover:text-white hover:border-zinc-600 transition-all flex items-center justify-center shrink-0" title="Upload Gambar / Dokumen / Kode">
+                    <button type="button" onclick="document.getElementById('fileUploadInput').click()" class="h-10 w-10 mb-1 ml-1 rounded-xl bg-zinc-800/50 border border-zinc-700/50 text-zinc-400 hover:text-white hover:bg-zinc-700 transition-all flex items-center justify-center shrink-0" title="Upload / Drag Berkas">
                         <i class="fa-solid fa-paperclip text-sm"></i>
                     </button>
 
-                    <textarea id="chatInput" rows="1" placeholder="Ketik perintah atau tanyakan sesuatu... (Shift+Enter: Baris Baru)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none resize-none max-h-[200px] min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed font-sans" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
+                    <textarea id="chatInput" rows="1" placeholder="Ketik instruksi... (Shift+Enter: Baris Baru, Ctrl+Enter: Kirim)" class="flex-1 bg-transparent border-none text-[13px] md:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none resize-none max-h-[250px] min-h-[44px] px-4 py-3 no-scrollbar leading-relaxed font-sans" onkeydown="handleInputKeydown(event)" oninput="handleInputAutoResize(event)"></textarea>
                     
                     <div class="flex items-center gap-2 p-1 shrink-0">
-                        <button type="button" id="voiceBtn" onclick="AkaShiroVoice.toggleDictation()" class="flex h-10 w-10 rounded-xl bg-dark-panel border border-dark-border text-zinc-400 hover:text-brand transition-all items-center justify-center group" title="Dikte Suara">
+                        <button type="button" id="voiceBtn" onclick="AkaShiroVoice.toggleDictation()" class="flex h-10 w-10 rounded-xl bg-zinc-800/50 border border-zinc-700/50 text-zinc-400 hover:text-brand hover:bg-zinc-800 transition-all items-center justify-center group" title="Dikte Suara">
                             <i id="voiceIcon" class="fa-solid fa-microphone text-sm"></i>
                         </button>
-                        <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 rounded-xl bg-zinc-800 text-rose-400 border border-zinc-700 transition-all items-center justify-center" title="Hentikan">
+                        <button type="button" id="stopBtn" onclick="abortGeneration()" class="hidden h-10 w-10 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30 transition-all items-center justify-center" title="Hentikan Proses">
                             <i class="fa-solid fa-square text-xs"></i>
                         </button>
-                        <button type="submit" id="sendBtn" class="h-10 w-10 flex items-center justify-center rounded-xl bg-white text-black hover:bg-zinc-200 transition-all shadow-md active:scale-[0.85]">
+                        <button type="submit" id="sendBtn" class="h-10 w-10 flex items-center justify-center rounded-xl bg-white text-black hover:bg-zinc-200 transition-all shadow-[0_4px_10px_rgba(255,255,255,0.2)] active:scale-[0.9]">
                             <i class="fa-solid fa-arrow-up text-sm"></i>
                         </button>
                     </div>
                 </div>
                 
-                <div class="flex justify-between items-center px-3 mt-2.5 text-[10px] font-mono text-zinc-500 select-none hidden md:flex">
-                    <span id="charCount" class="bg-dark-panel border border-dark-border px-2 py-0.5 rounded text-zinc-400">0 chars</span>
-                    <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-emerald-500"></i> AkaShiro Secure Multi-Gateway & Vision Module Aktif</span>
+                <div class="flex justify-between items-center px-4 mt-3 text-[10px] font-mono text-zinc-500 select-none hidden md:flex">
+                    <span id="charCount" class="bg-dark-input border border-dark-border px-2.5 py-1 rounded-md text-zinc-400 shadow-sm">0 chars</span>
+                    <span class="flex items-center gap-2 bg-emerald-500/10 text-emerald-400/80 px-3 py-1 rounded-md border border-emerald-500/20"><i class="fa-solid fa-shield-halved text-emerald-500"></i> Akses Enkripsi Node Aktif</span>
                 </div>
             </form>
         </div>
     </main>
 
     <!-- MODAL PROMPT SNIPPETS -->
-    <div id="snippetsModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-dark-panel rounded-2xl border border-dark-border shadow-2xl p-6 space-y-4">
-            <div class="flex justify-between items-center border-b border-dark-border pb-3">
-                <h3 class="font-orbitron font-bold text-sm text-white">Prompt Snippets Cepat</h3>
-                <button onclick="closeModal('snippetsModal')" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <div id="snippetsModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[60] hidden flex items-center justify-center p-4" onclick="if(event.target===this) closeModal('snippetsModal')">
+        <div class="w-full max-w-md bg-dark-panel rounded-2xl border border-dark-border shadow-float p-6 space-y-5">
+            <div class="flex justify-between items-center border-b border-dark-border pb-4">
+                <h3 class="font-orbitron font-bold text-sm text-white flex items-center gap-2"><i class="fa-solid fa-bolt text-brand"></i> Quick Snippets</h3>
+                <button onclick="closeModal('snippetsModal')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-rose-500/20 transition-all"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="space-y-2.5 text-[12px] font-mono">
-                <button onclick="useSnippet('Buatkan struktur arsitektur project web fullstack modern menggunakan Tailwind CSS dan Vanilla JS.')" class="w-full text-left p-3.5 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border text-zinc-300 transition-all flex items-center gap-3">
-                    <i class="fa-solid fa-bolt text-brand"></i> Arsitektur Fullstack Modern
+            <div class="space-y-3 text-[12px] font-mono">
+                <button onclick="useSnippet('Buatkan struktur arsitektur project web fullstack modern menggunakan Tailwind CSS dan Vanilla JS, serta jelaskan peran masing-masing direktori.')" class="w-full text-left p-4 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border hover:border-zinc-600 text-zinc-300 transition-all flex items-start gap-3 group">
+                    <i class="fa-solid fa-code text-brand mt-1 group-hover:scale-110 transition-transform"></i> 
+                    <span><strong class="text-white block mb-1 text-sm font-sans">Fullstack Architecture</strong>Buat struktur folder project modern dengan Tailwind CSS.</span>
                 </button>
-                <button onclick="useSnippet('Analisis dan berikan optimasi keamanan pada skrip JavaScript berikut dari celah XSS dan Injection.')" class="w-full text-left p-3.5 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border text-zinc-300 transition-all flex items-center gap-3">
-                    <i class="fa-solid fa-shield-halved text-emerald-400"></i> Security Audit & Code Review
+                <button onclick="useSnippet('Lakukan analisis mendalam dan berikan optimasi keamanan (Security Audit) pada kode berikut dari potensi kerentanan seperti XSS, SQL Injection, dan IDOR.')" class="w-full text-left p-4 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border hover:border-zinc-600 text-zinc-300 transition-all flex items-start gap-3 group">
+                    <i class="fa-solid fa-shield-halved text-emerald-400 mt-1 group-hover:scale-110 transition-transform"></i> 
+                    <span><strong class="text-white block mb-1 text-sm font-sans">Security Audit Code</strong>Pindai kode dari celah keamanan dan kerentanan standar OWASP.</span>
                 </button>
-                <button onclick="useSnippet('Jelaskan konsep algoritma machine learning atau deep learning secara komprehensif beserta contoh kodenya.')" class="w-full text-left p-3.5 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border text-zinc-300 transition-all flex items-center gap-3">
-                    <i class="fa-solid fa-brain text-cyan-400"></i> Deep Explanation & Algoritma
+                <button onclick="useSnippet('Jelaskan konsep arsitektur Transformer dan mekanisme Self-Attention pada Large Language Model (LLM) beserta implementasi matematis (KaTeX).')" class="w-full text-left p-4 rounded-xl bg-dark-input hover:bg-zinc-800 border border-dark-border hover:border-zinc-600 text-zinc-300 transition-all flex items-start gap-3 group">
+                    <i class="fa-solid fa-brain text-cyan-400 mt-1 group-hover:scale-110 transition-transform"></i> 
+                    <span><strong class="text-white block mb-1 text-sm font-sans">Deep Learning Concept</strong>Penjelasan teknis mekanisme Transformer pada sistem AI.</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL SETTINGS -->
-    <div id="settingsModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-lg bg-dark-panel rounded-2xl border border-dark-border shadow-2xl flex flex-col max-h-[90vh]" id="settingsModalContent">
-            <div class="flex items-center justify-between p-5 border-b border-dark-border bg-dark-input/50 rounded-t-2xl shrink-0">
-                <h3 class="font-orbitron font-bold text-sm text-white">Multi-Gateway Configuration</h3>
-                <button onclick="closeModal('settingsModal')" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <!-- MODAL SETTINGS (TERINTEGRASI HEALTH CHECKER & PARAMETER SLIDERS) -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[60] hidden flex items-center justify-center p-4 lg:p-0" onclick="if(event.target===this) closeModal('settingsModal')">
+        <div class="w-full max-w-2xl bg-dark-panel rounded-2xl border border-dark-border shadow-float flex flex-col max-h-[90vh] lg:max-h-[85vh]" id="settingsModalContent">
+            <div class="flex items-center justify-between p-5 md:px-7 border-b border-dark-border bg-black/20 rounded-t-2xl shrink-0">
+                <h3 class="font-orbitron font-bold text-sm text-white flex items-center gap-2.5"><i class="fa-solid fa-network-wired text-brand"></i> Cluster & Model Configuration</h3>
+                <button onclick="closeModal('settingsModal')" class="w-8 h-8 flex items-center justify-center rounded-lg bg-zinc-900 text-zinc-400 hover:text-white hover:bg-rose-500/20 transition-all"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="p-6 space-y-4 text-[11px] font-mono overflow-y-auto no-scrollbar flex-1">
-                <div class="bg-dark-input p-3.5 rounded-xl border border-blue-900/50 shadow-[0_0_15px_rgba(59,130,246,0.15)] space-y-2">
-                    <span class="text-blue-400 font-bold block">Gateway 6: InternAI V3 (Manual / Custom API)</span>
-                    <label class="text-zinc-500 text-[10px] block">Base URL</label>
-                    <input type="text" id="gw6Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]" placeholder="Masukkan Base URL Custom...">
-                    <label class="text-zinc-500 text-[10px] block">API Key</label>
-                    <input type="password" id="gw6Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]" placeholder="Masukkan API Key Custom...">
+            <div class="p-5 md:px-7 py-6 space-y-6 text-[11px] font-mono overflow-y-auto no-scrollbar flex-1 bg-[#07070a]">
+                
+                <!-- System Persona & Preset Roles -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-zinc-200 font-semibold font-sans text-xs flex items-center gap-2"><i class="fa-solid fa-mask text-brand"></i> System Persona (Prompt Dasar)</label>
+                        <span class="text-[10px] text-zinc-500">Preset Peran</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="applyPersonaPreset('coder')" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] border border-zinc-700 transition-colors"><i class="fa-solid fa-code text-brand"></i> Code Expert</button>
+                        <button type="button" onclick="applyPersonaPreset('security')" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] border border-zinc-700 transition-colors"><i class="fa-solid fa-shield-halved text-emerald-400"></i> Penetration Tester</button>
+                        <button type="button" onclick="applyPersonaPreset('network')" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] border border-zinc-700 transition-colors"><i class="fa-solid fa-network-wired text-cyan-400"></i> Network Specialist</button>
+                        <button type="button" onclick="applyPersonaPreset('standard')" class="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] border border-zinc-700 transition-colors"><i class="fa-solid fa-rotate-left"></i> Standard</button>
+                    </div>
+                    <textarea id="systemPersonaInput" rows="2" class="w-full bg-dark-input border border-dark-border rounded-xl p-3 text-zinc-300 focus:outline-none focus:border-zinc-500 focus:bg-zinc-900 transition-all text-[12px] leading-relaxed shadow-inner"></textarea>
                 </div>
 
-                <div class="bg-dark-input p-3.5 rounded-xl border border-purple-900/50 shadow-[0_0_15px_rgba(168,85,247,0.15)] space-y-2">
-                    <span class="text-purple-400 font-bold block">Gateway 5: InternAI V2</span>
-                    <input type="text" id="gw5Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                    <input type="password" id="gw5Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
+                <!-- Parameter Tuning Sliders -->
+                <div class="p-4 bg-dark-input/60 rounded-xl border border-dark-border space-y-4">
+                    <span class="text-zinc-300 font-bold block text-xs font-sans flex items-center gap-2"><i class="fa-solid fa-sliders text-amber-400"></i> Parameter Model AI</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-zinc-400 text-[10px]">
+                                <span>Kreativitas (Temperature)</span>
+                                <span id="tempValueDisplay" class="font-bold text-amber-400">0.7</span>
+                            </div>
+                            <input type="range" id="tempInput" min="0" max="1" step="0.05" value="0.7" oninput="document.getElementById('tempValueDisplay').innerText = this.value" class="w-full accent-brand bg-zinc-800 h-1.5 rounded-lg cursor-pointer">
+                        </div>
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-zinc-400 text-[10px]">
+                                <span>Maksimal Output (Max Tokens)</span>
+                                <span id="tokensValueDisplay" class="font-bold text-cyan-400">4096</span>
+                            </div>
+                            <select id="maxTokensInput" onchange="document.getElementById('tokensValueDisplay').innerText = this.value" class="w-full bg-black/40 border border-dark-border rounded-lg px-2.5 py-1 text-zinc-200 text-[10px] focus:outline-none">
+                                <option value="2048">2048 Tokens</option>
+                                <option value="4096" selected>4096 Tokens</option>
+                                <option value="8192">8192 Tokens</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
-                    <span class="text-rose-400 font-bold block">Gateway 1: Bansos Server</span>
-                    <input type="text" id="gw1Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                    <input type="password" id="gw1Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                </div>
-                <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
-                    <span class="text-amber-400 font-bold block">Gateway 2: InternAI Discovery (Lama)</span>
-                    <input type="text" id="gw2Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                    <input type="password" id="gw2Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                </div>
-                <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
-                    <span class="text-cyan-400 font-bold block">Gateway 3: Dahl Global</span>
-                    <input type="text" id="gw3Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                    <input type="password" id="gw3Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                </div>
-                <div class="bg-dark-input p-3.5 rounded-xl border border-dark-border space-y-2">
-                    <span class="text-emerald-400 font-bold block">Gateway 4: Rassya Router</span>
-                    <input type="text" id="gw4Url" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                    <input type="password" id="gw4Key" class="w-full bg-dark-panel border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px]">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-zinc-300 font-semibold">System Persona</label>
-                    <textarea id="systemPersonaInput" rows="3" class="w-full bg-dark-input border border-dark-border rounded-xl p-3 text-zinc-300 focus:outline-none text-[12px]"></textarea>
+
+                <!-- Gateways Configuration List -->
+                <div class="space-y-4">
+                    
+                    <!-- Gateway 6: Custom / Manual -->
+                    <div class="bg-dark-input/80 p-4 rounded-xl border border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.08)] space-y-3 relative overflow-hidden group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-blue-400 font-bold block text-xs tracking-wide flex items-center gap-2">
+                                <i class="fa-solid fa-server"></i> Gateway 6: InternAI V3 (Manual / Custom)
+                            </span>
+                            <button type="button" onclick="testGatewayConnection('internai_v3')" class="text-[9px] bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 border border-blue-500/30 px-2 py-0.5 rounded-md transition-colors"><i class="fa-solid fa-wifi"></i> Ping Test</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            <div class="space-y-1">
+                                <label class="text-zinc-500 text-[10px] block">Endpoint Base URL</label>
+                                <input type="text" id="gw6Url" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-200 text-[10px] focus:outline-none focus:border-blue-500/50" placeholder="https://...">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-zinc-500 text-[10px] block">API Key (Bearer Token)</label>
+                                <input type="password" id="gw6Key" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-200 text-[10px] focus:outline-none focus:border-blue-500/50" placeholder="sk-...">
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-zinc-400 text-[10px] block font-semibold flex items-center justify-between">
+                                <span>Custom Model ID (Pisahkan dengan koma)</span>
+                            </label>
+                            <input type="text" id="gw6Models" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-200 text-[10px] font-mono focus:outline-none focus:border-blue-500/50" placeholder="free, qwen3.8-27b, minimax-m3, deepseek-v4-pro-0813">
+                        </div>
+                    </div>
+
+                    <!-- Gateway 5 -->
+                    <div class="bg-dark-input p-4 rounded-xl border border-purple-500/20 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-purple-400 font-bold block tracking-wide text-xs">Gateway 5: InternAI V2</span>
+                            <button type="button" onclick="testGatewayConnection('internai_v2')" class="text-[9px] bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-md transition-colors"><i class="fa-solid fa-wifi"></i> Ping Test</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            <input type="text" id="gw5Url" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="Endpoint URL">
+                            <input type="password" id="gw5Key" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="API Key">
+                        </div>
+                        <input type="text" id="gw5Models" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] font-mono focus:outline-none" placeholder="Model ID: qwen3.8-27b, minimax-m3">
+                    </div>
+
+                    <!-- Gateway 1 -->
+                    <div class="bg-dark-input p-4 rounded-xl border border-rose-500/20 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-rose-400 font-bold block tracking-wide text-xs">Gateway 1: Bansos Server</span>
+                            <button type="button" onclick="testGatewayConnection('bansos')" class="text-[9px] bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded-md transition-colors"><i class="fa-solid fa-wifi"></i> Ping Test</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            <input type="text" id="gw1Url" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="Endpoint URL">
+                            <input type="password" id="gw1Key" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="API Key">
+                        </div>
+                        <input type="text" id="gw1Models" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] font-mono focus:outline-none" placeholder="Model ID: nemotron-3-ultra, gpt-oss120b, free">
+                    </div>
+
+                    <!-- Gateway 2 -->
+                    <div class="bg-dark-input p-4 rounded-xl border border-amber-500/20 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-amber-400 font-bold block tracking-wide text-xs">Gateway 2: InternAI Legacy</span>
+                            <button type="button" onclick="testGatewayConnection('internai')" class="text-[9px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-md transition-colors"><i class="fa-solid fa-wifi"></i> Ping Test</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            <input type="text" id="gw2Url" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="Endpoint URL">
+                            <input type="password" id="gw2Key" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="API Key">
+                        </div>
+                        <input type="text" id="gw2Models" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] font-mono focus:outline-none" placeholder="Model ID: qwen3.8-27b, minimax-m3">
+                    </div>
+
+                    <!-- Gateway 3 -->
+                    <div class="bg-dark-input p-4 rounded-xl border border-cyan-500/20 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-cyan-400 font-bold block tracking-wide text-xs">Gateway 3: Dahl Global</span>
+                            <button type="button" onclick="testGatewayConnection('dahl')" class="text-[9px] bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded-md transition-colors"><i class="fa-solid fa-wifi"></i> Ping Test</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            <input type="text" id="gw3Url" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="Endpoint URL">
+                            <input type="password" id="gw3Key" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="API Key">
+                        </div>
+                        <input type="text" id="gw3Models" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] font-mono focus:outline-none" placeholder="Model ID: MiniMaxAI/MiniMax-M2.7">
+                    </div>
+
+                    <!-- Gateway 4 -->
+                    <div class="bg-dark-input p-4 rounded-xl border border-emerald-500/20 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-emerald-400 font-bold block tracking-wide text-xs">Gateway 4: Rassya Router</span>
+                            <button type="button" onclick="testGatewayConnection('rassya')" class="text-[9px] bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-md transition-colors"><i class="fa-solid fa-wifi"></i> Ping Test</button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                            <input type="text" id="gw4Url" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="Endpoint URL">
+                            <input type="password" id="gw4Key" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] focus:outline-none" placeholder="API Key">
+                        </div>
+                        <input type="text" id="gw4Models" class="w-full bg-black/40 border border-dark-border rounded-lg px-3 py-2 text-zinc-300 text-[10px] font-mono focus:outline-none" placeholder="Model ID: auto-router, deepseek-v4-flash-0731">
+                    </div>
+
                 </div>
             </div>
             
-            <div class="p-5 border-t border-dark-border bg-dark-input/50 rounded-b-2xl shrink-0 flex gap-3">
-                <!-- Tombol Reset Keamanan dengan Password Ditambahkan -->
-                <button onclick="resetSettingsWithPassword()" class="w-1/3 py-3 rounded-xl bg-dark-panel border border-rose-900 text-rose-500 font-bold text-[10px] font-mono hover:bg-rose-950 transition-all shadow-md flex items-center justify-center gap-2" title="Hapus Base URL & API Key">
-                    <i class="fa-solid fa-lock"></i> RESET KUNCI
+            <div class="p-5 md:px-7 border-t border-dark-border bg-black/30 rounded-b-2xl shrink-0 flex gap-3">
+                <button onclick="resetSettingsWithPassword()" class="w-1/3 py-3.5 rounded-xl bg-[#09090b] border border-rose-900/50 hover:border-rose-500 text-rose-500 hover:text-white hover:bg-rose-600 font-bold text-[10px] font-mono transition-all shadow-md flex items-center justify-center gap-2 group" title="Hapus Base URL & API Key">
+                    <i class="fa-solid fa-lock group-hover:scale-110 transition-transform"></i> RESET
                 </button>
-                <button onclick="saveSettings()" class="w-2/3 py-3 rounded-xl bg-white text-black font-bold text-xs font-mono hover:bg-zinc-200 transition-all shadow-md">
-                    SIMPAN KONFIGURASI
+                <button onclick="saveSettings()" class="w-2/3 py-3.5 rounded-xl bg-zinc-100 text-zinc-900 font-bold text-xs font-mono hover:bg-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all active:scale-[0.98]">
+                    SIMPAN & APPLY
                 </button>
             </div>
         </div>
     </div>
 
     <script>
+        function parseModels(str, prefixKey, defaultList) {
+            if (!str || !str.trim()) return defaultList;
+            const items = str.split(',').map(s => s.trim()).filter(Boolean);
+            if (items.length === 0) return defaultList;
+            return items.map(id => ({
+                id: id,
+                name: `[${prefixKey}] ${id}`
+            }));
+        }
+
+        const DEFAULT_MODELS = {
+            gw6: [
+                { id: 'qwen3.8-27b', name: '[V3 Custom] Qwen 3.8 27B' },
+                { id: 'minimax-m3', name: '[V3 Custom] Minimax M3' },
+                { id: 'kimi-k2.6', name: '[V3 Custom] Kimi K2.6' },
+                { id: 'free', name: '[V3 Custom] Free Auto-Router' }
+            ],
+            gw5: [
+                { id: 'qwen3.8-27b', name: '[V2] Qwen 3.8 27B' },
+                { id: 'minimax-m3', name: '[V2] Minimax M3' }
+            ],
+            gw1: [
+                { id: 'free', name: '[Bansos] Free Auto-Router' },
+                { id: 'nemotron-3-ultra', name: '[Bansos] Nemotron 3 Ultra' }
+            ],
+            gw2: [
+                { id: 'qwen3.8-27b', name: '[InternAI] Qwen 3.8 27B' }
+            ],
+            gw3: [
+                { id: 'MiniMaxAI/MiniMax-M2.7', name: '[Dahl] MiniMax M2.7' }
+            ],
+            gw4: [
+                { id: 'auto-router', name: '[Rassya] Auto-Router Default' }
+            ]
+        };
+
         const GATEWAYS = {
             internai_v3: {
+                id: 'gw6',
                 name: "InternAI V3 (Manual / Custom)",
                 url: localStorage.getItem('akashiro_gw6_url') || "https://discovery-api.intern-ai.org.cn/v1",
                 key: localStorage.getItem('akashiro_gw6_key') || "sk-b93e211fd50f42f813e96b39e1eb05a1026b78ef806da27746091fd39f7a79db",
-                models: [
-                    { id: 'qwen3.8-27b', name: '[V3 Custom] Qwen 3.8 27B' },
-                    { id: 'minimax-m3', name: '[V3 Custom] Minimax M3' },
-                    { id: 'kimi-k2.6', name: '[V3 Custom] Kimi K2.6' },
-                    { id: 'intern-s2', name: '[V3 Custom] Intern S2' },
-                    { id: 'intern-decision-4b', name: '[V3 Custom] Decision 4B' },
-                    { id: 'glm-5.3', name: '[V3 Custom] GLM 5.3' },
-                    { id: 'deepseek-v4-pro-0813', name: '[V3 Custom] DeepSeek V4 Pro' },
-                    { id: 'deepseek-v4-flash-vision', name: '[V3 Custom Vision] DeepSeek Flash' },
-                    { id: 'deepseek-v4-flash-0731', name: '[V3 Custom] DeepSeek Flash 0731' },
-                    { id: 'Atria-Dawn-Preview', name: '[V3 Custom] Atria Dawn Preview' },
-                    { id: 'Atria-Dawn', name: '[V3 Custom] Atria Dawn' },
-                    { id: 'Agents-A1', name: '[V3 Custom] Agents A1' }
-                ]
+                models: parseModels(localStorage.getItem('akashiro_gw6_models'), "V3 Custom", DEFAULT_MODELS.gw6)
             },
             internai_v2: {
+                id: 'gw5',
                 name: "InternAI V2",
                 url: localStorage.getItem('akashiro_gw5_url') || "https://discovery-api.intern-ai.org.cn/v1",
                 key: localStorage.getItem('akashiro_gw5_key') || "sk-7bc9c56003496f2696ebdd1bb7e087ba2f60902153f4c0d38246ccc5174ff1ad",
-                models: [
-                    { id: 'qwen3.8-27b', name: '[V2] Qwen 3.8 27B' },
-                    { id: 'minimax-m3', name: '[V2] Minimax M3' },
-                    { id: 'deepseek-v4-pro-0813', name: '[V2] DeepSeek V4 Pro' }
-                ]
+                models: parseModels(localStorage.getItem('akashiro_gw5_models'), "V2", DEFAULT_MODELS.gw5)
             },
             bansos: {
+                id: 'gw1',
                 name: "Bansos Gateway",
                 url: localStorage.getItem('akashiro_gw1_url') || "https://bansos.wahyu-hidayat.my.id/v1",
                 key: localStorage.getItem('akashiro_gw1_key') || "sk-7e55a8f3c7fb044f-qoce3o-317c6884",
-                models: [
-                    { id: 'nemotron-3-ultra', name: '[Bansos] Nemotron 3 Ultra' },
-                    { id: 'nemotron-3-super', name: '[Bansos] Nemotron 3 Super' },
-                    { id: 'nemotron-3-nano', name: '[Bansos] Nemotron 3 Nano' },
-                    { id: 'gpt-oss120b', name: '[Bansos] GPT-OSS 120B' },
-                    { id: 'laguna-s-2.1', name: '[Bansos] Laguna S 2.1' },
-                    { id: 'free', name: '[Bansos] Free Auto-Router' }
-                ]
+                models: parseModels(localStorage.getItem('akashiro_gw1_models'), "Bansos", DEFAULT_MODELS.gw1)
             },
             internai: {
+                id: 'gw2',
                 name: "InternAI Gateway (Lama)",
                 url: localStorage.getItem('akashiro_gw2_url') || "https://discovery-api.intern-ai.org.cn/v1",
                 key: localStorage.getItem('akashiro_gw2_key') || "sk-7e168a9a7c1fd296e88fc65485fd9037cf843bb197af8ee28be54016b4d724fc",
-                models: [
-                    { id: 'qwen3.8-27b', name: '[InternAI] Qwen 3.8 27B' },
-                    { id: 'minimax-m3', name: '[InternAI] Minimax M3' }
-                ]
+                models: parseModels(localStorage.getItem('akashiro_gw2_models'), "InternAI", DEFAULT_MODELS.gw2)
             },
             dahl: {
+                id: 'gw3',
                 name: "Dahl Global Gateway",
                 url: localStorage.getItem('akashiro_gw3_url') || "https://inference.dahl.global/v1",
                 key: localStorage.getItem('akashiro_gw3_key') || "dahl_KY4weS1zsNq9sMeNmrzECGYgXZ8s9JNbg",
-                models: [
-                    { id: 'MiniMaxAI/MiniMax-M2.7', name: '[Dahl] MiniMax M2.7' },
-                    { id: 'deepseek-ai/DeepSeek-V4-Flash-0731', name: '[Dahl] DeepSeek V4 Flash' }
-                ]
+                models: parseModels(localStorage.getItem('akashiro_gw3_models'), "Dahl", DEFAULT_MODELS.gw3)
             },
             rassya: {
+                id: 'gw4',
                 name: "Rassya Router Gateway",
                 url: localStorage.getItem('akashiro_gw4_url') || "https://router.rassya.eu.cc/v1",
                 key: localStorage.getItem('akashiro_gw4_key') || "sk-8c0f7d2525033292-lh9fwx-ae1b9af1",
-                models: [
-                    { id: 'auto-router', name: '[Rassya] Auto-Router Default' },
-                    { id: 'deepseek-v4-flash-0731', name: '[Rassya] DeepSeek Flash Router' }
-                ]
+                models: parseModels(localStorage.getItem('akashiro_gw4_models'), "Rassya", DEFAULT_MODELS.gw4)
             }
         };
 
         const PERSONAS = {
-            standard: "Anda adalah AkaShiro AI Multi-Gateway, Asisten Enterprise cerdas dan andal. Jawab menggunakan bahasa Indonesia dengan Markdown rapi."
+            standard: "Anda adalah AkaShiro AI Multi-Gateway, Asisten Enterprise cerdas dan andal. Jawab menggunakan bahasa Indonesia dengan format Markdown yang rapi dan terstruktur.",
+            coder: "Anda adalah AkaShiro Senior Software Architect & Fullstack Code Expert. Berikan solusi kode yang bersih, aman, terstruktur, dan efisien dengan penjelasan teknis.",
+            security: "Anda adalah AkaShiro Cybersecurity Auditor & Penetration Tester. Analisis kerentanan sistem, OWASP top 10, celah keamanan kode, dan cara remediasinya.",
+            network: "Anda adalah AkaShiro Network & Infrastructure Engineer. Fokus pada arsitektur jaringan, Linux VPS, tunneling (SSH, V2Ray, UDP), dan skrip automasi server."
         };
 
         let appState = {
-            temperature: 0.7,
+            temperature: parseFloat(localStorage.getItem('akashiro_temp_v10')) || 0.7,
+            maxTokens: parseInt(localStorage.getItem('akashiro_tokens_v10')) || 4096,
             systemPersona: localStorage.getItem('akashiro_persona_v10') || PERSONAS.standard,
             currentModel: localStorage.getItem('akashiro_model_v10') || 'qwen3.8-27b',
             chats: JSON.parse(localStorage.getItem('akashiro_chats_v10')) || [],
@@ -461,26 +643,68 @@
         let attachedFileName = null;
         let attachedFileType = null;
 
+        marked.setOptions({ breaks: true, gfm: true });
+
+        // Event listener Global Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('snippetsModal');
+                closeModal('settingsModal');
+                toggleSidebar(false);
+            } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'o') {
+                e.preventDefault();
+                startNewChat();
+            } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                const search = document.getElementById('searchHistory');
+                if (search) {
+                    toggleSidebar(true);
+                    search.focus();
+                }
+            }
+        });
+
+        // Handler Drag and Drop File
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('inputContainer').classList.add('drag-active');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('inputContainer').classList.remove('drag-active');
+        }
+
+        function handleDropFile(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('inputContainer').classList.remove('drag-active');
+            
+            const files = e.dataTransfer?.files;
+            if (files && files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
         function handleFileSelected(event) {
             const file = event.target.files[0];
-            if (!file) return;
-            
+            if (file) processFile(file);
+        }
+
+        function processFile(file) {
             attachedFileName = file.name;
             attachedFileType = file.type;
             
             const reader = new FileReader();
             reader.onload = function(e) {
                 attachedFileContent = e.target.result;
-                
                 document.getElementById('fileNameDisplay').innerText = attachedFileName;
                 document.getElementById('fileSizeDisplay').innerText = `(${(file.size / 1024).toFixed(1)} KB)`;
                 
                 const icon = document.getElementById('fileIconType');
-                if(attachedFileType.startsWith('image/')) {
-                    icon.className = 'fa-solid fa-image text-purple-400';
-                } else {
-                    icon.className = 'fa-solid fa-file-lines text-brand';
-                }
+                icon.className = attachedFileType.startsWith('image/') ? 'fa-solid fa-image text-purple-400 text-sm' : 'fa-solid fa-file-lines text-brand text-sm';
                 
                 document.getElementById('filePreviewContainer').classList.remove('hidden');
                 showToast(`File "${attachedFileName}" berhasil dilampirkan.`, "success");
@@ -501,6 +725,30 @@
             document.getElementById('filePreviewContainer').classList.add('hidden');
         }
 
+        function handleImportChatFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedChat = JSON.parse(e.target.result);
+                    if (importedChat && importedChat.id && Array.isArray(importedChat.messages)) {
+                        appState.chats.unshift(importedChat);
+                        saveChatsToStorage();
+                        loadChatSession(importedChat.id);
+                        showToast(`Sesi "${importedChat.title}" berhasil diimpor!`, "success");
+                    } else {
+                        showToast("Format JSON tidak valid atau merusak struktur sesi.", "error");
+                    }
+                } catch (err) {
+                    showToast("Gagal membaca berkas JSON: " + err.message, "error");
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
         const AkaShiroVoice = (() => {
             let recognition;
             let isRecording = false;
@@ -510,16 +758,25 @@
                 recognition.continuous = false;
                 recognition.interimResults = true;
                 recognition.lang = 'id-ID';
-                recognition.onstart = () => { isRecording = true; document.getElementById('inputContainer').classList.add('recording'); };
+                recognition.onstart = () => { 
+                    isRecording = true; 
+                    document.getElementById('inputContainer').classList.add('recording');
+                    document.getElementById('voiceIcon').className = 'fa-solid fa-microphone-slash text-brand animate-pulse';
+                };
                 recognition.onresult = (e) => {
                     for (let i = e.resultIndex; i < e.results.length; ++i) {
                         if (e.results[i].isFinal) {
                             const input = document.getElementById('chatInput');
                             input.value += e.results[i][0].transcript + ' ';
+                            handleInputAutoResize({ target: input });
                         }
                     }
                 };
-                recognition.onend = () => { isRecording = false; document.getElementById('inputContainer').classList.remove('recording'); };
+                recognition.onend = () => { 
+                    isRecording = false; 
+                    document.getElementById('inputContainer').classList.remove('recording');
+                    document.getElementById('voiceIcon').className = 'fa-solid fa-microphone text-sm';
+                };
             }
             const toggleDictation = () => { if (recognition) { isRecording ? recognition.stop() : recognition.start(); } else { showToast("Speech recognition tidak didukung browser.", "error"); } };
             const playTTS = (btn, text) => {
@@ -527,11 +784,36 @@
                 const cleanText = text.replace(/[#*`_]/g, '');
                 const utt = new SpeechSynthesisUtterance(cleanText); utt.lang = 'id-ID';
                 utt.onend = () => { btn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Baca'; };
-                btn.innerHTML = '<i class="fa-solid fa-stop"></i> Stop'; window.speechSynthesis.speak(utt);
+                btn.innerHTML = '<i class="fa-solid fa-stop text-rose-400"></i> Stop'; window.speechSynthesis.speak(utt);
             };
             return { toggleDictation, playTTS };
         })();
         window.AkaShiroVoice = AkaShiroVoice;
+
+        function copyMessageText(btn, index) {
+            const chat = getCurrentChat();
+            if(!chat || !chat.messages[index]) return;
+            navigator.clipboard.writeText(chat.messages[index].text).then(() => {
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> Disalin';
+                btn.classList.add('border-emerald-500/50', 'text-emerald-400');
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.classList.remove('border-emerald-500/50', 'text-emerald-400');
+                }, 2000);
+            });
+        }
+
+        function deleteSingleMessage(index) {
+            const chat = getCurrentChat();
+            if (!chat || !chat.messages[index]) return;
+            if (confirm("Hapus pesan ini dari riwayat sesi?")) {
+                chat.messages.splice(index, 1);
+                saveChatsToStorage();
+                renderMessages();
+                showToast("Pesan berhasil dihapus.", "success");
+            }
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             setupDOM(); populateModelDropdown();
@@ -541,34 +823,140 @@
         function setupDOM() {
             document.getElementById('gw1Url').value = GATEWAYS.bansos.url;
             document.getElementById('gw1Key').value = GATEWAYS.bansos.key;
+            document.getElementById('gw1Models').value = localStorage.getItem('akashiro_gw1_models') || '';
+
             document.getElementById('gw2Url').value = GATEWAYS.internai.url;
             document.getElementById('gw2Key').value = GATEWAYS.internai.key;
+            document.getElementById('gw2Models').value = localStorage.getItem('akashiro_gw2_models') || '';
+
             document.getElementById('gw3Url').value = GATEWAYS.dahl.url;
             document.getElementById('gw3Key').value = GATEWAYS.dahl.key;
+            document.getElementById('gw3Models').value = localStorage.getItem('akashiro_gw3_models') || '';
+
             document.getElementById('gw4Url').value = GATEWAYS.rassya.url;
             document.getElementById('gw4Key').value = GATEWAYS.rassya.key;
+            document.getElementById('gw4Models').value = localStorage.getItem('akashiro_gw4_models') || '';
+
             document.getElementById('gw5Url').value = GATEWAYS.internai_v2.url;
             document.getElementById('gw5Key').value = GATEWAYS.internai_v2.key;
+            document.getElementById('gw5Models').value = localStorage.getItem('akashiro_gw5_models') || '';
+
             document.getElementById('gw6Url').value = GATEWAYS.internai_v3.url;
             document.getElementById('gw6Key').value = GATEWAYS.internai_v3.key;
+            document.getElementById('gw6Models').value = localStorage.getItem('akashiro_gw6_models') || '';
+
             document.getElementById('systemPersonaInput').value = appState.systemPersona;
+            document.getElementById('tempInput').value = appState.temperature;
+            document.getElementById('tempValueDisplay').innerText = appState.temperature;
+            document.getElementById('maxTokensInput').value = appState.maxTokens;
+            document.getElementById('tokensValueDisplay').innerText = appState.maxTokens;
+        }
+
+        function applyPersonaPreset(type) {
+            if(PERSONAS[type]) {
+                document.getElementById('systemPersonaInput').value = PERSONAS[type];
+                showToast(`Preset Persona "${type.toUpperCase()}" diterapkan.`, 'success');
+            }
+        }
+
+        async function testGatewayConnection(gwKey) {
+            const gw = GATEWAYS[gwKey];
+            if (!gw || !gw.url) {
+                showToast("Gateway URL kosong.", "error");
+                return;
+            }
+            showToast(`Menguji koneksi ke ${gw.name}...`, "info");
+            const start = performance.now();
+            try {
+                const cleanBaseUrl = gw.url.replace(/\/+$/, '');
+                const endpoint = cleanBaseUrl.endsWith('/chat/completions') ? cleanBaseUrl : `${cleanBaseUrl}/chat/completions`;
+                
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${gw.key}` },
+                    body: JSON.stringify({
+                        model: gw.models[0]?.id || 'free',
+                        messages: [{role: 'user', content: 'ping'}],
+                        max_tokens: 5
+                    })
+                });
+                const latency = Math.round(performance.now() - start);
+                if (res.ok) {
+                    showToast(`Online! Latensi ${gw.name}: ${latency}ms`, "success");
+                } else {
+                    showToast(`HTTP ${res.status}: ${gw.name} merespons dengan error.`, "error");
+                }
+            } catch(e) {
+                showToast(`Gagal terhubung ke ${gw.name}: ${e.message}`, "error");
+            }
         }
 
         function populateModelDropdown() {
             const select = document.getElementById('chatModelSelect'); if(!select) return; select.innerHTML = '';
+            let modelFound = false;
+
             Object.keys(GATEWAYS).forEach(k => {
-                const gw = GATEWAYS[k]; const group = document.createElement('optgroup'); group.label = gw.name;
-                gw.models.forEach(m => {
-                    const opt = document.createElement('option'); opt.value = m.id; opt.textContent = m.name;
-                    if(m.id === appState.currentModel) opt.selected = true; group.appendChild(opt);
-                });
-                select.appendChild(group);
+                const gw = GATEWAYS[k]; 
+                if (gw.models && gw.models.length > 0) {
+                    const group = document.createElement('optgroup'); 
+                    group.label = gw.name;
+                    gw.models.forEach(m => {
+                        const opt = document.createElement('option'); 
+                        opt.value = `${k}::${m.id}`; 
+                        opt.textContent = m.name;
+                        if(m.id === appState.currentModel || opt.value === appState.currentModel) {
+                            opt.selected = true; 
+                            modelFound = true;
+                        }
+                        group.appendChild(opt);
+                    });
+                    select.appendChild(group);
+                }
             });
+
+            if (!modelFound && select.options.length > 0) {
+                select.selectedIndex = 0;
+                appState.currentModel = select.value;
+            }
+
+            updateHeaderGatewayBadge();
         }
 
-        function getGatewayForModel(modelId) {
-            for (let k in GATEWAYS) { if (GATEWAYS[k].models.find(m => m.id === modelId)) return GATEWAYS[k]; }
-            return GATEWAYS.internai_v3;
+        function updateHeaderGatewayBadge() {
+            const val = appState.currentModel;
+            const badge = document.getElementById('activeGatewayNameDisplay');
+            if (badge && val) {
+                const parts = val.split('::');
+                const gwKey = parts[0];
+                if (GATEWAYS[gwKey]) {
+                    badge.innerText = GATEWAYS[gwKey].name;
+                }
+            }
+        }
+
+        function getGatewayCandidateList(selectedVal) {
+            let candidates = [];
+            let targetGwKey = null;
+            let targetModelId = selectedVal;
+
+            if (selectedVal.includes('::')) {
+                const parts = selectedVal.split('::');
+                targetGwKey = parts[0];
+                targetModelId = parts[1];
+            }
+
+            if (targetGwKey && GATEWAYS[targetGwKey] && GATEWAYS[targetGwKey].url) {
+                candidates.push({ gw: GATEWAYS[targetGwKey], modelId: targetModelId });
+            }
+
+            Object.keys(GATEWAYS).forEach(k => {
+                if (k !== targetGwKey && GATEWAYS[k].url && GATEWAYS[k].key) {
+                    const fallbackModel = GATEWAYS[k].models[0]?.id || 'free';
+                    candidates.push({ gw: GATEWAYS[k], modelId: fallbackModel });
+                }
+            });
+
+            return candidates;
         }
 
         async function handleChatSubmit(e, isRegen = false) {
@@ -581,7 +969,7 @@
             let finalPromptText = prompt;
             let base64Image = null;
 
-            if (attachedFileContent) {
+            if (attachedFileContent && !isRegen) {
                 if (attachedFileType && attachedFileType.startsWith('image/')) {
                     finalPromptText = prompt ? prompt : "Tolong jelaskan secara detail apa yang ada di dalam gambar ini.";
                     base64Image = attachedFileContent;
@@ -593,16 +981,24 @@
 
             let chat = getCurrentChat(); if(!chat) { startNewChat(); chat = getCurrentChat(); }
             
-            chat.messages.push({ role: 'user', text: finalPromptText, attachedImage: base64Image, timestamp: new Date().toISOString() });
-            if(chat.messages.length === 1) { chat.title = prompt.substring(0, 25) || "Analisis Gambar"; updateHeaderTitle(); renderChatHistory(); }
-            input.value = ''; input.style.height = 'auto';
+            if (!isRegen) {
+                chat.messages.push({ role: 'user', text: finalPromptText, attachedImage: base64Image, timestamp: new Date().toISOString() });
+                if(chat.messages.length === 1) { chat.title = prompt.substring(0, 30) || "Sesi Baru"; updateHeaderTitle(); renderChatHistory(); }
+                input.value = ''; input.style.height = 'auto';
+                handleInputAutoResize({ target: input });
+            }
 
-            const msgIdx = chat.messages.length;
-            chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
+            const msgIdx = isRegen ? chat.messages.length - 1 : chat.messages.length;
+            if (!isRegen) {
+                chat.messages.push({ role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() });
+            } else {
+                chat.messages[msgIdx] = { role: 'model', text: '', isTyping: true, timestamp: new Date().toISOString() };
+            }
+
             renderMessages(); toggleInputState(true); currentAbortController = new AbortController();
 
             let apiMessages = [{role: "system", content: appState.systemPersona}];
-            chat.messages.slice(0, -1).forEach(m => {
+            chat.messages.slice(0, isRegen ? -1 : -1).forEach(m => {
                 if (m.attachedImage) {
                     apiMessages.push({
                         role: m.role,
@@ -616,59 +1012,165 @@
                 }
             });
 
-            const startTime = performance.now(); let tokenCount = 0;
+            const startTime = performance.now(); 
+            let tokenCount = 0;
+            let success = false;
+            let lastErrorMessage = "";
 
-            try {
-                const activeGw = getGatewayForModel(appState.currentModel);
-                
-                // Mencegah API call jika Base URL kosong akibat reset
-                if (!activeGw.url || !activeGw.key) {
-                    throw new Error("Base URL / API Key kosong. Silakan konfigurasikan Gateway di menu Settings.");
-                }
+            const candidates = getGatewayCandidateList(appState.currentModel);
 
-                const res = await fetch(`${activeGw.url.replace(/\/+$/, '')}/chat/completions`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${activeGw.key}` },
-                    body: JSON.stringify({
-                        model: appState.currentModel,
-                        messages: apiMessages,
-                        temperature: appState.temperature, stream: true
-                    }),
-                    signal: currentAbortController.signal
-                });
+            for (let i = 0; i < candidates.length; i++) {
+                const candidate = candidates[i];
+                const activeGw = candidate.gw;
+                const activeModelId = candidate.modelId;
 
-                if(!res.ok) throw new Error(`HTTP ${res.status}`);
-                const reader = res.body.getReader(); const decoder = new TextDecoder(); let fullText = "";
+                if (!activeGw.url || !activeGw.key) continue;
 
-                while(true) {
-                    const {done, value} = await reader.read(); if(done) break;
-                    const chunk = decoder.decode(value, {stream: true});
-                    for(const line of chunk.split("\n")) {
-                        const clean = line.replace(/^data: /, "").trim();
-                        if(clean === "[DONE]") break;
-                        try {
-                            const json = JSON.parse(clean);
-                            const token = json.choices?.[0]?.delta?.content || "";
-                            if(token) {
-                                fullText += token; tokenCount++;
-                                chat.messages[msgIdx].text = fullText;
-                                window.requestAnimationFrame(updateLastMessageUI);
-                            }
-                        }catch(err){}
+                try {
+                    const cleanBaseUrl = activeGw.url.replace(/\/+$/, '');
+                    const endpoint = cleanBaseUrl.endsWith('/chat/completions') ? cleanBaseUrl : `${cleanBaseUrl}/chat/completions`;
+
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json', 
+                            'Authorization': `Bearer ${activeGw.key}` 
+                        },
+                        body: JSON.stringify({
+                            model: activeModelId,
+                            messages: apiMessages,
+                            temperature: appState.temperature,
+                            max_tokens: appState.maxTokens,
+                            stream: true
+                        }),
+                        signal: currentAbortController.signal
+                    });
+
+                    if(!res.ok) {
+                        const errText = await res.text().catch(() => '');
+                        throw new Error(`[${activeGw.name}] HTTP ${res.status}: ${errText.substring(0, 80) || res.statusText}`);
                     }
+
+                    const reader = res.body.getReader(); 
+                    const decoder = new TextDecoder(); 
+                    let fullText = "";
+
+                    while(true) {
+                        const {done, value} = await reader.read(); if(done) break;
+                        const chunk = decoder.decode(value, {stream: true});
+                        for(const line of chunk.split("\n")) {
+                            const clean = line.replace(/^data: /, "").trim();
+                            if(clean === "[DONE]") break;
+                            try {
+                                const json = JSON.parse(clean);
+                                const token = json.choices?.[0]?.delta?.content || "";
+                                if(token) {
+                                    fullText += token; 
+                                    tokenCount++;
+                                    chat.messages[msgIdx].text = fullText;
+                                    window.requestAnimationFrame(updateLastMessageUI);
+                                }
+                            } catch(err){}
+                        }
+                    }
+
+                    if (fullText.trim().length > 0) {
+                        success = true;
+                        break;
+                    }
+                } catch(err) {
+                    if(err.name === 'AbortError') {
+                        lastErrorMessage = "Proses dihentikan pengguna.";
+                        break;
+                    }
+                    lastErrorMessage = err.message || "Failed to fetch";
+                    console.warn(`Gateway ${activeGw.name} gagal, mencoba gateway berikutnya...`, err);
                 }
-                const duration = (performance.now() - startTime) / 1000;
-                const tps = (tokenCount / duration).toFixed(1);
-                document.getElementById('metricTps').innerText = tps;
-                document.getElementById('metricLatency').innerText = Math.round(duration * 1000);
-            } catch(err) {
-                if(err.name !== 'AbortError') {
-                    chat.messages[msgIdx].text = `⚠️ **Gateway Error:** \`${err.message}\``;
-                }
-            } finally {
-                chat.messages[msgIdx].isTyping = false;
-                toggleInputState(false); saveChatsToStorage(); renderMessages();
             }
+
+            if (!success) {
+                chat.messages[msgIdx].text = `⚠️ **System Error (Semua Gateway Gagal):** \`${lastErrorMessage}\`\n\n*Solusi:* Silakan periksa koneksi internet / VPN, atau buka menu **Settings** untuk memperbarui Base URL & API Key.`;
+            }
+
+            const duration = (performance.now() - startTime) / 1000;
+            const tps = (duration > 0 ? (tokenCount / duration) : 0).toFixed(1);
+            document.getElementById('metricTps').innerText = tps;
+            document.getElementById('metricLatency').innerText = Math.round(duration * 1000);
+
+            chat.messages[msgIdx].isTyping = false;
+            toggleInputState(false); 
+            saveChatsToStorage(); 
+            updateLastMessageUI();
+        }
+
+        function regenerateLastMessage() {
+            const chat = getCurrentChat();
+            if(!chat || chat.messages.length === 0 || isGenerating) return;
+            handleChatSubmit(null, true);
+        }
+
+        function editUserMessage(index) {
+            const chat = getCurrentChat();
+            if(!chat || !chat.messages[index]) return;
+            const currentText = chat.messages[index].text;
+            const newText = prompt("Edit instruksi Anda:", currentText);
+            if(newText && newText.trim() !== "") {
+                chat.messages[index].text = newText.trim();
+                chat.messages = chat.messages.slice(0, index + 1);
+                renderMessages();
+                handleChatSubmit(null, false);
+            }
+        }
+
+        function applyPostProcessing(node) {
+            renderMathInElement(node, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '\\[', right: '\\]', display: true}
+                ],
+                throwOnError: false
+            });
+
+            node.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+                if (!block.parentElement.classList.contains('code-wrapper-inner')) {
+                    const pre = block.parentElement;
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'mt-5 mb-5 rounded-xl overflow-hidden border border-zinc-800 bg-[#0a0a0e] shadow-lg';
+                    
+                    const header = document.createElement('div');
+                    header.className = 'flex items-center justify-between px-4 py-2.5 bg-[#121217] border-b border-zinc-800/80';
+                    header.innerHTML = `
+                        <div class="flex gap-2">
+                            <div class="w-3 h-3 rounded-full bg-rose-500/80 border border-rose-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500/80 border border-emerald-500"></div>
+                        </div>
+                        <button class="copy-code-btn text-[10px] text-zinc-400 hover:text-white font-sans flex items-center gap-1.5 transition-colors bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-md border border-white/5">
+                            <i class="fa-regular fa-clipboard"></i> Copy Code
+                        </button>
+                    `;
+                    
+                    pre.parentNode.insertBefore(wrapper, pre);
+                    wrapper.appendChild(header);
+                    pre.className = 'code-wrapper-inner p-4 overflow-x-auto text-[13px] leading-relaxed no-scrollbar';
+                    wrapper.appendChild(pre);
+
+                    const copyBtn = header.querySelector('.copy-code-btn');
+                    copyBtn.addEventListener('click', () => {
+                        navigator.clipboard.writeText(block.innerText).then(() => {
+                            copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> Copied';
+                            copyBtn.classList.add('border-emerald-500/30', 'text-emerald-400');
+                            setTimeout(() => {
+                                copyBtn.innerHTML = '<i class="fa-regular fa-clipboard"></i> Copy Code';
+                                copyBtn.classList.remove('border-emerald-500/30', 'text-emerald-400');
+                            }, 2000);
+                        });
+                    });
+                }
+            });
         }
 
         function updateLastMessageUI() {
@@ -677,7 +1179,16 @@
             const node = document.getElementById(`msg-${idx}`);
             if(node) {
                 const body = node.querySelector('.markdown-body');
-                if(body) body.innerHTML = marked.parse(msg.text || '');
+                if(body) {
+                    const rawParsed = marked.parse(msg.text || '');
+                    body.innerHTML = DOMPurify.sanitize(rawParsed);
+                    if (msg.isTyping) {
+                        body.classList.add('stream-cursor');
+                    } else {
+                        body.classList.remove('stream-cursor');
+                        applyPostProcessing(body);
+                    }
+                }
             }
             scrollToBottom();
         }
@@ -685,15 +1196,30 @@
         function generateMessageHTML(msg, index) {
             if(msg.role === 'user') {
                 let imgHtml = msg.attachedImage ? `<div class="mb-3"><img src="${msg.attachedImage}" class="max-w-[200px] md:max-w-xs rounded-xl border-2 border-zinc-700 shadow-md"></div>` : '';
-                return `<div class="flex justify-end w-full animate-slide-up"><div class="rounded-[1.25rem] rounded-tr-sm bg-zinc-800 text-zinc-100 px-5 py-3.5 max-w-[85%] text-[13px] whitespace-pre-wrap">${imgHtml}${escapeHtml(msg.text)}</div></div>`;
+                return `<div class="flex flex-col items-end w-full animate-slide-up-fade">
+                    <div class="rounded-[1.25rem] rounded-tr-sm bg-gradient-to-r from-zinc-800 to-zinc-900 border border-zinc-700/60 text-zinc-100 px-5 py-3.5 max-w-[85%] text-[13px] whitespace-pre-wrap shadow-md">${imgHtml}${escapeHtml(msg.text)}</div>
+                    <div class="mt-1.5 mr-2 flex gap-2 text-[9px] font-mono text-zinc-500">
+                        <button onclick="editUserMessage(${index})" class="hover:text-zinc-300 transition-colors"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                        <button onclick="deleteSingleMessage(${index})" class="hover:text-rose-400 transition-colors"><i class="fa-solid fa-trash"></i> Hapus</button>
+                    </div>
+                </div>`;
             } else {
-                let html = ''; try { html = marked.parse(msg.text || ''); } catch(e){ html = escapeHtml(msg.text); }
-                return `<div class="flex gap-3.5 w-full max-w-[95%] animate-slide-up" id="msg-${index}">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand to-rose-900 flex items-center justify-center text-white text-[11px] font-orbitron shrink-0 shadow-neon">赤</div>
+                let html = ''; 
+                try { 
+                    html = DOMPurify.sanitize(marked.parse(msg.text || '')); 
+                } catch(e){ 
+                    html = escapeHtml(msg.text); 
+                }
+                const typingClass = msg.isTyping ? 'stream-cursor' : '';
+                return `<div class="flex gap-3.5 w-full max-w-[95%] animate-slide-up-fade group" id="msg-${index}">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand via-rose-600 to-rose-950 flex items-center justify-center text-white text-[11px] font-orbitron shrink-0 shadow-neon">赤</div>
                     <div class="flex-1 min-w-0">
-                        <div class="rounded-[1.25rem] rounded-tl-sm px-5 py-4 text-[13px] md:text-sm markdown-body bg-dark-panel border border-dark-border shadow-panel">${html}</div>
-                        <div class="mt-2 ml-2 flex gap-2">
-                            <button onclick="AkaShiroVoice.playTTS(this, getCurrentChat().messages[${index}].text)" class="text-[9px] font-mono text-zinc-400 bg-dark-panel border border-dark-border px-2.5 py-1 rounded-lg hover:text-white transition-colors">Baca</button>
+                        <div class="rounded-[1.25rem] rounded-tl-sm px-5 py-4 text-[13px] md:text-sm markdown-body ${typingClass} bg-dark-panel/95 backdrop-blur-md border border-zinc-800/80 group-hover:border-zinc-700/80 transition-colors shadow-md">${html}</div>
+                        <div class="mt-2.5 ml-2 flex gap-2">
+                            <button onclick="AkaShiroVoice.playTTS(this, getCurrentChat().messages[${index}].text)" class="text-[9px] font-mono text-zinc-400 bg-dark-panel border border-dark-border px-2.5 py-1 rounded-lg hover:text-white hover:border-zinc-600 transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-volume-high"></i> Baca</button>
+                            <button onclick="copyMessageText(this, ${index})" class="text-[9px] font-mono text-zinc-400 bg-dark-panel border border-dark-border px-2.5 py-1 rounded-lg hover:text-white hover:border-zinc-600 transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-regular fa-copy"></i> Salin</button>
+                            <button onclick="regenerateLastMessage()" class="text-[9px] font-mono text-zinc-400 bg-dark-panel border border-dark-border px-2.5 py-1 rounded-lg hover:text-amber-400 hover:border-amber-500/30 transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-rotate"></i> Regenerate</button>
+                            <button onclick="deleteSingleMessage(${index})" class="text-[9px] font-mono text-zinc-500 bg-dark-panel border border-dark-border px-2.5 py-1 rounded-lg hover:text-rose-400 hover:border-rose-500/30 transition-colors shadow-sm flex items-center gap-1.5"><i class="fa-solid fa-trash"></i> Hapus</button>
                         </div>
                     </div>
                 </div>`;
@@ -701,81 +1227,160 @@
         }
 
         function escapeHtml(str) { return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-        function toggleInputState(gen) { isGenerating = gen; document.getElementById('sendBtn').classList.toggle('hidden', gen); document.getElementById('stopBtn').classList.toggle('hidden', !gen); }
+        function toggleInputState(gen) { 
+            isGenerating = gen; 
+            document.getElementById('sendBtn').classList.toggle('hidden', gen); 
+            document.getElementById('stopBtn').classList.toggle('hidden', !gen); 
+            document.getElementById('chatInput').disabled = gen;
+            document.getElementById('chatInput').classList.toggle('opacity-50', gen);
+        }
         function abortGeneration() { if(currentAbortController) currentAbortController.abort(); toggleInputState(false); }
+        
         function renderMessages() {
             const chat = getCurrentChat(); const list = document.getElementById('chatMessagesList'); const hero = document.getElementById('welcomeHero');
             if(!chat || chat.messages.length === 0) { list.innerHTML = ''; hero.classList.remove('hidden'); return; }
             hero.classList.add('hidden'); list.innerHTML = '';
-            chat.messages.forEach((m, idx) => list.insertAdjacentHTML('beforeend', generateMessageHTML(m, idx)));
+            chat.messages.forEach((m, idx) => {
+                list.insertAdjacentHTML('beforeend', generateMessageHTML(m, idx));
+                if(m.role === 'model' && !m.isTyping) {
+                    const node = document.getElementById(`msg-${idx}`);
+                    if(node) applyPostProcessing(node.querySelector('.markdown-body'));
+                }
+            });
             scrollToBottom();
         }
+
         function startNewChat() {
             if(isGenerating) abortGeneration();
-            const newChat = { id: 'c_' + Date.now(), title: 'Sesi Baru', messages: [], model: appState.currentModel };
+            const newChat = { id: 'c_' + Date.now(), title: 'Sesi Komputasi Baru', messages: [], model: appState.currentModel };
             appState.chats.unshift(newChat); appState.currentChatId = newChat.id;
             saveChatsToStorage(); renderChatHistory(); renderMessages(); updateHeaderTitle();
             if(window.innerWidth < 1024) toggleSidebar(false);
         }
+
         function loadChatSession(id) {
             appState.currentChatId = id; const chat = getCurrentChat();
             if(chat && chat.model) { appState.currentModel = chat.model; document.getElementById('chatModelSelect').value = chat.model; }
-            renderChatHistory(); renderMessages(); updateHeaderTitle();
+            renderChatHistory(); renderMessages(); updateHeaderTitle(); updateHeaderGatewayBadge();
             if(window.innerWidth < 1024) toggleSidebar(false);
         }
+
         function getCurrentChat() { return appState.chats.find(c => c.id === appState.currentChatId); }
         function updateHeaderTitle() { const chat = getCurrentChat(); if(chat) document.getElementById('headerChatTitle').innerText = chat.title; }
         function handleSearchHistory(q) { renderChatHistory(q.toLowerCase()); }
+        
         function renderChatHistory(filter = '') {
             const list = document.getElementById('chatHistoryList'); if(!list) return; list.innerHTML = '';
             appState.chats.filter(c => c.title.toLowerCase().includes(filter)).forEach(c => {
                 const active = c.id === appState.currentChatId;
-                list.insertAdjacentHTML('beforeend', `<div onclick="loadChatSession('${c.id}')" class="p-2.5 rounded-xl text-[11px] font-mono cursor-pointer flex justify-between items-center transition-all ${active ? 'bg-dark-input border-l-2 border-brand text-white shadow-sm' : 'text-zinc-400 hover:bg-zinc-900'}"><span class="truncate">${escapeHtml(c.title)}</span><button onclick="deleteChat(event, '${c.id}')" class="text-zinc-600 hover:text-rose-400 p-1"><i class="fa-solid fa-trash text-[10px]"></i></button></div>`);
+                list.insertAdjacentHTML('beforeend', `
+                    <div onclick="loadChatSession('${c.id}')" class="p-2.5 rounded-xl text-[11px] font-sans font-medium cursor-pointer flex justify-between items-center transition-all ${active ? 'bg-zinc-800/80 border-l-[3px] border-brand text-white shadow-md' : 'text-zinc-400 hover:bg-zinc-900 border-l-[3px] border-transparent'}">
+                        <span class="truncate pr-2">${escapeHtml(c.title)}</span>
+                        <button onclick="deleteChat(event, '${c.id}')" class="text-zinc-600 hover:text-rose-400 p-1.5 rounded-md hover:bg-rose-500/10 transition-colors shrink-0"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                    </div>
+                `);
             });
         }
+
         function deleteChat(e, id) { e.stopPropagation(); appState.chats = appState.chats.filter(c => c.id !== id); if(appState.currentChatId === id) appState.currentChatId = appState.chats[0]?.id || null; saveChatsToStorage(); renderChatHistory(); renderMessages(); }
-        function clearAllChats() { if(confirm("Bersihkan semua riwayat?")) { appState.chats = []; appState.currentChatId = null; saveChatsToStorage(); renderChatHistory(); renderMessages(); } }
-        function useSnippet(text) { document.getElementById('chatInput').value = text; closeModal('snippetsModal'); }
-        function handleInputKeydown(e) { if(e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { e.preventDefault(); handleChatSubmit(); } }
-        function handleInputAutoResize(e) { e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px'; }
+        function clearAllChats() { if(confirm("Bersihkan semua arsip komputasi?")) { appState.chats = []; appState.currentChatId = null; saveChatsToStorage(); renderChatHistory(); renderMessages(); } }
+        
+        function useSnippet(text) { 
+            const input = document.getElementById('chatInput');
+            input.value = text; 
+            input.style.height = 'auto'; 
+            handleInputAutoResize({ target: input });
+            closeModal('snippetsModal'); 
+            handleChatSubmit();
+        }
+        
+        function handleInputKeydown(e) { 
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                handleChatSubmit();
+            } else if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) { 
+                e.preventDefault(); 
+                handleChatSubmit(); 
+            } 
+        }
+
+        function handleInputAutoResize(e) { 
+            e.target.style.height = 'auto'; 
+            e.target.style.height = Math.min(e.target.scrollHeight, 250) + 'px';
+            const charCount = document.getElementById('charCount');
+            if (charCount) charCount.innerText = `${e.target.value.length} chars`;
+        }
+
         function forceScrollBottom() { const sa = document.getElementById('chatScrollArea'); sa.scrollTo({top: sa.scrollHeight, behavior: 'smooth'}); }
         function scrollToBottom() { const sa = document.getElementById('chatScrollArea'); if(isAutoScrolling) sa.scrollTo({top: sa.scrollHeight, behavior: 'smooth'}); }
-        function handleScroll() { const sa = document.getElementById('chatScrollArea'); isAutoScrolling = sa.scrollHeight - sa.scrollTop <= sa.clientHeight + 150; }
-        function changeChatModel(val) { appState.currentModel = val; localStorage.setItem('akashiro_model_v10', val); const c = getCurrentChat(); if(c) { c.model = val; saveChatsToStorage(); } }
         
-        // FUNGSI BARU: Mereset API Key & URL dengan Password
+        function handleScroll() { 
+            const sa = document.getElementById('chatScrollArea'); 
+            const scrollBtn = document.getElementById('scrollBtn');
+            isAutoScrolling = sa.scrollHeight - sa.scrollTop <= sa.clientHeight + 150; 
+            if (scrollBtn) {
+                if (sa.scrollTop < sa.scrollHeight - sa.clientHeight - 200) {
+                    scrollBtn.classList.add('visible');
+                } else {
+                    scrollBtn.classList.remove('visible');
+                }
+            }
+        }
+
+        function changeChatModel(val) { 
+            appState.currentModel = val; 
+            localStorage.setItem('akashiro_model_v10', val); 
+            const c = getCurrentChat(); 
+            if(c) { c.model = val; saveChatsToStorage(); } 
+            updateHeaderGatewayBadge();
+        }
+        
         function resetSettingsWithPassword() {
-            const pwd = prompt("Otorisasi Keamanan: Masukkan sandi untuk menghapus Base URL dan API Key.");
+            const pwd = prompt("Otorisasi Keamanan: Masukkan sandi untuk menghapus Base URL, API Key, dan Custom Model.");
             if (pwd === null) return; 
             
             if (pwd === "AkaShiro22#") {
                 const keysToRemove = [
-                    'akashiro_gw1_url', 'akashiro_gw1_key',
-                    'akashiro_gw2_url', 'akashiro_gw2_key',
-                    'akashiro_gw3_url', 'akashiro_gw3_key',
-                    'akashiro_gw4_url', 'akashiro_gw4_key',
-                    'akashiro_gw5_url', 'akashiro_gw5_key',
-                    'akashiro_gw6_url', 'akashiro_gw6_key'
+                    'akashiro_gw1_url', 'akashiro_gw1_key', 'akashiro_gw1_models',
+                    'akashiro_gw2_url', 'akashiro_gw2_key', 'akashiro_gw2_models',
+                    'akashiro_gw3_url', 'akashiro_gw3_key', 'akashiro_gw3_models',
+                    'akashiro_gw4_url', 'akashiro_gw4_key', 'akashiro_gw4_models',
+                    'akashiro_gw5_url', 'akashiro_gw5_key', 'akashiro_gw5_models',
+                    'akashiro_gw6_url', 'akashiro_gw6_key', 'akashiro_gw6_models',
+                    'akashiro_temp_v10', 'akashiro_tokens_v10'
                 ];
                 
                 keysToRemove.forEach(k => localStorage.removeItem(k));
                 
-                // Kosongkan form input
-                const inputs = ['gw1Url', 'gw1Key', 'gw2Url', 'gw2Key', 'gw3Url', 'gw3Key', 'gw4Url', 'gw4Key', 'gw5Url', 'gw5Key', 'gw6Url', 'gw6Key'];
+                const inputs = [
+                    'gw1Url', 'gw1Key', 'gw1Models',
+                    'gw2Url', 'gw2Key', 'gw2Models',
+                    'gw3Url', 'gw3Key', 'gw3Models',
+                    'gw4Url', 'gw4Key', 'gw4Models',
+                    'gw5Url', 'gw5Key', 'gw5Models',
+                    'gw6Url', 'gw6Key', 'gw6Models'
+                ];
                 inputs.forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.value = '';
                 });
 
-                // Kosongkan variabel GATEWAYS agar tidak menggunakan cache saat chatting
+                GATEWAYS.bansos.models = DEFAULT_MODELS.gw1;
+                GATEWAYS.internai.models = DEFAULT_MODELS.gw2;
+                GATEWAYS.dahl.models = DEFAULT_MODELS.gw3;
+                GATEWAYS.rassya.models = DEFAULT_MODELS.gw4;
+                GATEWAYS.internai_v2.models = DEFAULT_MODELS.gw5;
+                GATEWAYS.internai_v3.models = DEFAULT_MODELS.gw6;
+
                 for (let k in GATEWAYS) {
                     GATEWAYS[k].url = '';
                     GATEWAYS[k].key = '';
                 }
 
-                showToast("Semua Base URL dan API Key berhasil dihapus.", "success");
+                populateModelDropdown();
+                showToast("Sistem direset. Base URL, API Key, dan Custom Model berhasil dihapus.", "success");
             } else {
-                showToast("Akses Ditolak: Password tidak valid.", "error");
+                showToast("Akses Ditolak: Password otoritas tidak valid.", "error");
             }
         }
 
@@ -794,30 +1399,66 @@
 
             GATEWAYS.internai_v2.url = document.getElementById('gw5Url').value.trim(); GATEWAYS.internai_v2.key = document.getElementById('gw5Key').value.trim();
             localStorage.setItem('akashiro_gw5_url', GATEWAYS.internai_v2.url); localStorage.setItem('akashiro_gw5_key', GATEWAYS.internai_v2.key);
-            
+
             GATEWAYS.internai_v3.url = document.getElementById('gw6Url').value.trim(); GATEWAYS.internai_v3.key = document.getElementById('gw6Key').value.trim();
             localStorage.setItem('akashiro_gw6_url', GATEWAYS.internai_v3.url); localStorage.setItem('akashiro_gw6_key', GATEWAYS.internai_v3.key);
-            
+
+            const gw1M = document.getElementById('gw1Models').value.trim(); localStorage.setItem('akashiro_gw1_models', gw1M);
+            GATEWAYS.bansos.models = parseModels(gw1M, "Bansos", DEFAULT_MODELS.gw1);
+
+            const gw2M = document.getElementById('gw2Models').value.trim(); localStorage.setItem('akashiro_gw2_models', gw2M);
+            GATEWAYS.internai.models = parseModels(gw2M, "InternAI", DEFAULT_MODELS.gw2);
+
+            const gw3M = document.getElementById('gw3Models').value.trim(); localStorage.setItem('akashiro_gw3_models', gw3M);
+            GATEWAYS.dahl.models = parseModels(gw3M, "Dahl", DEFAULT_MODELS.gw3);
+
+            const gw4M = document.getElementById('gw4Models').value.trim(); localStorage.setItem('akashiro_gw4_models', gw4M);
+            GATEWAYS.rassya.models = parseModels(gw4M, "Rassya", DEFAULT_MODELS.gw4);
+
+            const gw5M = document.getElementById('gw5Models').value.trim(); localStorage.setItem('akashiro_gw5_models', gw5M);
+            GATEWAYS.internai_v2.models = parseModels(gw5M, "V2", DEFAULT_MODELS.gw5);
+
+            const gw6M = document.getElementById('gw6Models').value.trim(); localStorage.setItem('akashiro_gw6_models', gw6M);
+            GATEWAYS.internai_v3.models = parseModels(gw6M, "V3 Custom", DEFAULT_MODELS.gw6);
+
             appState.systemPersona = document.getElementById('systemPersonaInput').value.trim();
             localStorage.setItem('akashiro_persona_v10', appState.systemPersona);
-            closeModal('settingsModal'); showToast("Gateway berhasil diperbarui.", "success");
+
+            appState.temperature = parseFloat(document.getElementById('tempInput').value);
+            localStorage.setItem('akashiro_temp_v10', appState.temperature);
+
+            appState.maxTokens = parseInt(document.getElementById('maxTokensInput').value);
+            localStorage.setItem('akashiro_tokens_v10', appState.maxTokens);
+
+            populateModelDropdown();
+            closeModal('settingsModal'); 
+            showToast("Gateway, Parameter & Custom Model berhasil disimpan.", "success");
         }
+
         function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v10', JSON.stringify(appState.chats)); }
         function toggleSidebar(show) { const sb = document.getElementById('appSidebar'); const ov = document.getElementById('sidebarOverlay'); sb.classList.toggle('-translate-x-full', !show); ov.classList.toggle('hidden', !show); }
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        
         function showToast(msg, type='info') {
             const c = document.getElementById('toastContainer'); const t = document.createElement('div');
-            t.className = `toast px-4 py-2.5 rounded-xl border text-xs font-mono shadow-xl backdrop-blur-xl ${type==='error'?'bg-rose-950/90 border-rose-500':'bg-emerald-950/90 border-emerald-500'} text-zinc-200`;
-            t.innerHTML = msg; c.appendChild(t); setTimeout(() => t.classList.add('show'), 10);
+            t.className = `toast px-4 py-3 rounded-xl border text-xs font-mono shadow-float backdrop-blur-xl flex items-center gap-2 ${type==='error'?'bg-rose-950/90 border-rose-500 text-rose-100':'bg-emerald-950/90 border-emerald-500 text-emerald-100'}`;
+            t.innerHTML = `<i class="fa-solid ${type==='error'?'fa-circle-exclamation':'fa-circle-check'} text-[14px]"></i> ${msg}`; 
+            c.appendChild(t); setTimeout(() => t.classList.add('show'), 10);
             setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 3000);
         }
+
         function exportCurrentChat(fmt) {
             const chat = getCurrentChat(); if(!chat) return;
             if(fmt === 'markdown') {
-                let text = `# Transkrip: ${chat.title}\n\n`; chat.messages.forEach(m => text += `### ${m.role.toUpperCase()}\n${m.text}\n\n`);
-                const blob = new Blob([text], {type: 'text/markdown'}); const url = URL.createObjectURL(blob);
+                let text = `# Transkrip Sesi: ${chat.title}\n\n`; 
+                chat.messages.forEach(m => text += `### ${m.role.toUpperCase()}\n${m.text}\n\n`);
+                const blob = new Blob([text], {type: 'text/markdown'}); 
+                const url = URL.createObjectURL(blob);
                 const a = document.createElement('a'); a.href = url; a.download = `AkaShiro_${chat.id}.md`; a.click();
+            } else if (fmt === 'json') {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(chat, null, 2));
+                const a = document.createElement('a'); a.href = dataStr; a.download = `AkaShiro_${chat.id}.json`; a.click();
             }
         }
     </script>
