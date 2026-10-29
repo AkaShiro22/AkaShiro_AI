@@ -208,7 +208,7 @@
 
             <!-- Header Status Pill & Performance Metrics -->
             <div class="hidden md:flex items-center gap-3">
-                <div id="gatewayStatusBadge" class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-mono text-emerald-400 shadow-sm">
+                <div id="gatewayStatusBadge" class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-mono text-emerald-400 shadow-sm transition-colors">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     <span id="activeGatewayNameDisplay" class="font-bold">Gateway Ready</span>
                 </div>
@@ -221,9 +221,9 @@
 
             <div class="flex items-center gap-2.5">
                 <div class="relative flex items-center bg-dark-input border border-dark-border rounded-xl p-1 pr-2 hover:border-zinc-500 transition-colors shadow-sm group">
-                    <div class="w-6 h-6 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand shrink-0">
-                        <i class="fa-solid fa-microchip text-[10px]"></i>
-                    </div>
+                    <button id="scanPingBtn" onclick="scanAllPings(false)" class="w-6 h-6 rounded-lg bg-zinc-800/80 flex items-center justify-center text-brand shrink-0 hover:bg-zinc-700 hover:text-white transition-colors cursor-pointer relative z-20" title="Scan Ping Gateway">
+                        <i class="fa-solid fa-satellite-dish text-[10px]"></i>
+                    </button>
                     <select id="chatModelSelect" onchange="changeChatModel(this.value)" class="bg-transparent border-none text-zinc-200 text-[11px] md:text-xs font-mono font-medium focus:outline-none cursor-pointer w-36 md:w-56 appearance-none pl-2.5 pr-6 py-0.5 truncate z-10 relative outline-none">
                     </select>
                     <i class="fa-solid fa-chevron-down text-[9px] text-zinc-500 absolute right-3 pointer-events-none group-hover:text-zinc-300 transition-colors"></i>
@@ -815,9 +815,78 @@
             }
         }
 
+        // ==========================================
+        // SCAN PING GATEWAY BACKGROUND PROCESS
+        // ==========================================
+        async function scanAllPings(isSilent = false) {
+            const btn = document.getElementById('scanPingBtn');
+            let icon = null;
+            if (btn) {
+                icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-satellite-dish');
+                    icon.classList.add('fa-spinner', 'fa-spin');
+                }
+            }
+            
+            if (!isSilent) showToast("Memindai latensi ke seluruh klaster AI...", "info");
+
+            const promises = Object.keys(GATEWAYS).map(async (k) => {
+                const gw = GATEWAYS[k];
+                if (!gw.url || !gw.key) {
+                    gw.ping = 'Unconfigured';
+                    return;
+                }
+                const start = performance.now();
+                try {
+                    const cleanBaseUrl = gw.url.replace(/\/+$/, '');
+                    const endpoint = cleanBaseUrl.endsWith('/chat/completions') ? cleanBaseUrl : `${cleanBaseUrl}/chat/completions`;
+                    const controller = new AbortController();
+                    
+                    // Set timeout 6 detik agar tidak menunggu selamanya jika down
+                    const timeoutId = setTimeout(() => controller.abort(), 6000); 
+
+                    const res = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${gw.key}` },
+                        body: JSON.stringify({
+                            model: gw.models[0]?.id || 'free',
+                            messages: [{role: 'user', content: 'ping'}],
+                            max_tokens: 1
+                        }),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    if (res.ok) {
+                        gw.ping = Math.round(performance.now() - start) + 'ms';
+                    } else {
+                        gw.ping = 'Error';
+                    }
+                } catch (e) {
+                    gw.ping = 'Down';
+                }
+            });
+
+            await Promise.all(promises);
+            
+            if (icon) {
+                icon.classList.remove('fa-spinner', 'fa-spin');
+                icon.classList.add('fa-satellite-dish');
+            }
+            if (!isSilent) showToast("Status pemindaian model berhasil di-refresh.", "success");
+            
+            // Re-render dropdown untuk memunculkan ping terbaru dengan urutan terbaik
+            populateModelDropdown();
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
-            setupDOM(); populateModelDropdown();
+            setupDOM(); 
+            populateModelDropdown();
             if (appState.chats.length > 0) loadChatSession(appState.chats[0].id); else startNewChat();
+            
+            // Jalankan background check secara silent
+            setTimeout(() => { scanAllPings(true); }, 1500);
         });
 
         function setupDOM() {
@@ -882,34 +951,83 @@
                 });
                 const latency = Math.round(performance.now() - start);
                 if (res.ok) {
+                    gw.ping = latency + 'ms';
                     showToast(`Online! Latensi ${gw.name}: ${latency}ms`, "success");
+                    populateModelDropdown();
                 } else {
+                    gw.ping = 'Error';
                     showToast(`HTTP ${res.status}: ${gw.name} merespons dengan error.`, "error");
+                    populateModelDropdown();
                 }
             } catch(e) {
+                gw.ping = 'Down';
                 showToast(`Gagal terhubung ke ${gw.name}: ${e.message}`, "error");
+                populateModelDropdown();
             }
         }
 
         function populateModelDropdown() {
-            const select = document.getElementById('chatModelSelect'); if(!select) return; select.innerHTML = '';
+            const select = document.getElementById('chatModelSelect'); 
+            if(!select) return; 
+            select.innerHTML = '';
             let modelFound = false;
 
-            Object.keys(GATEWAYS).forEach(k => {
-                const gw = GATEWAYS[k]; 
+            // Logika Penyortiran Gateway (Cepat/Online di atas, Down di bawah)
+            const sortedGateways = Object.keys(GATEWAYS).map(k => {
+                const gw = GATEWAYS[k];
+                let pingVal = 999999; 
+                let isOnline = false;
+                
+                if (gw.ping && gw.ping.includes('ms')) {
+                    pingVal = parseInt(gw.ping.replace('ms', ''));
+                    isOnline = true;
+                }
+                
+                return { key: k, gw: gw, pingVal, isOnline };
+            }).sort((a, b) => {
+                if (a.isOnline && b.isOnline) return a.pingVal - b.pingVal;
+                if (a.isOnline && !b.isOnline) return -1;
+                if (!a.isOnline && b.isOnline) return 1;
+                return 0; 
+            });
+
+            // Mulai Render Opsi Dropdown yang sudah diurutkan
+            sortedGateways.forEach(item => {
+                const k = item.key;
+                const gw = item.gw; 
+
                 if (gw.models && gw.models.length > 0) {
                     const group = document.createElement('optgroup'); 
-                    group.label = gw.name;
+                    
+                    // Emoji Indikator Pendek & Rapih
+                    let emoji = "⚪"; 
+                    let pingStr = " N/A";
+                    
+                    if (gw.ping) {
+                        if (gw.ping.includes('ms')) {
+                            emoji = "🟢"; 
+                            pingStr = ` ${gw.ping}`;
+                        } else if (gw.ping !== 'Unconfigured') {
+                            emoji = "🔴"; 
+                            pingStr = ` ${gw.ping}`;
+                        }
+                    }
+                    
+                    group.label = `${emoji}${pingStr} - ${gw.name}`;
+
                     gw.models.forEach(m => {
                         const opt = document.createElement('option'); 
                         opt.value = `${k}::${m.id}`; 
-                        opt.textContent = m.name;
+                        
+                        opt.textContent = `${emoji} ${m.name}`;
+
                         if(m.id === appState.currentModel || opt.value === appState.currentModel) {
                             opt.selected = true; 
                             modelFound = true;
                         }
                         group.appendChild(opt);
                     });
+                    
                     select.appendChild(group);
                 }
             });
@@ -925,11 +1043,26 @@
         function updateHeaderGatewayBadge() {
             const val = appState.currentModel;
             const badge = document.getElementById('activeGatewayNameDisplay');
-            if (badge && val) {
+            const badgeContainer = document.getElementById('gatewayStatusBadge');
+            
+            if (badge && badgeContainer && val) {
                 const parts = val.split('::');
                 const gwKey = parts[0];
-                if (GATEWAYS[gwKey]) {
-                    badge.innerText = GATEWAYS[gwKey].name;
+                const gw = GATEWAYS[gwKey];
+                
+                if (gw) {
+                    badge.innerText = gw.name;
+                    const dot = badgeContainer.querySelector('span:first-child');
+                    
+                    // Merubah status warna dari Hijau menjadi Merah apabila server sedang down
+                    if (gw.ping && !gw.ping.includes('ms') && gw.ping !== 'Unconfigured') {
+                        badgeContainer.className = "flex items-center gap-2 bg-rose-500/10 border border-rose-500/30 px-3 py-1 rounded-full text-[10px] font-mono text-rose-400 shadow-sm transition-colors";
+                        dot.className = "w-2 h-2 rounded-full bg-rose-500 animate-pulse";
+                        badge.innerText = gw.name + " (Down)";
+                    } else {
+                        badgeContainer.className = "flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-mono text-emerald-400 shadow-sm transition-colors";
+                        dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+                    }
                 }
             }
         }
@@ -949,11 +1082,22 @@
                 candidates.push({ gw: GATEWAYS[targetGwKey], modelId: targetModelId });
             }
 
-            Object.keys(GATEWAYS).forEach(k => {
-                if (k !== targetGwKey && GATEWAYS[k].url && GATEWAYS[k].key) {
-                    const fallbackModel = GATEWAYS[k].models[0]?.id || 'free';
-                    candidates.push({ gw: GATEWAYS[k], modelId: fallbackModel });
-                }
+            // Fallback: Prioritaskan Gateway dengan ping terkecil yang online
+            let fallbackGateways = Object.keys(GATEWAYS)
+                .map(k => ({ key: k, gw: GATEWAYS[k] }))
+                .filter(item => item.key !== targetGwKey && item.gw.url && item.gw.key)
+                .map(item => {
+                    let pingVal = 999999;
+                    if (item.gw.ping && item.gw.ping.includes('ms')) {
+                        pingVal = parseInt(item.gw.ping.replace('ms', ''));
+                    }
+                    return { ...item, pingVal };
+                })
+                .sort((a, b) => a.pingVal - b.pingVal);
+
+            fallbackGateways.forEach(item => {
+                const fallbackModel = item.gw.models[0]?.id || 'free';
+                candidates.push({ gw: item.gw, modelId: fallbackModel });
             });
 
             return candidates;
@@ -1375,6 +1519,7 @@
                 for (let k in GATEWAYS) {
                     GATEWAYS[k].url = '';
                     GATEWAYS[k].key = '';
+                    GATEWAYS[k].ping = 'Unconfigured';
                 }
 
                 populateModelDropdown();
@@ -1430,9 +1575,9 @@
             appState.maxTokens = parseInt(document.getElementById('maxTokensInput').value);
             localStorage.setItem('akashiro_tokens_v10', appState.maxTokens);
 
-            populateModelDropdown();
+            // Trigger re-scan setelah save setting
+            scanAllPings(false); 
             closeModal('settingsModal'); 
-            showToast("Gateway, Parameter & Custom Model berhasil disimpan.", "success");
         }
 
         function saveChatsToStorage() { localStorage.setItem('akashiro_chats_v10', JSON.stringify(appState.chats)); }
